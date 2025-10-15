@@ -11,15 +11,35 @@ database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
 [vars]
 SITE_URL = "http://localhost:4321"
 
+# Stripe Price IDs - fill these in after running setup-stripe-products.ts
+STRIPE_PRICE_CHAMBER_LAUNCH = ""
+STRIPE_PRICE_CHAMBER_CITY = ""
+STRIPE_PRICE_CHAMBER_REGIONAL = ""
+STRIPE_PRICE_BUSINESS_SINGLE = ""
+STRIPE_PRICE_BUSINESS_SEASONAL = ""
+STRIPE_PRICE_BUSINESS_MULTI_LOCATION = ""
+STRIPE_PRICE_BUSINESS_EVENT = ""
+STRIPE_PRICE_COMMUNITY_MINIMAL = ""
+STRIPE_PRICE_COMMUNITY_MODEST = ""
+
 # NOTE: Add these as secrets via Cloudflare Dashboard or wrangler:
 # npx wrangler secret put STRIPE_SECRET_KEY --env production
 # npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
-#
-# Price IDs are fetched dynamically from Stripe API based on product metadata
 
 [env.production]
 [env.production.vars]
 SITE_URL = "https://michiganspots.com"
+
+# Production Stripe Price IDs - fill these in after running setup-stripe-products.ts with live keys
+STRIPE_PRICE_CHAMBER_LAUNCH = ""
+STRIPE_PRICE_CHAMBER_CITY = ""
+STRIPE_PRICE_CHAMBER_REGIONAL = ""
+STRIPE_PRICE_BUSINESS_SINGLE = ""
+STRIPE_PRICE_BUSINESS_SEASONAL = ""
+STRIPE_PRICE_BUSINESS_MULTI_LOCATION = ""
+STRIPE_PRICE_BUSINESS_EVENT = ""
+STRIPE_PRICE_COMMUNITY_MINIMAL = ""
+STRIPE_PRICE_COMMUNITY_MODEST = ""
 
 [[env.production.d1_databases]]
 binding = "DB"
