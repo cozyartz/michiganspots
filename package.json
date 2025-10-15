@@ -8,7 +8,12 @@
     "preview": "astro preview",
     "deploy": "astro build && npx wrangler pages deploy ./dist"
   },
-  "keywords": ["michigan", "discovery", "game", "treasure-hunt"],
+  "keywords": [
+    "michigan",
+    "discovery",
+    "game",
+    "treasure-hunt"
+  ],
   "author": "Cozyartz Media Group",
   "license": "ISC",
   "type": "module",
@@ -28,5 +33,8 @@
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^3.4.18"
+  },
+  "devDependencies": {
+    "stripe": "^19.1.0"
   }
 }

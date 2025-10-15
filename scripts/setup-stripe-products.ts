@@ -2,9 +2,10 @@
  * Stripe Product Setup Script
  * Run this once to create all partnership products and prices in Stripe
  *
- * Usage: node --loader ts-node/esm scripts/setup-stripe-products.ts
- * Or: npx tsx scripts/setup-stripe-products.ts
+ * Usage: STRIPE_SECRET_KEY="sk_..." npx tsx scripts/setup-stripe-products.ts
  */
+
+import Stripe from 'stripe';
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
@@ -13,7 +14,9 @@ if (!STRIPE_SECRET_KEY) {
   process.exit(1);
 }
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
+  apiVersion: '2024-12-18.acacia'
+});
 
 interface ProductConfig {
   name: string;
