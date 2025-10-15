@@ -32,3 +32,10 @@ pnpm-debug.log*
 # Local database
 *.db
 *.db-journal
+
+# Documentation with sensitive info
+*verification*.md
+*setup*.md
+*stripe_*.md
+SETUP*.md
+VERIFICATION*.md
