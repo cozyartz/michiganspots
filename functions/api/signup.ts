@@ -1,3 +1,5 @@
+import { sendWelcomeEmail } from '../utils/email';
+
 interface SignupRequest {
   email: string;
   name: string;
@@ -7,6 +9,7 @@ interface SignupRequest {
 
 interface Env {
   DB: D1Database;
+  SMTP_PASSWORD: string;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -52,6 +55,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       .prepare('INSERT INTO signups (email, name, city, user_type, created_at) VALUES (?, ?, ?, ?, ?)')
       .bind(email, name, city, userType, new Date().toISOString())
       .run();
+
+    // Send welcome email (don't block on this)
+    sendWelcomeEmail(email, name, context.env).catch((error) => {
+      console.error('Failed to send welcome email:', error);
+      // Don't fail the signup if email fails
+    });
 
     return new Response(
       JSON.stringify({

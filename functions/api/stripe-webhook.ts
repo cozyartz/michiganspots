@@ -3,10 +3,14 @@
  * Processes Stripe webhook events for payment confirmations
  */
 
+import { sendPartnershipConfirmationEmail } from '../utils/partnershipEmail';
+
 interface Env {
   DB: D1Database;
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
+  SMTP_PASSWORD: string;
+  SITE_URL: string;
 }
 
 // Helper function to verify Stripe webhook signature
@@ -92,7 +96,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     // Process the event
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object, db);
+        await handleCheckoutCompleted(event.data.object, db, context.env);
         break;
 
       case 'payment_intent.succeeded':
@@ -149,7 +153,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 };
 
-async function handleCheckoutCompleted(session: any, db: D1Database) {
+async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) {
   const email = session.customer_details?.email || session.metadata?.email;
   const customerId = session.customer;
   const subscriptionId = session.subscription;
@@ -221,6 +225,33 @@ async function handleCheckoutCompleted(session: any, db: D1Database) {
           .prepare('UPDATE stripe_customers SET has_active_subscription = 1, subscription_ends_at = ?, updated_at = ? WHERE stripe_customer_id = ?')
           .bind(endsAt ? endsAt.toISOString() : null, new Date().toISOString(), customerId)
           .run();
+      }
+
+      // Send partnership confirmation email
+      if (env && payment) {
+        const customer = await db
+          .prepare('SELECT * FROM stripe_customers WHERE stripe_customer_id = ?')
+          .bind(customerId)
+          .first();
+
+        if (customer) {
+          const siteUrl = env.SITE_URL || 'https://michiganspots.com';
+          const acceptanceUrl = `${siteUrl}/partnership-acceptance?session_id=${session.id}`;
+
+          sendPartnershipConfirmationEmail({
+            email: customer.email as string,
+            organizationName: customer.organization_name as string,
+            contactName: customer.name as string,
+            partnershipType,
+            partnershipTier,
+            amount: session.amount_total,
+            transactionId: paymentIntentId || session.id,
+            sessionId: session.id,
+            acceptanceUrl
+          }, env).catch(error => {
+            console.error('Failed to send partnership confirmation email:', error);
+          });
+        }
       }
     }
   }

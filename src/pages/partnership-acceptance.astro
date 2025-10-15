@@ -1,0 +1,273 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+---
+
+<Layout
+  title="Partnership Agreement Acceptance - Michigan Spots"
+  description="Review and accept your Michigan Spots partnership agreement"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-4">
+          Partnership Agreement
+        </h1>
+        <p class="text-xl text-ink-secondary">
+          Please review and accept the terms below
+        </p>
+      </div>
+
+      <div id="agreement-content" class="prose prose-lg max-w-none bg-white border-2 border-ink-primary rounded-lg p-8 mb-8 max-h-[600px] overflow-y-auto">
+        <!-- Agreement content will be loaded here -->
+        <div class="text-center py-12">
+          <div class="animate-spin w-12 h-12 border-4 border-lakes-blue border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p class="text-ink-faded">Loading agreement...</p>
+        </div>
+      </div>
+
+      <Card className="bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6">
+          Required Acceptance
+        </h2>
+
+        <form id="acceptance-form" class="space-y-4">
+          <div class="space-y-4">
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="terms-read" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I have read and understand the entire Partnership Agreement above</strong>, including all sections on payment terms, intellectual property, liability limitations, and termination provisions.
+              </span>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="authority" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I have authority to bind my organization</strong> to this Agreement and represent that I am authorized to enter into this legally binding contract.
+              </span>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="no-refunds" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I acknowledge ALL PAYMENTS ARE FINAL AND NON-REFUNDABLE.</strong> I understand there are no refunds for early termination, unused services, or dissatisfaction with engagement levels.
+              </span>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="liability" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I accept all liability limitations and disclaimers</strong> outlined in this Agreement, including the cap on Michigan Spots' liability and exclusion of consequential damages.
+              </span>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="indemnification" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I agree to indemnify and hold harmless Michigan Spots</strong> from all claims arising from my organization's use of the Platform, including intellectual property claims and third-party disputes.
+              </span>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="jurisdiction" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I consent to Michigan law and exclusive jurisdiction</strong> in Calhoun County, Michigan for any disputes arising from this Agreement.
+              </span>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" id="electronic-signature" required class="mt-1 w-5 h-5 rounded border-2 border-ink-primary text-lakes-blue focus:ring-lakes-blue" />
+              <span class="text-ink-primary">
+                <strong>I acknowledge my electronic acceptance is legally binding</strong> and has the same legal effect as a handwritten signature. I have had opportunity to review this Agreement with legal counsel.
+              </span>
+            </label>
+          </div>
+
+          <div class="pt-6 border-t-2 border-ink-primary">
+            <div class="mb-4">
+              <label for="full-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                Full Name (Legal Signature) *
+              </label>
+              <input
+                type="text"
+                id="full-name"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="John Smith"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="title" class="block text-sm font-semibold text-ink-primary mb-2">
+                Title/Position *
+              </label>
+              <input
+                type="text"
+                id="title"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="Executive Director"
+              />
+            </div>
+
+            <div class="mb-6">
+              <p class="text-sm text-ink-faded">
+                <strong>Date:</strong> <span id="current-date"></span><br />
+                <strong>IP Address:</strong> <span id="ip-address">Detecting...</span><br />
+                <strong>Transaction ID:</strong> <span id="transaction-id">Loading...</span>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              id="accept-button"
+              disabled
+              class="w-full py-4 px-6 bg-lakes-blue text-white font-bold rounded-lg hover:bg-lakes-blue/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              I Accept - Legally Bind My Organization
+            </button>
+
+            <p class="text-sm text-ink-faded text-center mt-4">
+              By clicking "I Accept," you are electronically signing this Agreement and creating a legally binding contract.
+            </p>
+          </div>
+        </form>
+      </Card>
+
+      <div id="success-message" class="hidden mt-8 p-6 bg-forest-green/10 border-2 border-forest-green rounded-lg text-center">
+        <h3 class="font-heading text-2xl font-bold text-forest-green mb-2">
+          ✓ Agreement Accepted
+        </h3>
+        <p class="text-ink-secondary">
+          Your partnership is now active. Check your email for confirmation and agreement copy.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Get session ID from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+
+  if (!sessionId) {
+    window.location.href = '/partnerships';
+  }
+
+  // Display current date
+  document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Get IP address
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('ip-address').textContent = data.ip;
+    })
+    .catch(() => {
+      document.getElementById('ip-address').textContent = 'Unable to detect';
+    });
+
+  // Set transaction ID
+  document.getElementById('transaction-id').textContent = sessionId;
+
+  // Load agreement content
+  fetch(`/api/get-agreement?session_id=${sessionId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.agreementHtml) {
+        document.getElementById('agreement-content').innerHTML = data.agreementHtml;
+      }
+    })
+    .catch(error => {
+      console.error('Error loading agreement:', error);
+      document.getElementById('agreement-content').innerHTML = `
+        <div class="text-center text-red-600">
+          <p>Error loading agreement. Please contact support.</p>
+        </div>
+      `;
+    });
+
+  // Enable submit button when all checkboxes are checked
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const submitButton = document.getElementById('accept-button');
+
+  function checkAllBoxes() {
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    submitButton.disabled = !allChecked;
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', checkAllBoxes));
+
+  // Handle form submission
+  document.getElementById('acceptance-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fullName = document.getElementById('full-name').value;
+    const title = document.getElementById('title').value;
+    const ipAddress = document.getElementById('ip-address').textContent;
+    const acceptedDate = new Date().toISOString();
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
+
+    try {
+      const response = await fetch('/api/accept-agreement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          fullName,
+          title,
+          ipAddress,
+          acceptedDate,
+          checkboxes: {
+            termsRead: true,
+            authority: true,
+            noRefunds: true,
+            liability: true,
+            indemnification: true,
+            jurisdiction: true,
+            electronicSignature: true
+          }
+        })
+      });
+
+      if (response.ok) {
+        document.getElementById('acceptance-form').style.display = 'none';
+        document.getElementById('success-message').classList.remove('hidden');
+
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          window.location.href = '/success?partnership=accepted';
+        }, 3000);
+      } else {
+        throw new Error('Failed to accept agreement');
+      }
+    } catch (error) {
+      console.error('Error accepting agreement:', error);
+      alert('There was an error processing your acceptance. Please try again or contact support.');
+      submitButton.disabled = false;
+      submitButton.textContent = 'I Accept - Legally Bind My Organization';
+    }
+  });
+</script>
+
+<style>
+  .prose {
+    max-width: 100%;
+  }
+  .prose h1, .prose h2, .prose h3 {
+    color: #2c1810;
+  }
+  .prose p {
+    margin: 0.75rem 0;
+  }
+  .prose ul {
+    margin: 0.5rem 0;
+  }
+</style>

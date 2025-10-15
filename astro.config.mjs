@@ -8,40 +8,47 @@ export default defineConfig({
     react(),
     tailwind(),
     sitemap({
-      changefreq: 'weekly',
-      priority: 0.7,
-      lastmod: new Date(),
-      customPages: [
-        'https://michiganspots.com',
-        'https://michiganspots.com/about',
-        'https://michiganspots.com/partnerships',
-        'https://michiganspots.com/chamber-partnerships',
-        'https://michiganspots.com/business-partnerships',
-        'https://michiganspots.com/chamber-intake',
-        'https://michiganspots.com/business-intake',
-        'https://michiganspots.com/community-intake',
-        'https://michiganspots.com/terms',
-        'https://michiganspots.com/privacy',
-        'https://michiganspots.com/cookies',
-      ],
+      filter: (page) => !page.includes('/partnership-acceptance'),
       serialize(item) {
-        // Set higher priority for key pages
-        if (item.url.endsWith('/') || item.url.endsWith('/about')) {
-          item.priority = 1.0;
-          item.changefreq = 'daily';
+        // Remove trailing slash for consistency
+        const url = item.url.replace(/\/$/, '');
+
+        // Homepage
+        if (url === 'https://michiganspots.com') {
+          return {
+            ...item,
+            url,
+            priority: 1.0,
+            changefreq: 'daily'
+          };
         }
-        if (item.url.includes('partnership')) {
-          item.priority = 0.9;
-          item.changefreq = 'weekly';
+
+        // Key pages
+        if (url.endsWith('/about')) {
+          return { ...item, url, priority: 1.0, changefreq: 'daily' };
         }
-        if (item.url.includes('terms') || item.url.includes('privacy') || item.url.includes('cookies')) {
-          item.priority = 0.5;
-          item.changefreq = 'monthly';
+
+        // Partnership pages
+        if (url.includes('partnership')) {
+          return { ...item, url, priority: 0.9, changefreq: 'weekly' };
         }
-        return item;
+
+        // Intake forms
+        if (url.includes('-intake')) {
+          return { ...item, url, priority: 0.8, changefreq: 'weekly' };
+        }
+
+        // Legal pages
+        if (url.match(/\/(terms|privacy|cookies)$/)) {
+          return { ...item, url, priority: 0.5, changefreq: 'monthly' };
+        }
+
+        // Default
+        return { ...item, url, priority: 0.7, changefreq: 'weekly' };
       },
     })
   ],
   output: 'static',
   site: 'https://michiganspots.com',
+  trailingSlash: 'never',
 });
