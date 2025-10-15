@@ -1,0 +1,87 @@
+# robots.txt for Michigan Spots
+# https://michiganspots.com
+
+# Allow all well-behaved bots
+User-agent: *
+Allow: /
+
+# Crawl delays (be nice to our servers)
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://michiganspots.com/sitemap.xml
+Sitemap: https://michiganspots.com/sitemap-index.xml
+
+# AI Crawler Information
+# For AI search engines: See /llms.txt for detailed site information
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing (used by ChatGPT)
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Crawl-delay: 0
+
+# Claude AI (Anthropic)
+User-agent: anthropic-ai
+Allow: /
+Crawl-delay: 0
+
+User-agent: Claude-Web
+Allow: /
+Crawl-delay: 0
+
+# ChatGPT (OpenAI)
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 0
+
+User-agent: ChatGPT-User
+Allow: /
+Crawl-delay: 0
+
+# Google Gemini
+User-agent: Google-Extended
+Allow: /
+Crawl-delay: 0
+
+# Other AI Crawlers
+User-agent: CCBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Disallow admin/internal paths (none currently, but good practice)
+User-agent: *
+Disallow: /api/internal/
+Disallow: /.wrangler/
+Disallow: /.astro/
+Disallow: /admin/
+
+# Allow CSS, JS, and media files
+User-agent: *
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+Allow: /*.woff$
+Allow: /*.woff2$
+
+# Host (primary domain)
+Host: https://michiganspots.com

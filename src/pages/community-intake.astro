@@ -401,18 +401,35 @@ import { Heart, Mail, Phone, Users, Target } from 'lucide-react';
         </Card>
 
         <Card className="bg-forest-green/5 border-forest-green">
-          <div class="flex items-start space-x-3">
-            <input
-              type="checkbox"
-              id="consent"
-              name="consent"
-              required
-              class="mt-1"
-            />
-            <label for="consent" class="text-sm text-ink-secondary">
-              I agree to be contacted by Michigan Spots regarding this partnership application.
-              We respect your privacy and will only use this information to discuss community partnership opportunities.
-            </label>
+          <div class="space-y-3">
+            <div class="flex items-start space-x-3">
+              <input
+                type="checkbox"
+                id="consent"
+                name="consent"
+                required
+                class="mt-1"
+              />
+              <label for="consent" class="text-sm text-ink-secondary">
+                I agree to be contacted by Michigan Spots regarding this partnership application.
+                We respect your privacy and will only use this information to discuss community partnership opportunities.
+              </label>
+            </div>
+            <div class="flex items-start space-x-3">
+              <input
+                type="checkbox"
+                id="terms-agreement"
+                name="terms-agreement"
+                required
+                class="mt-1"
+              />
+              <label for="terms-agreement" class="text-sm text-ink-secondary">
+                I have authority to bind my organization and agree to the{' '}
+                <a href="/terms" target="_blank" class="text-lakes-blue hover:underline">Terms of Service</a>,{' '}
+                <a href="/privacy" target="_blank" class="text-lakes-blue hover:underline">Privacy Policy</a>, and{' '}
+                <strong>Community Partnership Agreement</strong> (provided upon payment).
+              </label>
+            </div>
           </div>
         </Card>
 

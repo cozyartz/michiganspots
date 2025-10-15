@@ -2,6 +2,7 @@ interface SignupRequest {
   email: string;
   name: string;
   city: string;
+  userType: string;
 }
 
 interface Env {
@@ -11,10 +12,10 @@ interface Env {
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
     const body = await context.request.json() as SignupRequest;
-    const { email, name, city } = body;
+    const { email, name, city, userType } = body;
 
     // Validation
-    if (!email || !name || !city) {
+    if (!email || !name || !city || !userType) {
       return new Response(
         JSON.stringify({ error: 'All fields are required' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
@@ -48,8 +49,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     // Insert new signup
     await db
-      .prepare('INSERT INTO signups (email, name, city, created_at) VALUES (?, ?, ?, ?)')
-      .bind(email, name, city, new Date().toISOString())
+      .prepare('INSERT INTO signups (email, name, city, user_type, created_at) VALUES (?, ?, ?, ?, ?)')
+      .bind(email, name, city, userType, new Date().toISOString())
       .run();
 
     return new Response(

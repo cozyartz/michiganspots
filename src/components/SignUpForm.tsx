@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, User, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
+import { Mail, User, MapPin, CheckCircle, AlertCircle, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from './Button';
 
@@ -7,6 +7,7 @@ export function SignUpForm() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
+  const [userType, setUserType] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -33,7 +34,7 @@ export function SignUpForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, name, city }),
+        body: JSON.stringify({ email, name, city, userType }),
       });
 
       const data = await response.json();
@@ -44,6 +45,7 @@ export function SignUpForm() {
         setEmail('');
         setName('');
         setCity('');
+        setUserType('');
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong. Please try again.');
@@ -124,6 +126,29 @@ export function SignUpForm() {
             </div>
           </div>
 
+          <div>
+            <label htmlFor="userType" className="block text-sm font-heading font-semibold text-ink-primary mb-2">
+              I'm interested as a...
+            </label>
+            <div className="relative">
+              <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-faded" />
+              <select
+                id="userType"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+                required
+                className="w-full pl-10 pr-4 py-3 border-2 border-ink-primary rounded-sm bg-parchment-light text-ink-primary focus:outline-none focus:border-copper-orange transition-colors appearance-none cursor-pointer"
+              >
+                <option value="">Select your interest...</option>
+                <option value="player">Player - I want to discover spots and compete</option>
+                <option value="business">Business Owner - I want to sponsor challenges</option>
+                <option value="chamber">Chamber of Commerce - I represent a chamber</option>
+                <option value="community">Community Organization - Library, park, non-profit</option>
+                <option value="other">Just curious / Other</option>
+              </select>
+            </div>
+          </div>
+
           <Button
             type="submit"
             variant="primary"
@@ -158,7 +183,9 @@ export function SignUpForm() {
         </form>
 
         <p className="text-xs text-ink-faded text-center mt-4">
-          By signing up, you agree to receive updates about Michigan Spots challenges and community events.
+          By signing up, you agree to our{' '}
+          <a href="/terms" className="text-lakes-blue hover:underline">Terms of Service</a> and{' '}
+          <a href="/privacy" className="text-lakes-blue hover:underline">Privacy Policy</a>. You'll receive updates about Michigan Spots challenges and community events.
         </p>
       </div>
     </motion.div>

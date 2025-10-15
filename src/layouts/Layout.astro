@@ -2,24 +2,40 @@
 import '../styles/global.css';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
+import { CookieConsent } from '../components/CookieConsent';
+import SEO from '../components/SEO.astro';
 
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  keywords?: string;
 }
 
-const { title, description = 'Discover Michigan\'s hidden gems through community-powered exploration' } = Astro.props;
+const {
+  title,
+  description = 'Discover Michigan\'s hidden gems through community-powered exploration and friendly competition. Free to play, launching October 2025.',
+  image,
+  type,
+  keywords
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      type={type}
+      keywords={keywords}
+    />
   </head>
   <body>
     <Header client:load />
@@ -27,5 +43,6 @@ const { title, description = 'Discover Michigan\'s hidden gems through community
       <slot />
     </main>
     <Footer />
+    <CookieConsent client:load />
   </body>
 </html>
