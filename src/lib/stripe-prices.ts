@@ -2,25 +2,28 @@
  * Stripe Price Configuration
  * Maps partnership tiers to Stripe Price IDs
  *
- * TODO: Update these with actual Price IDs from Stripe after running:
- * npx tsx scripts/setup-stripe-products.ts
+ * Note: Actual Price IDs are stored as environment variables in Cloudflare
+ * and accessed by Workers functions at runtime. This file is for frontend
+ * display information only.
  */
 
+// Price IDs are managed via Cloudflare environment variables
+// Access them via context.env in Workers functions
 export const STRIPE_PRICES = {
   chamber: {
-    launch: process.env.STRIPE_PRICE_CHAMBER_LAUNCH || '',
-    city: process.env.STRIPE_PRICE_CHAMBER_CITY || '',
-    regional: process.env.STRIPE_PRICE_CHAMBER_REGIONAL || ''
+    launch: '',
+    city: '',
+    regional: ''
   },
   business: {
-    single: process.env.STRIPE_PRICE_BUSINESS_SINGLE || '',
-    seasonal: process.env.STRIPE_PRICE_BUSINESS_SEASONAL || '',
-    multi_location: process.env.STRIPE_PRICE_BUSINESS_MULTI_LOCATION || '',
-    event: process.env.STRIPE_PRICE_BUSINESS_EVENT || ''
+    single: '',
+    seasonal: '',
+    multi_location: '',
+    event: ''
   },
   community: {
-    minimal: process.env.STRIPE_PRICE_COMMUNITY_MINIMAL || '',
-    modest: process.env.STRIPE_PRICE_COMMUNITY_MODEST || ''
+    minimal: '',
+    modest: ''
   }
 };
 

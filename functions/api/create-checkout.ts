@@ -15,30 +15,41 @@ interface CheckoutRequest {
   intakeFormId?: string; // If coming from intake form
 }
 
-// Price ID mapping
-const PRICE_MAP = {
-  chamber: {
-    launch: process.env.STRIPE_PRICE_CHAMBER_LAUNCH,
-    city: process.env.STRIPE_PRICE_CHAMBER_CITY,
-    regional: process.env.STRIPE_PRICE_CHAMBER_REGIONAL
-  },
-  business: {
-    single: process.env.STRIPE_PRICE_BUSINESS_SINGLE,
-    seasonal: process.env.STRIPE_PRICE_BUSINESS_SEASONAL,
-    multi_location: process.env.STRIPE_PRICE_BUSINESS_MULTI_LOCATION,
-    event: process.env.STRIPE_PRICE_BUSINESS_EVENT
-  },
-  community: {
-    minimal: process.env.STRIPE_PRICE_COMMUNITY_MINIMAL,
-    modest: process.env.STRIPE_PRICE_COMMUNITY_MODEST
-  }
-};
-
 interface Env {
   DB: D1Database;
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
   SITE_URL: string;
+  STRIPE_PRICE_CHAMBER_LAUNCH?: string;
+  STRIPE_PRICE_CHAMBER_CITY?: string;
+  STRIPE_PRICE_CHAMBER_REGIONAL?: string;
+  STRIPE_PRICE_BUSINESS_SINGLE?: string;
+  STRIPE_PRICE_BUSINESS_SEASONAL?: string;
+  STRIPE_PRICE_BUSINESS_MULTI_LOCATION?: string;
+  STRIPE_PRICE_BUSINESS_EVENT?: string;
+  STRIPE_PRICE_COMMUNITY_MINIMAL?: string;
+  STRIPE_PRICE_COMMUNITY_MODEST?: string;
+}
+
+// Helper function to build price map from environment
+function getPriceMap(env: Env) {
+  return {
+    chamber: {
+      launch: env.STRIPE_PRICE_CHAMBER_LAUNCH,
+      city: env.STRIPE_PRICE_CHAMBER_CITY,
+      regional: env.STRIPE_PRICE_CHAMBER_REGIONAL
+    },
+    business: {
+      single: env.STRIPE_PRICE_BUSINESS_SINGLE,
+      seasonal: env.STRIPE_PRICE_BUSINESS_SEASONAL,
+      multi_location: env.STRIPE_PRICE_BUSINESS_MULTI_LOCATION,
+      event: env.STRIPE_PRICE_BUSINESS_EVENT
+    },
+    community: {
+      minimal: env.STRIPE_PRICE_COMMUNITY_MINIMAL,
+      modest: env.STRIPE_PRICE_COMMUNITY_MODEST
+    }
+  };
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -65,9 +76,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     // Get price ID from mapping
+    const priceMap = getPriceMap(context.env);
     let finalPriceId = priceId;
     if (!finalPriceId) {
-      finalPriceId = PRICE_MAP[partnershipType]?.[partnershipTier];
+      finalPriceId = priceMap[partnershipType]?.[partnershipTier];
       if (!finalPriceId) {
         return new Response(
           JSON.stringify({ error: 'Invalid partnership type or tier' }),
