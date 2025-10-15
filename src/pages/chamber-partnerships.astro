@@ -1,0 +1,273 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { PartnerSignUpForm } from '../components/PartnerSignUpForm';
+import { Building2, TrendingUp, Users, BarChart, Target, CheckCircle } from 'lucide-react';
+---
+
+<Layout
+  title="Chamber Partnerships - Michigan Spots"
+  description="Partner with Michigan Spots to drive member engagement and regional promotion"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-6 text-center">
+        Chamber Partnership Program
+      </h1>
+      <p class="text-xl text-ink-secondary text-center mb-16">
+        Become an Exclusive Community Partner and drive engagement across your region
+      </p>
+
+      <Card className="mb-12 bg-copper-orange/10 border-copper-orange">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-4">Partnership Overview</h2>
+        <p class="text-ink-secondary leading-relaxed">
+          Michigan Spots offers local Chambers of Commerce the opportunity to become an Exclusive Community Partner,
+          driving member engagement, regional promotion, and digital visitation to local businesses through
+          gamified discovery and challenge events.
+        </p>
+      </Card>
+
+      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">Partnership Benefits</h2>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <Building2 class="w-8 h-8 text-lakes-blue" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Partner Branding</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Chamber logos, descriptions, and calls-to-action shown in Michigan Spots challenges,
+            event pages, and subreddit posts.
+          </p>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <Target class="w-8 h-8 text-copper-orange" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Sponsored Challenges</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Chamber-exclusive challenges featuring selected member businesses and local events.
+            Drive foot traffic and digital engagement.
+          </p>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <BarChart class="w-8 h-8 text-forest-green" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Analytics & Reporting</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Quarterly engagement reports with spot submissions, user counts, geographic reach,
+            and member business impact metrics.
+          </p>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <TrendingUp class="w-8 h-8 text-gold-treasure" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Priority Access</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Early access to new marketing and challenge features. Custom event integration
+            for seasonal campaigns and community celebrations.
+          </p>
+        </Card>
+      </div>
+
+      <Card className="mb-8 bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-3 text-center">
+          Launch Pricing - Limited Time Only
+        </h2>
+        <p class="text-center text-ink-secondary mb-2">
+          We're building Michigan Spots WITH our partners. Get in now at founding partner rates.
+        </p>
+        <p class="text-center text-sm text-copper-orange font-semibold">
+          First 10 partners lock in this pricing for 1 full year
+        </p>
+      </Card>
+
+      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">Partnership Tiers</h2>
+
+      <div class="space-y-6 mb-12">
+        <Card className="border-lakes-blue bg-lakes-blue/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Launch Partner</h3>
+              <p class="text-ink-secondary mb-2">Perfect for smaller communities and single-city chambers</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $2,500/quarter</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-lakes-blue">$499</div>
+              <div class="text-sm text-ink-secondary">per quarter</div>
+              <div class="text-xs text-forest-green mt-1">Save $2,001!</div>
+            </div>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">1-2 sponsored challenges per quarter</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Partner branding on challenge pages</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Quarterly analytics report</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Featured in chamber newsletter templates</span>
+            </li>
+          </ul>
+        </Card>
+
+        <Card className="border-copper-orange bg-copper-orange/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">City Launch Partner</h3>
+              <p class="text-ink-secondary mb-2">Ideal for mid-sized cities and regional chambers</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $5,000/quarter</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-copper-orange">$999</div>
+              <div class="text-sm text-ink-secondary">per quarter</div>
+              <div class="text-xs text-forest-green mt-1">Save $4,001!</div>
+            </div>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Multi-challenge sponsorship package</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Deeper reporting with member business breakdowns</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Event tie-ins for festivals and community celebrations</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Dedicated partner page on Michigan Spots</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Monthly check-in calls</span>
+            </li>
+          </ul>
+        </Card>
+
+        <Card className="border-gold-treasure bg-gold-treasure/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Regional Launch Partner</h3>
+              <p class="text-ink-secondary mb-2">For major metros and state-level organizations</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $10,000+/quarter</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-gold-treasure">$1,999</div>
+              <div class="text-sm text-ink-secondary">per quarter</div>
+              <div class="text-xs text-forest-green mt-1">Save $8,001+!</div>
+            </div>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Full platform branding integration</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Custom content and event development</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Premium analytics with predictive insights</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Dedicated account manager</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Co-marketing opportunities</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">API access for custom integrations</span>
+            </li>
+          </ul>
+        </Card>
+      </div>
+
+      <Card className="mb-12">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">Partnership Process</h2>
+        <div class="space-y-6">
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">1. Intro Meeting</h3>
+            <p class="text-ink-secondary">
+              We present the Michigan Spots platform and partnership benefits. Discuss your chamber's goals,
+              member priorities, and preferred partnership tier.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">2. Agreement & Payment</h3>
+            <p class="text-ink-secondary">
+              Sign the Partnership Agreement and receive invoice for agreed quarterly fee. Flexible payment
+              arrangements available for established chambers.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">3. Onboarding</h3>
+            <p class="text-ink-secondary">
+              Share branding assets, preferred member spot list, and challenge themes. We assign a dedicated
+              contact for ongoing coordination.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">4. Launch & Promotion</h3>
+            <p class="text-ink-secondary">
+              Partnership announced on Michigan Spots, chamber newsletter, and social media. Begin running
+              sponsored challenges and content integrations.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">5. Review & Reporting</h3>
+            <p class="text-ink-secondary">
+              Receive quarterly analytics package. Host feedback call to refine future challenges and
+              partnership features based on results.
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <div class="mb-12">
+        <PartnerSignUpForm
+          client:load
+          partnershipType="chamber"
+          title="Quick Interest Form"
+          description="Not ready for the full application? Let us know you're interested and we'll reach out with more information and answer your questions."
+        />
+      </div>
+
+      <div class="text-center">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">Ready to Partner?</h2>
+        <p class="text-ink-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
+          Join forward-thinking chambers across Michigan in leveraging gamification to drive
+          member engagement and regional promotion. Apply now to lock in founding partner pricing.
+        </p>
+        <a
+          href="/chamber-intake"
+          class="inline-block px-8 py-4 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors text-lg"
+        >
+          Apply Now
+        </a>
+        <p class="text-sm text-ink-faded mt-4">
+          Or email us at <a href="mailto:partnerships@michiganspots.com" class="text-copper-orange hover:underline">partnerships@michiganspots.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

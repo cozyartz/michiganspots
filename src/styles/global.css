@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Merriweather:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Pirata+One&family=Caveat:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-parchment-light text-ink-primary font-body;
+    background-image:
+      linear-gradient(rgba(244, 239, 229, 0.9), rgba(244, 239, 229, 0.9)),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-ink-primary;
+  }
+}
+
+@layer utilities {
+  .treasure-border {
+    @apply border-2 border-ink-primary rounded-sm;
+    box-shadow:
+      inset 0 0 0 1px theme('colors.parchment.dark'),
+      0 2px 8px rgba(44, 24, 16, 0.15);
+  }
+
+  .parchment-card {
+    @apply bg-parchment-mid treasure-border p-6;
+    background-image:
+      linear-gradient(rgba(232, 220, 200, 0.95), rgba(232, 220, 200, 0.95)),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.02) 2px, rgba(0,0,0,.02) 4px);
+  }
+
+  .compass-shadow {
+    filter: drop-shadow(0 4px 6px rgba(44, 24, 16, 0.2));
+  }
+
+  .text-shadow-treasure {
+    text-shadow: 2px 2px 4px rgba(217, 118, 66, 0.3);
+  }
+}
+
+/* Lucide icon inline display fix */
+.lucide {
+  display: inline;
+}

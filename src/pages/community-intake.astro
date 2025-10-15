@@ -1,0 +1,440 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { Heart, Mail, Phone, Users, Target } from 'lucide-react';
+---
+
+<Layout
+  title="Community Partnership Application - Michigan Spots"
+  description="Apply to partner with Michigan Spots for community-building challenges"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-forest-green/20 mb-4">
+          <Heart class="w-8 h-8 text-forest-green" />
+        </div>
+        <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-4">
+          Community Partnership Application
+        </h1>
+        <p class="text-xl text-ink-secondary">
+          Build community engagement through discovery challenges
+        </p>
+      </div>
+
+      <Card className="mb-8 bg-forest-green/10 border-forest-green">
+        <h2 class="font-heading text-xl font-bold text-ink-primary mb-2 text-center">
+          Community-Focused Partnerships
+        </h2>
+        <p class="text-center text-ink-secondary text-sm">
+          FREE to low-cost options • We work with your budget and mission
+        </p>
+      </Card>
+
+      <form
+        action="https://formspree.io/f/YOUR_FORM_ID"
+        method="POST"
+        class="space-y-8"
+      >
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Heart class="w-6 h-6 text-forest-green" />
+            Organization Information
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label for="org-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                Organization Name *
+              </label>
+              <input
+                type="text"
+                id="org-name"
+                name="org_name"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                placeholder="Battle Creek Public Library"
+              />
+            </div>
+
+            <div>
+              <label for="org-type" class="block text-sm font-semibold text-ink-primary mb-2">
+                Organization Type *
+              </label>
+              <select
+                id="org-type"
+                name="org_type"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+              >
+                <option value="">Select type...</option>
+                <option value="library">Public Library</option>
+                <option value="park">Parks & Recreation</option>
+                <option value="museum">Museum / Historical Society</option>
+                <option value="nonprofit">Non-Profit Organization</option>
+                <option value="arts">Arts & Culture Organization</option>
+                <option value="education">Educational Institution / School</option>
+                <option value="conservation">Conservation / Environmental Group</option>
+                <option value="community-center">Community Center</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Primary City/Location *
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                  placeholder="Battle Creek"
+                />
+              </div>
+
+              <div>
+                <label for="service-area" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Service Area
+                </label>
+                <input
+                  type="text"
+                  id="service-area"
+                  name="service_area"
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                  placeholder="County-wide, Statewide, etc."
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="website" class="block text-sm font-semibold text-ink-primary mb-2">
+                Organization Website or Social Media
+              </label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                placeholder="https://battlecreeklibrary.org"
+              />
+            </div>
+
+            <div>
+              <label for="mission" class="block text-sm font-semibold text-ink-primary mb-2">
+                Mission Statement or Description *
+              </label>
+              <textarea
+                id="mission"
+                name="mission"
+                rows="3"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                placeholder="Tell us about your organization's mission and community impact..."
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="tax-status" class="block text-sm font-semibold text-ink-primary mb-2">
+                Tax-Exempt Status
+              </label>
+              <select
+                id="tax-status"
+                name="tax_status"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+              >
+                <option value="">Select status...</option>
+                <option value="501c3">501(c)(3) Non-Profit</option>
+                <option value="government">Government Entity</option>
+                <option value="school">Educational Institution</option>
+                <option value="other">Other Non-Profit</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Mail class="w-6 h-6 text-lakes-blue" />
+            Contact Information
+          </h2>
+
+          <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="contact-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Contact Name *
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="contact_name"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                  placeholder="Jane Smith"
+                />
+              </div>
+
+              <div>
+                <label for="title" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Title/Position *
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                  placeholder="Director, Program Coordinator, etc."
+                />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="email" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                  placeholder="jane@library.org"
+                />
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                  placeholder="(269) 555-1234"
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Target class="w-6 h-6 text-copper-orange" />
+            Partnership Details
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label for="partnership-goals" class="block text-sm font-semibold text-ink-primary mb-2">
+                Partnership Goals *
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="awareness" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Build community awareness</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="education" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Educational outreach</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="engagement" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Community engagement and participation</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="youth" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Youth and family programming</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="preservation" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Historic/environmental preservation</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="fundraising" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Fundraising support</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="target-audience" class="block text-sm font-semibold text-ink-primary mb-2">
+                Target Audience
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="audience[]" value="families" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Families with children</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="audience[]" value="youth" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Youth / Teens</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="audience[]" value="adults" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Adults</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="audience[]" value="seniors" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Seniors</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="audience[]" value="all" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">All ages</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="challenge-ideas" class="block text-sm font-semibold text-ink-primary mb-2">
+                Challenge Ideas or Topics *
+              </label>
+              <textarea
+                id="challenge-ideas"
+                name="challenge_ideas"
+                rows="4"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                placeholder="What would you like the challenge to focus on? (e.g., 'Discover local history', 'Find all the Little Free Libraries', 'Explore nature trails', 'Art scavenger hunt')"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="locations-to-feature" class="block text-sm font-semibold text-ink-primary mb-2">
+                Locations or Sites to Feature
+              </label>
+              <textarea
+                id="locations-to-feature"
+                name="locations_to_feature"
+                rows="3"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                placeholder="List specific locations, trails, landmarks, or facilities you'd like included..."
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="budget-availability" class="block text-sm font-semibold text-ink-primary mb-2">
+                Budget Availability *
+              </label>
+              <select
+                id="budget-availability"
+                name="budget_availability"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+              >
+                <option value="">Select option...</option>
+                <option value="no-budget">No budget available (looking for FREE partnership)</option>
+                <option value="minimal">Minimal budget ($50-$100)</option>
+                <option value="modest">Modest budget ($100-$250)</option>
+                <option value="flexible">Flexible budget</option>
+                <option value="grant-funded">Grant-funded opportunity</option>
+              </select>
+              <p class="text-xs text-ink-faded mt-1">
+                We offer FREE partnerships for qualifying community organizations with limited budgets
+              </p>
+            </div>
+
+            <div>
+              <label for="timeline" class="block text-sm font-semibold text-ink-primary mb-2">
+                Preferred Timeline *
+              </label>
+              <select
+                id="timeline"
+                name="timeline"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+              >
+                <option value="">Select timeline...</option>
+                <option value="asap">As soon as possible</option>
+                <option value="1-2-months">1-2 months</option>
+                <option value="3-6-months">3-6 months</option>
+                <option value="summer-2026">Summer 2026</option>
+                <option value="fall-2026">Fall 2026</option>
+                <option value="flexible">Flexible</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="collaboration-interests" class="block text-sm font-semibold text-ink-primary mb-2">
+                Collaboration Interests
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="collaboration[]" value="schools" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">School partnerships</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="collaboration[]" value="businesses" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Local business involvement</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="collaboration[]" value="other-orgs" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Partner with other community organizations</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="collaboration[]" value="volunteers" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Volunteer recruitment</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="additional-info" class="block text-sm font-semibold text-ink-primary mb-2">
+                Additional Information or Questions
+              </label>
+              <textarea
+                id="additional-info"
+                name="additional_info"
+                rows="4"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-forest-green focus:outline-none transition-colors"
+                placeholder="Tell us more about your vision, concerns, or questions about partnering with Michigan Spots..."
+              ></textarea>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="bg-forest-green/5 border-forest-green">
+          <div class="flex items-start space-x-3">
+            <input
+              type="checkbox"
+              id="consent"
+              name="consent"
+              required
+              class="mt-1"
+            />
+            <label for="consent" class="text-sm text-ink-secondary">
+              I agree to be contacted by Michigan Spots regarding this partnership application.
+              We respect your privacy and will only use this information to discuss community partnership opportunities.
+            </label>
+          </div>
+        </Card>
+
+        <div class="text-center">
+          <button
+            type="submit"
+            class="inline-block px-8 py-4 bg-forest-green text-parchment-light font-heading font-bold text-lg treasure-border hover:bg-forest-green/80 transition-colors cursor-pointer"
+          >
+            Submit Application
+          </button>
+          <p class="text-sm text-ink-faded mt-4">
+            We'll respond within 2-3 business days to discuss your partnership
+          </p>
+        </div>
+      </form>
+
+      <div class="mt-12 text-center">
+        <p class="text-ink-secondary mb-2">Questions about community partnerships?</p>
+        <a href="mailto:partnerships@michiganspots.com" class="text-forest-green font-semibold hover:underline">
+          partnerships@michiganspots.com
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

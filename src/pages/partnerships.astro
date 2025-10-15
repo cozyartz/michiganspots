@@ -1,0 +1,285 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { PartnerSignUpForm } from '../components/PartnerSignUpForm';
+import { Building2, Store, Heart, ArrowRight, Users, TrendingUp, Target } from 'lucide-react';
+---
+
+<Layout
+  title="Partnership Opportunities - Michigan Spots"
+  description="Join Michigan Spots as a partner. Options for chambers, businesses, and community organizations."
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-6 text-center">
+        Partner with Michigan Spots
+      </h1>
+      <p class="text-xl text-ink-secondary text-center mb-4">
+        Help Michiganders discover hidden gems while growing your business or community
+      </p>
+      <p class="text-lg text-ink-secondary text-center mb-16">
+        Choose the partnership option that fits your organization
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-8 mb-16">
+        <a href="/chamber-partnerships" class="group">
+          <Card className="h-full hover:border-lakes-blue transition-all hover:shadow-lg cursor-pointer">
+            <div class="flex flex-col items-center text-center h-full">
+              <div class="mb-6 p-4 rounded-full bg-lakes-blue/10">
+                <Building2 class="w-12 h-12 text-lakes-blue" />
+              </div>
+              <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+                Chambers of Commerce
+              </h2>
+              <p class="text-ink-secondary mb-6 leading-relaxed flex-grow">
+                Drive member engagement, promote local businesses, and create measurable regional impact with
+                sponsored challenges and events.
+              </p>
+              <div class="space-y-2 mb-6 text-sm">
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <Target class="w-4 h-4 text-forest-green" />
+                  <span>Quarterly packages from $499</span>
+                </div>
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <Users class="w-4 h-4 text-forest-green" />
+                  <span>Multi-business challenges</span>
+                </div>
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <TrendingUp class="w-4 h-4 text-forest-green" />
+                  <span>Analytics & reporting</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 text-lakes-blue font-semibold group-hover:gap-3 transition-all">
+                <span>Learn More</span>
+                <ArrowRight class="w-5 h-5" />
+              </div>
+            </div>
+          </Card>
+        </a>
+
+        <a href="/business-partnerships" class="group">
+          <Card className="h-full hover:border-copper-orange transition-all hover:shadow-lg cursor-pointer">
+            <div class="flex flex-col items-center text-center h-full">
+              <div class="mb-6 p-4 rounded-full bg-copper-orange/10">
+                <Store class="w-12 h-12 text-copper-orange" />
+              </div>
+              <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+                Individual Businesses
+              </h2>
+              <p class="text-ink-secondary mb-6 leading-relaxed flex-grow">
+                Turn discovery-minded explorers into loyal customers. Drive foot traffic with
+                gamified challenges that create buzz and measurable ROI.
+              </p>
+              <div class="space-y-2 mb-6 text-sm">
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <Target class="w-4 h-4 text-forest-green" />
+                  <span>Single challenges from $99</span>
+                </div>
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <Users class="w-4 h-4 text-forest-green" />
+                  <span>Group collaborations available</span>
+                </div>
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <TrendingUp class="w-4 h-4 text-forest-green" />
+                  <span>GPS-verified visits</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 text-copper-orange font-semibold group-hover:gap-3 transition-all">
+                <span>Learn More</span>
+                <ArrowRight class="w-5 h-5" />
+              </div>
+            </div>
+          </Card>
+        </a>
+
+        <a href="/community-intake" class="group">
+          <Card className="h-full hover:border-forest-green transition-all hover:shadow-lg cursor-pointer">
+            <div class="flex flex-col items-center text-center h-full">
+              <div class="mb-6 p-4 rounded-full bg-forest-green/10">
+                <Heart class="w-12 h-12 text-forest-green" />
+              </div>
+              <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+                Community Organizations
+              </h2>
+              <p class="text-ink-secondary mb-6 leading-relaxed flex-grow">
+                Parks, libraries, museums, non-profits, and educational institutions. We work with
+                your budget to create community-building challenges.
+              </p>
+              <div class="space-y-2 mb-6 text-sm">
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <Target class="w-4 h-4 text-forest-green" />
+                  <span>FREE to low-cost options</span>
+                </div>
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <Users class="w-4 h-4 text-forest-green" />
+                  <span>Educational content</span>
+                </div>
+                <div class="flex items-center space-x-2 text-ink-secondary">
+                  <TrendingUp class="w-4 h-4 text-forest-green" />
+                  <span>Mission-driven impact</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 text-forest-green font-semibold group-hover:gap-3 transition-all">
+                <span>Apply Now</span>
+                <ArrowRight class="w-5 h-5" />
+              </div>
+            </div>
+          </Card>
+        </a>
+      </div>
+
+      <Card className="mb-12 bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-4 text-center">
+          Founding Partner Benefits
+        </h2>
+        <p class="text-ink-secondary text-center mb-6">
+          We're launching October 2025 as part of Reddit Community Games. Get in now at founding partner rates.
+        </p>
+        <div class="grid md:grid-cols-4 gap-6">
+          <div class="text-center">
+            <div class="font-heading text-2xl font-bold text-copper-orange mb-2">60-70%</div>
+            <div class="text-sm text-ink-secondary">Off Regular Pricing</div>
+          </div>
+          <div class="text-center">
+            <div class="font-heading text-2xl font-bold text-copper-orange mb-2">1 Year</div>
+            <div class="text-sm text-ink-secondary">Locked-In Pricing</div>
+          </div>
+          <div class="text-center">
+            <div class="font-heading text-2xl font-bold text-copper-orange mb-2">Priority</div>
+            <div class="text-sm text-ink-secondary">Feature Access</div>
+          </div>
+          <div class="text-center">
+            <div class="font-heading text-2xl font-bold text-copper-orange mb-2">Listed</div>
+            <div class="text-sm text-ink-secondary">As Founding Partner</div>
+          </div>
+        </div>
+      </Card>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <Card>
+          <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4">Why Partner with Us?</h3>
+          <ul class="space-y-3 text-ink-secondary">
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-copper-orange mt-2 flex-shrink-0"></div>
+              <span>AI-powered challenge creation for efficiency and low costs</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-copper-orange mt-2 flex-shrink-0"></div>
+              <span>Built on Reddit's platform for authentic community engagement</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-copper-orange mt-2 flex-shrink-0"></div>
+              <span>GPS verification and photo submissions for measurable results</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-copper-orange mt-2 flex-shrink-0"></div>
+              <span>Leverage Michigan pride and friendly city rivalries</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-copper-orange mt-2 flex-shrink-0"></div>
+              <span>Flexible arrangements and pilot programs available</span>
+            </li>
+          </ul>
+        </Card>
+
+        <Card>
+          <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4">What Makes Us Different?</h3>
+          <ul class="space-y-3 text-ink-secondary">
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-lakes-blue mt-2 flex-shrink-0"></div>
+              <span>No long-term contracts or massive upfront commitments</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-lakes-blue mt-2 flex-shrink-0"></div>
+              <span>Real people discovering real places, not bots or fake engagement</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-lakes-blue mt-2 flex-shrink-0"></div>
+              <span>Built BY Michiganders FOR Michigan communities</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-lakes-blue mt-2 flex-shrink-0"></div>
+              <span>Your feedback shapes the platform as we grow together</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-lakes-blue mt-2 flex-shrink-0"></div>
+              <span>Transparent pricing with clear ROI expectations</span>
+            </li>
+          </ul>
+        </Card>
+      </div>
+
+      <Card className="bg-lakes-blue/10 border-lakes-blue mb-12">
+        <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4 text-center">Perfect For</h3>
+        <div class="grid md:grid-cols-3 gap-4 text-sm text-ink-secondary">
+          <div>
+            <p class="font-semibold text-ink-primary mb-2">Businesses:</p>
+            <ul class="space-y-1">
+              <li>Restaurants & Cafes</li>
+              <li>Breweries & Wineries</li>
+              <li>Retail & Boutiques</li>
+              <li>Entertainment Venues</li>
+              <li>Outdoor Recreation</li>
+            </ul>
+          </div>
+          <div>
+            <p class="font-semibold text-ink-primary mb-2">Organizations:</p>
+            <ul class="space-y-1">
+              <li>Chambers of Commerce</li>
+              <li>Downtown Associations</li>
+              <li>Tourism Bureaus</li>
+              <li>Business Districts</li>
+              <li>Regional Alliances</li>
+            </ul>
+          </div>
+          <div>
+            <p class="font-semibold text-ink-primary mb-2">Community:</p>
+            <ul class="space-y-1">
+              <li>Parks & Recreation</li>
+              <li>Museums & Libraries</li>
+              <li>Arts Organizations</li>
+              <li>Historical Societies</li>
+              <li>Educational Groups</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="mb-12 bg-lakes-blue/5 border-lakes-blue">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-4 text-center">
+          Not Sure Which Partnership is Right?
+        </h2>
+        <p class="text-ink-secondary text-center mb-8 max-w-2xl mx-auto">
+          Let us help you find the perfect fit. Tell us about your organization and we'll reach out to discuss your options.
+        </p>
+        <div class="max-w-2xl mx-auto">
+          <PartnerSignUpForm
+            client:load
+            partnershipType="business"
+            title="Express Your Interest"
+            description="We'll contact you to discuss which partnership option best fits your goals and budget."
+          />
+        </div>
+      </Card>
+
+      <div class="text-center">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">
+          Ready to Get Started?
+        </h2>
+        <p class="text-ink-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
+          Choose your partnership option above, or contact us to discuss a custom arrangement.
+          We're building Michigan Spots WITH our partners and want to find what works for you.
+        </p>
+        <a
+          href="mailto:partnerships@michiganspots.com"
+          class="inline-block px-8 py-4 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors text-lg"
+        >
+          Contact Us
+        </a>
+        <p class="text-sm text-ink-faded mt-4">
+          partnerships@michiganspots.com
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

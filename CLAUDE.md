@@ -1,0 +1,1 @@
+- Do not give me .md files that contain instructions of things that you need me to do. I should not need to do much. Instead, always use best coding practices without leaking any secrets.

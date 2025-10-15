@@ -1,0 +1,404 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { PartnerSignUpForm } from '../components/PartnerSignUpForm';
+import { Store, TrendingUp, Users, MapPin, Target, CheckCircle, DollarSign, Calendar } from 'lucide-react';
+---
+
+<Layout
+  title="Business Partnerships - Michigan Spots"
+  description="Get discovered by Michigan explorers. Drive foot traffic with gamified challenges."
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-6 text-center">
+        Business Partnership Program
+      </h1>
+      <p class="text-xl text-ink-secondary text-center mb-16">
+        Turn discovery-minded explorers into loyal customers with challenge-based marketing
+      </p>
+
+      <Card className="mb-12 bg-copper-orange/10 border-copper-orange">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-4">Why Partner with Michigan Spots?</h2>
+        <p class="text-ink-secondary leading-relaxed mb-4">
+          Michigan Spots brings customers to your door through gamified discovery challenges. Whether you run a
+          brewery, cafe, theater, retail shop, or any unique Michigan business, we help you attract the explorers
+          and locals who love discovering hidden gems.
+        </p>
+        <p class="text-ink-secondary leading-relaxed">
+          No long-term contracts. No massive ad spend. Just authentic discovery that creates buzz and drives
+          measurable foot traffic.
+        </p>
+      </Card>
+
+      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">Partnership Benefits</h2>
+
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <MapPin class="w-8 h-8 text-lakes-blue" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Foot Traffic</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            GPS-verified visits from challenge participants actively looking to discover your business.
+            Turn explorers into regulars.
+          </p>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <DollarSign class="w-8 h-8 text-forest-green" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Measurable ROI</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Track actual visits, photo submissions, and social media engagement. See exactly what you're
+            getting for your investment.
+          </p>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <Target class="w-8 h-8 text-copper-orange" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Your Branding</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Challenge pages feature your logo, story, and unique selling points. Social media promotion
+            across Reddit and partner channels.
+          </p>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <Users class="w-8 h-8 text-gold-treasure" />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">Community Buzz</h3>
+          </div>
+          <p class="text-ink-secondary leading-relaxed">
+            Participants share their discoveries, creating authentic word-of-mouth marketing and
+            Instagram-worthy moments.
+          </p>
+        </Card>
+      </div>
+
+      <Card className="mb-8 bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-3 text-center">
+          Founding Partner Pricing - Limited Time
+        </h2>
+        <p class="text-center text-ink-secondary mb-2">
+          Lock in launch pricing before we hit our first 50 business partners
+        </p>
+        <p class="text-center text-sm text-copper-orange font-semibold">
+          Save 60-70% off regular pricing
+        </p>
+      </Card>
+
+      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">Partnership Options</h2>
+
+      <div class="space-y-6 mb-12">
+        <Card className="border-lakes-blue bg-lakes-blue/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Single Challenge</h3>
+              <p class="text-ink-secondary mb-2">Perfect for testing the waters with one 30-day challenge</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $299</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-lakes-blue">$99</div>
+              <div class="text-sm text-ink-secondary">one-time</div>
+              <div class="text-xs text-forest-green mt-1">Save $200!</div>
+            </div>
+          </div>
+          <ul class="space-y-2 mb-4">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">30-day challenge featuring your business</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Custom challenge page with your branding</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Social media promotion on r/michiganspots</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Analytics report with visit tracking</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">No long-term commitment required</span>
+            </li>
+          </ul>
+          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Example Challenge:</p>
+            <p class="text-sm text-ink-secondary">"Find Battle Creek's Hidden Coffee Gem" at Fieldstone Coffee</p>
+            <p class="text-xs text-forest-green mt-2">Expected: 50-150 visits</p>
+          </div>
+        </Card>
+
+        <Card className="border-copper-orange bg-copper-orange/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Seasonal Campaign</h3>
+              <p class="text-ink-secondary mb-2">Sustained engagement with 3 consecutive monthly challenges</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $899</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-copper-orange">$249</div>
+              <div class="text-sm text-ink-secondary">3 months</div>
+              <div class="text-xs text-forest-green mt-1">Save $650!</div>
+            </div>
+          </div>
+          <ul class="space-y-2 mb-4">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">3 custom challenges over 3 months</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Seasonal theme integration (summer, fall, winter)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Progressive badges for repeat visitors</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Detailed monthly analytics reports</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Enhanced social media promotion</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Priority customer support</span>
+            </li>
+          </ul>
+          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Example Campaign:</p>
+            <p class="text-sm text-ink-secondary">"Summer Ice Cream Tour" with rotating flavors each month</p>
+            <p class="text-xs text-forest-green mt-2">Expected: 200-500 visits over 3 months</p>
+          </div>
+        </Card>
+
+        <Card className="border-gold-treasure bg-gold-treasure/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Multi-Location Package</h3>
+              <p class="text-ink-secondary mb-2">Perfect for businesses with multiple locations across Michigan</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $399/location</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-gold-treasure">$149</div>
+              <div class="text-sm text-ink-secondary">per location</div>
+              <div class="text-xs text-forest-green mt-1">Save $250!</div>
+            </div>
+          </div>
+          <ul class="space-y-2 mb-4">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Multi-stop challenge across your locations (3-5 stops)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">OR individual challenges for each location</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">45-day challenge runtime</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Unified analytics across all locations</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Brand consistency across challenges</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Drive traffic to all your Michigan locations</span>
+            </li>
+          </ul>
+          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Example Multi-Location Challenge:</p>
+            <p class="text-sm text-ink-secondary">"Visit All 4 Fieldstone Coffee Locations" across Battle Creek, Kalamazoo, Grand Rapids, and Lansing</p>
+            <p class="text-xs text-ink-secondary mt-1">Cost: $149/location × 4 = $596 total</p>
+            <p class="text-xs text-forest-green mt-2">Expected: 100-300 visits per location</p>
+          </div>
+        </Card>
+
+        <Card className="border-forest-green bg-forest-green/5">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Event Sponsorship</h3>
+              <p class="text-ink-secondary mb-2">Promote festivals, concerts, seasonal events with challenges</p>
+              <p class="text-sm text-copper-orange font-semibold">Regular price: $599</p>
+            </div>
+            <div class="text-right">
+              <div class="font-heading text-3xl font-bold text-forest-green">$199</div>
+              <div class="text-sm text-ink-secondary">per event</div>
+              <div class="text-xs text-forest-green mt-1">Save $400!</div>
+            </div>
+          </div>
+          <ul class="space-y-2 mb-4">
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Event-specific challenge (2-4 weeks)</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Drive attendance and engagement</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Pre-event buzz and post-event follow-up</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Social media amplification</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Attendance tracking and analytics</span>
+            </li>
+          </ul>
+          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Perfect for:</p>
+            <p class="text-sm text-ink-secondary">Festivals, concerts, art fairs, sports events, seasonal celebrations</p>
+          </div>
+        </Card>
+      </div>
+
+      <Card className="mb-12">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">Challenge Types</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Discovery</h3>
+            <p class="text-sm text-ink-secondary mb-4">
+              "Find the secret menu item" or "Discover the hidden mural in our shop"
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Collection</h3>
+            <p class="text-sm text-ink-secondary mb-4">
+              "Visit all 3 brewery locations" or "Try 5 different coffee roasts"
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Photo Hunt</h3>
+            <p class="text-sm text-ink-secondary mb-4">
+              "Snap a photo with our vintage sign" or "Capture our sunset view"
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Trivia</h3>
+            <p class="text-sm text-ink-secondary mb-4">
+              "Answer questions about our history" or "Learn about our brewing process"
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Seasonal</h3>
+            <p class="text-sm text-ink-secondary mb-4">
+              "Fall pumpkin hunt" or "Summer patio challenge"
+            </p>
+          </div>
+          <div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Team Battle</h3>
+            <p class="text-sm text-ink-secondary mb-4">
+              "Battle Creek vs Kalamazoo" competition for best local spot
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="mb-12">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">How It Works</h2>
+        <div class="space-y-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-copper-orange text-parchment-light flex items-center justify-center font-bold">
+              1
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">Contact Us</h3>
+              <p class="text-ink-secondary text-sm">
+                Email us or fill out our simple form. Tell us about your business and what makes you unique.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-copper-orange text-parchment-light flex items-center justify-center font-bold">
+              2
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">Planning Call</h3>
+              <p class="text-ink-secondary text-sm">
+                20-minute call to discuss your goals, pick your challenge type, and plan the campaign.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-copper-orange text-parchment-light flex items-center justify-center font-bold">
+              3
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">We Create Your Challenge</h3>
+              <p class="text-ink-secondary text-sm">
+                Our team drafts your custom challenge. You review and approve before launch.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-copper-orange text-parchment-light flex items-center justify-center font-bold">
+              4
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">Launch & Promote</h3>
+              <p class="text-ink-secondary text-sm">
+                Challenge goes live on Michigan Spots and r/michiganspots. We handle the promotion, you prepare for visitors.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-copper-orange text-parchment-light flex items-center justify-center font-bold">
+              5
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">Track Results</h3>
+              <p class="text-ink-secondary text-sm">
+                Receive analytics showing visits, engagement, and ROI. See exactly what you're getting.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div class="mb-12">
+        <PartnerSignUpForm
+          client:load
+          partnershipType="business"
+          title="Quick Interest Form"
+          description="Want to learn more before applying? Tell us about your business and we'll reach out to discuss the best partnership option for you."
+        />
+      </div>
+
+      <div class="text-center">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">Ready to Get Started?</h2>
+        <p class="text-ink-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
+          Join Michigan businesses who are turning discovery into revenue. Lock in founding partner pricing
+          before we reach 50 business partners.
+        </p>
+        <a
+          href="/business-intake"
+          class="inline-block px-8 py-4 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors text-lg"
+        >
+          Apply Now
+        </a>
+        <p class="text-sm text-ink-faded mt-4">
+          Or email us at <a href="mailto:partnerships@michiganspots.com" class="text-copper-orange hover:underline">partnerships@michiganspots.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

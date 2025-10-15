@@ -1,0 +1,508 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { CheckoutButton } from '../components/CheckoutButton';
+import { Store, Mail, Phone, MapPin, Target, DollarSign } from 'lucide-react';
+---
+
+<Layout
+  title="Business Partnership Application - Michigan Spots"
+  description="Apply to feature your business in Michigan Spots challenges"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-copper-orange/20 mb-4">
+          <Store class="w-8 h-8 text-copper-orange" />
+        </div>
+        <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-4">
+          Business Partnership Application
+        </h1>
+        <p class="text-xl text-ink-secondary">
+          Turn discovery-minded explorers into loyal customers
+        </p>
+      </div>
+
+      <Card className="mb-8 bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-xl font-bold text-ink-primary mb-2 text-center">
+          Founding Partner Pricing - Limited Time
+        </h2>
+        <p class="text-center text-ink-secondary text-sm">
+          Save 60-70% off regular pricing • First 50 partners lock in these rates
+        </p>
+      </Card>
+
+      <form
+        action="https://formspree.io/f/YOUR_FORM_ID"
+        method="POST"
+        class="space-y-8"
+      >
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Store class="w-6 h-6 text-copper-orange" />
+            Business Information
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label for="business-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                Business Name *
+              </label>
+              <input
+                type="text"
+                id="business-name"
+                name="business_name"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                placeholder="Fieldstone Coffee Roasters"
+              />
+            </div>
+
+            <div>
+              <label for="business-type" class="block text-sm font-semibold text-ink-primary mb-2">
+                Business Type *
+              </label>
+              <select
+                id="business-type"
+                name="business_type"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+              >
+                <option value="">Select category...</option>
+                <option value="restaurant">Restaurant / Cafe</option>
+                <option value="brewery">Brewery / Winery / Distillery</option>
+                <option value="retail">Retail / Boutique</option>
+                <option value="entertainment">Entertainment / Venue</option>
+                <option value="outdoor">Outdoor Recreation / Adventure</option>
+                <option value="arts">Arts / Culture / Museum</option>
+                <option value="services">Services / Experience</option>
+                <option value="attraction">Tourist Attraction</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-semibold text-ink-primary mb-2">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                  placeholder="Battle Creek"
+                />
+              </div>
+
+              <div>
+                <label for="address" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Street Address
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                  placeholder="123 Main St"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="website" class="block text-sm font-semibold text-ink-primary mb-2">
+                Business Website or Social Media
+              </label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                placeholder="https://fieldstonecoffee.com or @fieldstonecoffee"
+              />
+            </div>
+
+            <div>
+              <label for="locations" class="block text-sm font-semibold text-ink-primary mb-2">
+                Number of Michigan Locations
+              </label>
+              <select
+                id="locations"
+                name="locations"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+              >
+                <option value="1">Single location</option>
+                <option value="2">2 locations</option>
+                <option value="3">3 locations</option>
+                <option value="4">4 locations</option>
+                <option value="5+">5+ locations</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="unique-features" class="block text-sm font-semibold text-ink-primary mb-2">
+                What Makes Your Business Unique? *
+              </label>
+              <textarea
+                id="unique-features"
+                name="unique_features"
+                rows="3"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                placeholder="Tell us what makes your business special! Hidden features, signature items, local history, unique atmosphere..."
+              ></textarea>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Mail class="w-6 h-6 text-lakes-blue" />
+            Contact Information
+          </h2>
+
+          <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="contact-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Contact Name *
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="contact_name"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                  placeholder="Sarah Johnson"
+                />
+              </div>
+
+              <div>
+                <label for="title" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Title/Position *
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                  placeholder="Owner / Manager"
+                />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="email" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                  placeholder="sarah@business.com"
+                />
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                  placeholder="(269) 555-1234"
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Target class="w-6 h-6 text-forest-green" />
+            Partnership Details
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label for="partnership-option" class="block text-sm font-semibold text-ink-primary mb-2">
+                Interested Partnership Option *
+              </label>
+              <select
+                id="partnership-option"
+                name="partnership_option"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+              >
+                <option value="">Select an option...</option>
+                <option value="single">Single Challenge - $99 (30 days)</option>
+                <option value="seasonal">Seasonal Campaign - $249 (3 months, 3 challenges)</option>
+                <option value="multi-location">Multi-Location Package - $149/location</option>
+                <option value="event">Event Sponsorship - $199</option>
+                <option value="unsure">Not sure yet / Need guidance</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="challenge-type" class="block text-sm font-semibold text-ink-primary mb-2">
+                Preferred Challenge Type
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="challenge_type[]" value="discovery" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Discovery (find hidden features, secret menu items)</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="challenge_type[]" value="collection" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Collection (visit multiple times or locations)</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="challenge_type[]" value="photo" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Photo Hunt (capture specific moments)</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="challenge_type[]" value="trivia" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Trivia (answer questions about your business)</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="challenge_type[]" value="seasonal" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Seasonal (themed around seasons/holidays)</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="marketing-goals" class="block text-sm font-semibold text-ink-primary mb-2">
+                What Are Your Marketing Goals? *
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="foot-traffic" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Increase foot traffic</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="awareness" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Build brand awareness</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="new-customers" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Attract new customers</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="social-media" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Social media buzz</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="event-promotion" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Promote specific event or product</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="challenge-ideas" class="block text-sm font-semibold text-ink-primary mb-2">
+                Challenge Ideas
+              </label>
+              <textarea
+                id="challenge-ideas"
+                name="challenge_ideas"
+                rows="3"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                placeholder="Any ideas for your challenge? (e.g., 'Find our vintage sign', 'Try all 5 seasonal brews', 'Discover the hidden garden patio')"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="timeline" class="block text-sm font-semibold text-ink-primary mb-2">
+                Preferred Start Timeline *
+              </label>
+              <select
+                id="timeline"
+                name="timeline"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+              >
+                <option value="">Select timeline...</option>
+                <option value="asap">As soon as possible</option>
+                <option value="1-month">Within 1 month</option>
+                <option value="2-3-months">2-3 months</option>
+                <option value="specific-event">Tied to specific event/season</option>
+                <option value="flexible">Flexible / Just exploring</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="budget" class="block text-sm font-semibold text-ink-primary mb-2">
+                Marketing Budget
+              </label>
+              <select
+                id="budget"
+                name="budget"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+              >
+                <option value="">Prefer not to say</option>
+                <option value="under-100">Under $100</option>
+                <option value="100-250">$100-$250</option>
+                <option value="250-500">$250-$500</option>
+                <option value="500+">$500+</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="additional-info" class="block text-sm font-semibold text-ink-primary mb-2">
+                Additional Information or Questions
+              </label>
+              <textarea
+                id="additional-info"
+                name="additional_info"
+                rows="4"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-copper-orange focus:outline-none transition-colors"
+                placeholder="Anything else we should know? Specific concerns or questions?"
+              ></textarea>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="bg-copper-orange/5 border-copper-orange">
+          <div class="flex items-start space-x-3">
+            <input
+              type="checkbox"
+              id="consent"
+              name="consent"
+              required
+              class="mt-1"
+            />
+            <label for="consent" class="text-sm text-ink-secondary">
+              I agree to be contacted by Michigan Spots regarding this partnership application.
+              We respect your privacy and will only use this information to discuss your business partnership.
+            </label>
+          </div>
+        </Card>
+
+        <Card className="bg-copper-orange/5 border-copper-orange">
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-4 text-center">
+            Payment Options
+          </h3>
+          <p class="text-sm text-ink-secondary text-center mb-6">
+            Choose how you'd like to proceed:
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="text-center">
+              <button
+                type="submit"
+                class="w-full px-6 py-3 bg-lakes-blue text-parchment-light font-heading font-bold treasure-border hover:bg-lakes-blue/80 transition-colors cursor-pointer"
+              >
+                Submit for Review
+              </button>
+              <p class="text-xs text-ink-faded mt-2">
+                We'll review and contact you
+              </p>
+            </div>
+
+            <div class="text-center">
+              <div id="payment-button-container"></div>
+              <p class="text-xs text-ink-faded mt-2">
+                Pay now to lock in founding rates
+              </p>
+            </div>
+          </div>
+        </Card>
+      </form>
+
+      <script>
+        const form = document.querySelector('form');
+        const optionSelect = document.getElementById('partnership-option') as HTMLSelectElement;
+        const paymentContainer = document.getElementById('payment-button-container');
+
+        const priceMap = {
+          'single': { price: '$99', tier: 'single' },
+          'seasonal': { price: '$249', tier: 'seasonal' },
+          'multi-location': { price: '$149/location', tier: 'multi_location' },
+          'event': { price: '$199', tier: 'event' }
+        };
+
+        function updatePaymentButton() {
+          const selectedOption = optionSelect?.value;
+          if (selectedOption && priceMap[selectedOption] && paymentContainer) {
+            const info = priceMap[selectedOption];
+            paymentContainer.innerHTML = `
+              <button
+                type="button"
+                onclick="handlePayment('${info.tier}')"
+                class="w-full px-6 py-3 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors cursor-pointer"
+              >
+                Pay ${info.price} Now
+              </button>
+            `;
+          }
+        }
+
+        optionSelect?.addEventListener('change', updatePaymentButton);
+        updatePaymentButton();
+
+        window.handlePayment = async function(tier: string) {
+          const formData = new FormData(form);
+          const data = {
+            email: formData.get('email'),
+            name: formData.get('contact_name'),
+            organizationName: formData.get('business_name'),
+            partnershipType: 'business',
+            partnershipTier: tier,
+            city: formData.get('city'),
+            phone: formData.get('phone'),
+            priceId: ''
+          };
+
+          if (!data.email || !data.name || !data.organizationName) {
+            alert('Please fill in all required fields first');
+            return;
+          }
+
+          const btn = event.target as HTMLButtonElement;
+          btn.disabled = true;
+          btn.textContent = 'Processing...';
+
+          try {
+            const response = await fetch('/api/create-checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.url) {
+              window.location.href = result.url;
+            } else {
+              alert(result.error || 'Failed to create checkout');
+              btn.disabled = false;
+              const selectedOption = (document.getElementById('partnership-option') as HTMLSelectElement).value;
+              btn.textContent = `Pay ${priceMap[selectedOption].price} Now`;
+            }
+          } catch (error) {
+            alert('Network error. Please try again.');
+            btn.disabled = false;
+            const selectedOption = (document.getElementById('partnership-option') as HTMLSelectElement).value;
+            btn.textContent = `Pay ${priceMap[selectedOption].price} Now`;
+          }
+        };
+      </script>
+
+      <div class="mt-12 text-center">
+        <p class="text-ink-secondary mb-2">Questions? Want to chat first?</p>
+        <a href="mailto:partnerships@michiganspots.com" class="text-copper-orange font-semibold hover:underline">
+          partnerships@michiganspots.com
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

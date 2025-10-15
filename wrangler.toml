@@ -1,0 +1,36 @@
+name = "michiganspot"
+compatibility_date = "2024-10-14"
+
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "michiganspot-db"
+database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
+
+[vars]
+SITE_URL = "http://localhost:4321"
+
+# NOTE: Add these as secrets via Cloudflare Dashboard or wrangler secret:
+# - STRIPE_SECRET_KEY
+# - STRIPE_WEBHOOK_SECRET
+#
+# Stripe Price IDs (add after running setup-stripe-products.ts):
+# STRIPE_PRICE_CHAMBER_LAUNCH = "price_xxx"
+# STRIPE_PRICE_CHAMBER_CITY = "price_xxx"
+# STRIPE_PRICE_CHAMBER_REGIONAL = "price_xxx"
+# STRIPE_PRICE_BUSINESS_SINGLE = "price_xxx"
+# STRIPE_PRICE_BUSINESS_SEASONAL = "price_xxx"
+# STRIPE_PRICE_BUSINESS_MULTI_LOCATION = "price_xxx"
+# STRIPE_PRICE_BUSINESS_EVENT = "price_xxx"
+# STRIPE_PRICE_COMMUNITY_MINIMAL = "price_xxx"
+# STRIPE_PRICE_COMMUNITY_MODEST = "price_xxx"
+
+[env.production]
+[env.production.vars]
+SITE_URL = "https://michiganspots.com"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "michiganspot-db"
+database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"

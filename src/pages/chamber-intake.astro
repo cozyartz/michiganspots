@@ -1,0 +1,438 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { CheckoutButton } from '../components/CheckoutButton';
+import { Building2, Mail, Phone, MapPin, Users, Target } from 'lucide-react';
+---
+
+<Layout
+  title="Chamber Partnership Application - Michigan Spots"
+  description="Apply to become a Chamber of Commerce partner with Michigan Spots"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-lakes-blue/20 mb-4">
+          <Building2 class="w-8 h-8 text-lakes-blue" />
+        </div>
+        <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-4">
+          Chamber Partnership Application
+        </h1>
+        <p class="text-xl text-ink-secondary">
+          Join Michigan Spots as a Founding Partner and drive member engagement
+        </p>
+      </div>
+
+      <Card className="mb-8 bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-xl font-bold text-ink-primary mb-2 text-center">
+          Limited Time: Founding Partner Pricing
+        </h2>
+        <p class="text-center text-ink-secondary text-sm">
+          Lock in launch pricing for 1 full year • Save 60-70% off regular rates
+        </p>
+      </Card>
+
+      <form
+        action="https://formspree.io/f/YOUR_FORM_ID"
+        method="POST"
+        class="space-y-8"
+      >
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Building2 class="w-6 h-6 text-lakes-blue" />
+            Chamber Information
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label for="chamber-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                Chamber Name *
+              </label>
+              <input
+                type="text"
+                id="chamber-name"
+                name="chamber_name"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="Battle Creek Area Chamber of Commerce"
+              />
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="city" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Primary City/Region *
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                  placeholder="Battle Creek"
+                />
+              </div>
+
+              <div>
+                <label for="coverage-area" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Coverage Area
+                </label>
+                <input
+                  type="text"
+                  id="coverage-area"
+                  name="coverage_area"
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                  placeholder="Calhoun County"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="website" class="block text-sm font-semibold text-ink-primary mb-2">
+                Chamber Website
+              </label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="https://battlecreekchamber.org"
+              />
+            </div>
+
+            <div>
+              <label for="member-count" class="block text-sm font-semibold text-ink-primary mb-2">
+                Approximate Member Count
+              </label>
+              <select
+                id="member-count"
+                name="member_count"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+              >
+                <option value="">Select range...</option>
+                <option value="1-50">1-50 members</option>
+                <option value="51-100">51-100 members</option>
+                <option value="101-250">101-250 members</option>
+                <option value="251-500">251-500 members</option>
+                <option value="500+">500+ members</option>
+              </select>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Mail class="w-6 h-6 text-copper-orange" />
+            Contact Information
+          </h2>
+
+          <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="contact-name" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Contact Name *
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="contact_name"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                  placeholder="John Smith"
+                />
+              </div>
+
+              <div>
+                <label for="title" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Title/Position *
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                  placeholder="Executive Director"
+                />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="email" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                  placeholder="john@chamber.org"
+                />
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-semibold text-ink-primary mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                  placeholder="(269) 555-1234"
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center gap-2">
+            <Target class="w-6 h-6 text-forest-green" />
+            Partnership Details
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label for="partnership-tier" class="block text-sm font-semibold text-ink-primary mb-2">
+                Interested Partnership Tier *
+              </label>
+              <select
+                id="partnership-tier"
+                name="partnership_tier"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+              >
+                <option value="">Select a tier...</option>
+                <option value="launch">Launch Partner - $299/quarter (Save $2,001!)</option>
+                <option value="city">City Launch Partner - $599/quarter (Save $4,001!)</option>
+                <option value="regional">Regional Launch Partner - $1,999/quarter (Save $8,001!)</option>
+                <option value="custom">Custom - Let's discuss</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="goals" class="block text-sm font-semibold text-ink-primary mb-2">
+                Partnership Goals *
+              </label>
+              <div class="space-y-2">
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="member-engagement" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Drive member business foot traffic</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="regional-promotion" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Regional promotion and tourism</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="member-recruitment" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Member recruitment tool</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="community-engagement" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Community engagement and visibility</span>
+                </label>
+                <label class="flex items-start space-x-3 cursor-pointer">
+                  <input type="checkbox" name="goals[]" value="event-promotion" class="mt-1" />
+                  <span class="text-sm text-ink-secondary">Event and festival promotion</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="member-businesses" class="block text-sm font-semibold text-ink-primary mb-2">
+                Key Member Businesses to Feature
+              </label>
+              <textarea
+                id="member-businesses"
+                name="member_businesses"
+                rows="3"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="List 3-5 member businesses you'd like featured in challenges (e.g., Fieldstone Coffee, Battle Creek Brewing, Downtown Parks)"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="challenge-ideas" class="block text-sm font-semibold text-ink-primary mb-2">
+                Challenge Ideas or Themes
+              </label>
+              <textarea
+                id="challenge-ideas"
+                name="challenge_ideas"
+                rows="3"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="Any specific challenge themes? (e.g., 'Discover Historic Downtown', 'Summer Food Tour', 'Hidden Parks Challenge')"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="timeline" class="block text-sm font-semibold text-ink-primary mb-2">
+                Preferred Start Timeline *
+              </label>
+              <select
+                id="timeline"
+                name="timeline"
+                required
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+              >
+                <option value="">Select timeline...</option>
+                <option value="asap">As soon as possible</option>
+                <option value="1-month">Within 1 month</option>
+                <option value="2-3-months">2-3 months</option>
+                <option value="q1-2026">Q1 2026</option>
+                <option value="q2-2026">Q2 2026</option>
+                <option value="flexible">Flexible / Exploring options</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="additional-info" class="block text-sm font-semibold text-ink-primary mb-2">
+                Additional Information or Questions
+              </label>
+              <textarea
+                id="additional-info"
+                name="additional_info"
+                rows="4"
+                class="w-full px-4 py-3 border-2 border-ink-faded/30 rounded bg-parchment-light text-ink-primary focus:border-lakes-blue focus:outline-none transition-colors"
+                placeholder="Anything else you'd like us to know? Questions about the partnership?"
+              ></textarea>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="bg-lakes-blue/5 border-lakes-blue">
+          <div class="flex items-start space-x-3">
+            <input
+              type="checkbox"
+              id="consent"
+              name="consent"
+              required
+              class="mt-1"
+            />
+            <label for="consent" class="text-sm text-ink-secondary">
+              I agree to be contacted by Michigan Spots regarding this partnership application.
+              We respect your privacy and will only use this information for partnership discussions.
+            </label>
+          </div>
+        </Card>
+
+        <Card className="bg-copper-orange/5 border-copper-orange">
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-4 text-center">
+            Payment Options
+          </h3>
+          <p class="text-sm text-ink-secondary text-center mb-6">
+            Choose how you'd like to proceed:
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="text-center">
+              <button
+                type="submit"
+                class="w-full px-6 py-3 bg-lakes-blue text-parchment-light font-heading font-bold treasure-border hover:bg-lakes-blue/80 transition-colors cursor-pointer"
+              >
+                Submit for Review
+              </button>
+              <p class="text-xs text-ink-faded mt-2">
+                We'll review and contact you
+              </p>
+            </div>
+
+            <div class="text-center">
+              <div id="payment-button-container"></div>
+              <p class="text-xs text-ink-faded mt-2">
+                Pay now to lock in founding rates
+              </p>
+            </div>
+          </div>
+        </Card>
+      </form>
+
+      <script>
+        // Handle payment button rendering based on selected tier
+        const form = document.querySelector('form');
+        const tierSelect = document.getElementById('partnership-tier') as HTMLSelectElement;
+        const paymentContainer = document.getElementById('payment-button-container');
+
+        const priceMap = {
+          'launch': { price: '$299', tier: 'launch' },
+          'city': { price: '$599', tier: 'city' },
+          'regional': { price: '$1,999', tier: 'regional' }
+        };
+
+        function updatePaymentButton() {
+          const selectedTier = tierSelect?.value;
+          if (selectedTier && priceMap[selectedTier] && paymentContainer) {
+            const info = priceMap[selectedTier];
+            paymentContainer.innerHTML = `
+              <button
+                type="button"
+                onclick="handlePayment('${info.tier}')"
+                class="w-full px-6 py-3 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors cursor-pointer"
+              >
+                Pay ${info.price} Now
+              </button>
+            `;
+          }
+        }
+
+        tierSelect?.addEventListener('change', updatePaymentButton);
+        updatePaymentButton();
+
+        window.handlePayment = async function(tier: string) {
+          const formData = new FormData(form);
+          const data = {
+            email: formData.get('email'),
+            name: formData.get('contact_name'),
+            organizationName: formData.get('chamber_name'),
+            partnershipType: 'chamber',
+            partnershipTier: tier,
+            city: formData.get('city'),
+            phone: formData.get('phone'),
+            priceId: '' // Will be set by API based on tier
+          };
+
+          if (!data.email || !data.name || !data.organizationName) {
+            alert('Please fill in all required fields first');
+            return;
+          }
+
+          const btn = event.target as HTMLButtonElement;
+          btn.disabled = true;
+          btn.textContent = 'Processing...';
+
+          try {
+            const response = await fetch('/api/create-checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.url) {
+              window.location.href = result.url;
+            } else {
+              alert(result.error || 'Failed to create checkout');
+              btn.disabled = false;
+              btn.textContent = `Pay ${priceMap[tier].price} Now`;
+            }
+          } catch (error) {
+            alert('Network error. Please try again.');
+            btn.disabled = false;
+            btn.textContent = `Pay ${priceMap[tier].price} Now`;
+          }
+        };
+      </script>
+
+      <div class="mt-12 text-center">
+        <p class="text-ink-secondary mb-2">Questions? Need to discuss a custom arrangement?</p>
+        <a href="mailto:partnerships@michiganspots.com" class="text-copper-orange font-semibold hover:underline">
+          partnerships@michiganspots.com
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

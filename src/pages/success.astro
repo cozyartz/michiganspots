@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { CheckCircle, Mail, Calendar, ArrowRight } from 'lucide-react';
+---
+
+<Layout
+  title="Payment Successful - Michigan Spots"
+  description="Your partnership payment was successful"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-forest-green/20 mb-6">
+          <CheckCircle class="w-12 h-12 text-forest-green" />
+        </div>
+        <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-4">
+          Payment Successful!
+        </h1>
+        <p class="text-xl text-ink-secondary">
+          Welcome to Michigan Spots Partnership Program
+        </p>
+      </div>
+
+      <Card className="mb-8 bg-forest-green/10 border-forest-green">
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+          What Happens Next?
+        </h2>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-forest-green text-parchment-light flex items-center justify-center font-bold">
+              1
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">
+                Confirmation Email
+              </h3>
+              <p class="text-ink-secondary text-sm">
+                You'll receive a payment confirmation email from Stripe within a few minutes,
+                followed by a welcome email from Michigan Spots.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-forest-green text-parchment-light flex items-center justify-center font-bold">
+              2
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">
+                Partnership Onboarding
+              </h3>
+              <p class="text-ink-secondary text-sm">
+                Our team will reach out within 1-2 business days to schedule your onboarding call
+                and gather your branding assets and challenge preferences.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-forest-green text-parchment-light flex items-center justify-center font-bold">
+              3
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">
+                Challenge Creation
+              </h3>
+              <p class="text-ink-secondary text-sm">
+                We'll work with you to create your first challenge, get your approval,
+                and prepare for launch.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-forest-green text-parchment-light flex items-center justify-center font-bold">
+              4
+            </div>
+            <div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary mb-1">
+                Go Live!
+              </h3>
+              <p class="text-ink-secondary text-sm">
+                Your challenge launches on Michigan Spots and we begin promoting it to our community.
+                Track your results in real-time!
+              </p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <Mail class="w-6 h-6 text-copper-orange" />
+            <h3 class="font-heading text-xl font-bold text-ink-primary">
+              Check Your Email
+            </h3>
+          </div>
+          <p class="text-ink-secondary text-sm mb-4">
+            We've sent confirmation details to your email address. If you don't see it,
+            check your spam folder.
+          </p>
+          <a href="mailto:partnerships@michiganspots.com" class="text-copper-orange font-semibold text-sm hover:underline">
+            partnerships@michiganspots.com
+          </a>
+        </Card>
+
+        <Card>
+          <div class="flex items-center space-x-3 mb-4">
+            <Calendar class="w-6 h-6 text-lakes-blue" />
+            <h3 class="font-heading text-xl font-bold text-ink-primary">
+              Timeline
+            </h3>
+          </div>
+          <p class="text-ink-secondary text-sm mb-4">
+            Most partnerships launch their first challenge within 2-3 weeks of payment.
+            We'll keep you updated every step of the way.
+          </p>
+        </Card>
+      </div>
+
+      <Card className="bg-gold-treasure/10 border-gold-treasure mb-8">
+        <h3 class="font-heading text-xl font-bold text-ink-primary mb-3 text-center">
+          Thank You for Being a Founding Partner!
+        </h3>
+        <p class="text-ink-secondary text-center text-sm">
+          You're locking in this exclusive pricing for a full year and helping us build Michigan's
+          premier community discovery platform. We're excited to work with you!
+        </p>
+      </Card>
+
+      <div class="text-center">
+        <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+          Questions or Need Help?
+        </h3>
+        <p class="text-ink-secondary mb-6">
+          Our partnership team is here to help you succeed.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="mailto:partnerships@michiganspots.com"
+            class="inline-block px-6 py-3 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors"
+          >
+            Email Us
+          </a>
+          <a
+            href="/partnerships"
+            class="inline-flex items-center space-x-2 px-6 py-3 border-2 border-ink-primary text-ink-primary font-heading font-bold hover:bg-ink-primary hover:text-parchment-light transition-colors"
+          >
+            <span>Back to Partnerships</span>
+            <ArrowRight class="w-5 h-5" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
