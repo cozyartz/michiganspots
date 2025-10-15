@@ -11,20 +11,11 @@ database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
 [vars]
 SITE_URL = "http://localhost:4321"
 
-# NOTE: Add these as secrets via Cloudflare Dashboard or wrangler secret:
-# - STRIPE_SECRET_KEY
-# - STRIPE_WEBHOOK_SECRET
+# NOTE: Add these as secrets via Cloudflare Dashboard or wrangler:
+# npx wrangler secret put STRIPE_SECRET_KEY --env production
+# npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
 #
-# Stripe Price IDs (add after running setup-stripe-products.ts):
-# STRIPE_PRICE_CHAMBER_LAUNCH = "price_xxx"
-# STRIPE_PRICE_CHAMBER_CITY = "price_xxx"
-# STRIPE_PRICE_CHAMBER_REGIONAL = "price_xxx"
-# STRIPE_PRICE_BUSINESS_SINGLE = "price_xxx"
-# STRIPE_PRICE_BUSINESS_SEASONAL = "price_xxx"
-# STRIPE_PRICE_BUSINESS_MULTI_LOCATION = "price_xxx"
-# STRIPE_PRICE_BUSINESS_EVENT = "price_xxx"
-# STRIPE_PRICE_COMMUNITY_MINIMAL = "price_xxx"
-# STRIPE_PRICE_COMMUNITY_MODEST = "price_xxx"
+# Price IDs are fetched dynamically from Stripe API based on product metadata
 
 [env.production]
 [env.production.vars]

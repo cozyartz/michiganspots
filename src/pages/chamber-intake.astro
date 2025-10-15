@@ -390,8 +390,7 @@ import { Building2, Mail, Phone, MapPin, Users, Target } from 'lucide-react';
             partnershipType: 'chamber',
             partnershipTier: tier,
             city: formData.get('city'),
-            phone: formData.get('phone'),
-            priceId: '' // Will be set by API based on tier
+            phone: formData.get('phone')
           };
 
           if (!data.email || !data.name || !data.organizationName) {
