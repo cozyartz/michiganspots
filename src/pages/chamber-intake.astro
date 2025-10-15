@@ -327,7 +327,13 @@ import { Building2, Mail, Phone, MapPin, Users, Target } from 'lucide-react';
             Choose how you'd like to proceed:
           </p>
 
-          <div class="grid md:grid-cols-2 gap-4">
+          <div id="tier-selection-notice" class="mb-6 p-4 bg-gold-treasure/20 border-2 border-gold-treasure rounded text-center">
+            <p class="text-sm font-semibold text-ink-primary">
+              👆 Please select a partnership tier above to see payment options
+            </p>
+          </div>
+
+          <div id="payment-options" class="grid md:grid-cols-2 gap-4" style="display: none;">
             <div class="text-center">
               <button
                 type="submit"
@@ -355,6 +361,8 @@ import { Building2, Mail, Phone, MapPin, Users, Target } from 'lucide-react';
         const form = document.querySelector('form');
         const tierSelect = document.getElementById('partnership-tier') as HTMLSelectElement;
         const paymentContainer = document.getElementById('payment-button-container');
+        const paymentOptions = document.getElementById('payment-options');
+        const tierNotice = document.getElementById('tier-selection-notice');
 
         const priceMap = {
           'launch': { price: '$299', tier: 'launch' },
@@ -364,7 +372,12 @@ import { Building2, Mail, Phone, MapPin, Users, Target } from 'lucide-react';
 
         function updatePaymentButton() {
           const selectedTier = tierSelect?.value;
+
           if (selectedTier && priceMap[selectedTier] && paymentContainer) {
+            // Hide notice, show payment options
+            if (tierNotice) tierNotice.style.display = 'none';
+            if (paymentOptions) paymentOptions.style.display = 'grid';
+
             const info = priceMap[selectedTier];
             paymentContainer.innerHTML = `
               <button
@@ -375,6 +388,10 @@ import { Building2, Mail, Phone, MapPin, Users, Target } from 'lucide-react';
                 Pay ${info.price} Now
               </button>
             `;
+          } else {
+            // Show notice, hide payment options
+            if (tierNotice) tierNotice.style.display = 'block';
+            if (paymentOptions) paymentOptions.style.display = 'none';
           }
         }
 
