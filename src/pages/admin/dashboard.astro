@@ -1,0 +1,181 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Card } from '../../components/Card';
+import { Users, TrendingUp, DollarSign, CheckCircle } from 'lucide-react';
+---
+
+<Layout
+  title="Admin Dashboard | Michigan Spots"
+  description="Michigan Spots admin dashboard - track signups, partnerships, and platform analytics"
+  keywords="Michigan Spots admin, dashboard, analytics"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-2">
+        Admin Dashboard
+      </h1>
+      <p class="text-ink-secondary mb-8">Platform analytics and user management</p>
+
+      <!-- Summary Stats -->
+      <div class="grid md:grid-cols-4 gap-6 mb-12">
+        <Card className="text-center">
+          <div class="flex justify-center mb-2">
+            <Users class="w-10 h-10 text-lakes-blue" />
+          </div>
+          <div class="text-3xl font-bold text-ink-primary" id="waitlist-count">-</div>
+          <div class="text-sm text-ink-secondary">Waitlist Signups</div>
+        </Card>
+
+        <Card className="text-center">
+          <div class="flex justify-center mb-2">
+            <TrendingUp class="w-10 h-10 text-copper-orange" />
+          </div>
+          <div class="text-3xl font-bold text-ink-primary" id="partner-count">-</div>
+          <div class="text-sm text-ink-secondary">Partners</div>
+        </Card>
+
+        <Card className="text-center">
+          <div class="flex justify-center mb-2">
+            <CheckCircle class="w-10 h-10 text-forest-green" />
+          </div>
+          <div class="text-3xl font-bold text-ink-primary" id="signed-count">-</div>
+          <div class="text-sm text-ink-secondary">Agreements Signed</div>
+        </Card>
+
+        <Card className="text-center">
+          <div class="flex justify-center mb-2">
+            <DollarSign class="w-10 h-10 text-gold-treasure" />
+          </div>
+          <div class="text-3xl font-bold text-ink-primary" id="revenue-count">$-</div>
+          <div class="text-sm text-ink-secondary">Total Revenue</div>
+        </Card>
+      </div>
+
+      <!-- All Signups Table -->
+      <Card>
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">All Signups</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full" id="signups-table">
+            <thead>
+              <tr class="border-b-2 border-ink-primary">
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Type</th>
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Email</th>
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Organization</th>
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Tier</th>
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Amount</th>
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Date</th>
+                <th class="text-left py-2 px-3 font-heading text-ink-primary">Status</th>
+              </tr>
+            </thead>
+            <tbody id="signups-tbody" class="text-ink-secondary">
+              <tr>
+                <td colspan="7" class="text-center py-8 text-ink-secondary">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  async function loadDashboardData() {
+    try {
+      const response = await fetch('/api/dashboard/signups');
+      const data = await response.json();
+
+      if (data.success) {
+        // Update stats
+        document.getElementById('waitlist-count')!.textContent =
+          data.data.stats.waitlist_count.toLocaleString();
+        document.getElementById('partner-count')!.textContent =
+          data.data.stats.partner_count.toLocaleString();
+        document.getElementById('signed-count')!.textContent =
+          data.data.stats.partners_signed.toLocaleString();
+        document.getElementById('revenue-count')!.textContent =
+          `$${(data.data.stats.total_revenue / 100).toLocaleString()}`;
+
+        // Update table
+        const tbody = document.getElementById('signups-tbody')!;
+        tbody.innerHTML = '';
+
+        if (data.data.signups.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-center py-8 text-ink-secondary">No signups yet</td>
+            </tr>
+          `;
+        } else {
+          data.data.signups.forEach((signup: any) => {
+            const row = document.createElement('tr');
+            row.className = 'border-b border-ink-primary/20 hover:bg-parchment-dark/30';
+
+            const typeLabel = signup.signup_type === 'waitlist' ? 'Waitlist' : 'Partner';
+            const typeBadge = signup.signup_type === 'waitlist'
+              ? '<span class="px-2 py-1 bg-lakes-blue/20 text-lakes-blue text-xs rounded">Waitlist</span>'
+              : '<span class="px-2 py-1 bg-copper-orange/20 text-copper-orange text-xs rounded">Partner</span>';
+
+            const tierLabel = signup.partnership_tier
+              ? `${signup.partnership_type} - ${signup.partnership_tier}`
+              : '-';
+
+            const amount = signup.amount_paid
+              ? `$${(signup.amount_paid / 100).toLocaleString()}`
+              : '-';
+
+            const date = new Date(signup.created_at).toLocaleDateString();
+
+            const status = signup.agreement_accepted === 1
+              ? '<span class="px-2 py-1 bg-forest-green/20 text-forest-green text-xs rounded">Signed</span>'
+              : signup.signup_type === 'partner'
+              ? '<span class="px-2 py-1 bg-sunset-red/20 text-sunset-red text-xs rounded">Pending</span>'
+              : '-';
+
+            row.innerHTML = `
+              <td class="py-3 px-3">${typeBadge}</td>
+              <td class="py-3 px-3">${signup.email}</td>
+              <td class="py-3 px-3">${signup.organization_name || '-'}</td>
+              <td class="py-3 px-3 text-sm">${tierLabel}</td>
+              <td class="py-3 px-3 font-bold">${amount}</td>
+              <td class="py-3 px-3 text-sm">${date}</td>
+              <td class="py-3 px-3">${status}</td>
+            `;
+
+            tbody.appendChild(row);
+          });
+        }
+      } else {
+        console.error('Failed to load dashboard data:', data.error);
+        document.getElementById('signups-tbody')!.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-8 text-sunset-red">
+              Failed to load data. Please refresh the page.
+            </td>
+          </tr>
+        `;
+      }
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      document.getElementById('signups-tbody')!.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center py-8 text-sunset-red">
+            Error loading data. Please refresh the page.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // Load data when page loads
+  loadDashboardData();
+
+  // Refresh every 30 seconds
+  setInterval(loadDashboardData, 30000);
+</script>
+
+<style>
+  .lucide {
+    display: inline;
+  }
+</style>
