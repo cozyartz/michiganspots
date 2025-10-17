@@ -17,16 +17,16 @@ export function Header() {
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               className="compass-shadow"
             >
-              <Compass className="w-8 h-8 text-copper-orange" />
+              <Compass className="w-8 h-8 text-cyan-primary" />
             </motion.div>
             <span className="font-decorative text-2xl text-ink-primary">Michigan Spots</span>
           </a>
 
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="font-heading text-ink-primary hover:text-copper-orange transition-colors">
+            <a href="/" className="font-heading text-ink-primary hover:text-cyan-primary transition-colors">
               Home
             </a>
-            <a href="/about" className="font-heading text-ink-primary hover:text-copper-orange transition-colors">
+            <a href="/about" className="font-heading text-ink-primary hover:text-cyan-primary transition-colors">
               About
             </a>
             <div
@@ -35,7 +35,7 @@ export function Header() {
               onMouseLeave={() => setIsPartnershipsOpen(false)}
             >
               <button
-                className="font-heading text-ink-primary hover:text-copper-orange transition-colors flex items-center space-x-1"
+                className="font-heading text-ink-primary hover:text-cyan-primary transition-colors flex items-center space-x-1"
                 onClick={() => setIsPartnershipsOpen(!isPartnershipsOpen)}
               >
                 <span>Partnerships</span>
@@ -51,19 +51,19 @@ export function Header() {
                   >
                     <a
                       href="/partnerships"
-                      className="block px-4 py-3 font-heading text-ink-primary hover:bg-copper-orange/10 hover:text-copper-orange transition-colors border-b border-ink-faded/20"
+                      className="block px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors border-b border-ink-faded/20"
                     >
                       All Options
                     </a>
                     <a
                       href="/chamber-partnerships"
-                      className="block px-4 py-3 font-heading text-ink-primary hover:bg-copper-orange/10 hover:text-copper-orange transition-colors border-b border-ink-faded/20"
+                      className="block px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors border-b border-ink-faded/20"
                     >
                       For Chambers
                     </a>
                     <a
                       href="/business-partnerships"
-                      className="block px-4 py-3 font-heading text-ink-primary hover:bg-copper-orange/10 hover:text-copper-orange transition-colors"
+                      className="block px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors"
                     >
                       For Businesses
                     </a>
@@ -73,7 +73,7 @@ export function Header() {
             </div>
             <a
               href="#signup"
-              className="px-6 py-2 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors"
+              className="px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors"
             >
               Join the Hunt
             </a>
@@ -96,16 +96,16 @@ export function Header() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden mt-4 space-y-4"
             >
-              <a href="/" className="block font-heading text-ink-primary hover:text-copper-orange transition-colors">
+              <a href="/" className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors">
                 Home
               </a>
-              <a href="/about" className="block font-heading text-ink-primary hover:text-copper-orange transition-colors">
+              <a href="/about" className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors">
                 About
               </a>
               <div>
                 <button
                   onClick={() => setIsPartnershipsOpen(!isPartnershipsOpen)}
-                  className="flex items-center justify-between w-full font-heading text-ink-primary hover:text-copper-orange transition-colors"
+                  className="flex items-center justify-between w-full font-heading text-ink-primary hover:text-cyan-primary transition-colors"
                 >
                   <span>Partnerships</span>
                   <ChevronDown className={cn("w-4 h-4 transition-transform", isPartnershipsOpen && "rotate-180")} />
@@ -120,19 +120,19 @@ export function Header() {
                     >
                       <a
                         href="/partnerships"
-                        className="block text-sm font-heading text-ink-secondary hover:text-copper-orange transition-colors"
+                        className="block text-sm font-heading text-ink-secondary hover:text-cyan-primary transition-colors"
                       >
                         All Options
                       </a>
                       <a
                         href="/chamber-partnerships"
-                        className="block text-sm font-heading text-ink-secondary hover:text-copper-orange transition-colors"
+                        className="block text-sm font-heading text-ink-secondary hover:text-cyan-primary transition-colors"
                       >
                         For Chambers
                       </a>
                       <a
                         href="/business-partnerships"
-                        className="block text-sm font-heading text-ink-secondary hover:text-copper-orange transition-colors"
+                        className="block text-sm font-heading text-ink-secondary hover:text-cyan-primary transition-colors"
                       >
                         For Businesses
                       </a>
@@ -142,7 +142,7 @@ export function Header() {
               </div>
               <a
                 href="#signup"
-                className="block text-center px-6 py-2 bg-copper-orange text-parchment-light font-heading font-bold treasure-border hover:bg-sunset-red transition-colors"
+                className="block text-center px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors"
               >
                 Join the Hunt
               </a>

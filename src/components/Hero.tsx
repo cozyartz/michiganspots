@@ -28,9 +28,9 @@ export function Hero() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center space-x-2 px-4 py-2 bg-gold-treasure/20 treasure-border mb-6"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-cyan-light/30 treasure-border mb-6"
             >
-              <Sparkles className="w-4 h-4 text-gold-treasure" />
+              <Sparkles className="w-4 h-4 text-cyan-primary" />
               <span className="text-sm font-heading font-semibold text-ink-primary">
                 Reddit Community Games 2025
               </span>
@@ -38,7 +38,7 @@ export function Hero() {
 
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-ink-primary mb-6 leading-tight">
               Discover Michigan's
-              <span className="text-copper-orange text-shadow-treasure"> Hidden Gems</span>
+              <span className="text-cyan-primary text-shadow-treasure"> Hidden Gems</span>
             </h1>
 
             <p className="text-lg md:text-xl text-ink-secondary mb-8 leading-relaxed">
@@ -66,21 +66,21 @@ export function Hero() {
             <div className="mt-12 grid grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="flex justify-center mb-2">
-                  <MapPin className="w-8 h-8 text-lakes-blue" />
+                  <MapPin className="w-8 h-8 text-cyan-primary" />
                 </div>
                 <div className="font-heading font-bold text-2xl text-ink-primary">Discover</div>
                 <div className="text-sm text-ink-secondary">Hidden Spots</div>
               </div>
               <div className="text-center">
                 <div className="flex justify-center mb-2">
-                  <Trophy className="w-8 h-8 text-gold-treasure" />
+                  <Trophy className="w-8 h-8 text-amber-primary" />
                 </div>
                 <div className="font-heading font-bold text-2xl text-ink-primary">Complete</div>
                 <div className="text-sm text-ink-secondary">Challenges</div>
               </div>
               <div className="text-center">
                 <div className="flex justify-center mb-2">
-                  <Users className="w-8 h-8 text-forest-green" />
+                  <Users className="w-8 h-8 text-coral-primary" />
                 </div>
                 <div className="font-heading font-bold text-2xl text-ink-primary">Compete</div>
                 <div className="text-sm text-ink-secondary">With Your City</div>
@@ -96,7 +96,7 @@ export function Hero() {
           >
             <div className="relative">
               <div className="parchment-card p-8">
-                <div className="aspect-square bg-gradient-to-br from-lakes-blue to-forest-green rounded-lg opacity-30"></div>
+                <div className="aspect-square bg-gradient-to-br from-cyan-primary via-cyan-glow to-amber-primary rounded-lg opacity-20"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <motion.div
                     animate={{
@@ -118,8 +118,8 @@ export function Hero() {
                   </motion.div>
                 </div>
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gold-treasure/20 treasure-border rounded-full"></div>
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-copper-orange/20 treasure-border rounded-full"></div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-amber-primary/20 cyber-glow treasure-border rounded-full"></div>
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-coral-primary/20 cyber-glow treasure-border rounded-full"></div>
             </div>
           </motion.div>
         </div>

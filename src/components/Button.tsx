@@ -23,9 +23,9 @@ export function Button({
   const baseStyles = 'font-heading font-bold transition-all duration-200 treasure-border relative overflow-hidden';
 
   const variants = {
-    primary: 'bg-copper-orange hover:bg-sunset-red text-parchment-light',
-    secondary: 'bg-lakes-blue hover:bg-lakes-light text-parchment-light',
-    outline: 'bg-transparent hover:bg-parchment-mid text-ink-primary',
+    primary: 'bg-cyan-primary hover:bg-cyan-dark text-white cyber-glow',
+    secondary: 'bg-amber-primary hover:bg-amber-dark text-ink-primary',
+    outline: 'bg-transparent hover:bg-cyan-light/10 text-ink-primary hover:text-cyan-primary border-2 border-cyan-primary/30',
   };
 
   const sizes = {
@@ -43,7 +43,7 @@ export function Button({
         baseStyles,
         variants[variant],
         sizes[size],
-        disabled && 'opacity-50 cursor-not-allowed hover:bg-copper-orange',
+        disabled && 'opacity-50 cursor-not-allowed hover:bg-cyan-primary',
         className
       )}
     >

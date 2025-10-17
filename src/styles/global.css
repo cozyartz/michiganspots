@@ -7,9 +7,10 @@
 @layer base {
   body {
     @apply bg-parchment-light text-ink-primary font-body;
+    /* Subtle modern tech-inspired background */
     background-image:
-      linear-gradient(rgba(244, 239, 229, 0.9), rgba(244, 239, 229, 0.9)),
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px);
+      linear-gradient(rgba(250, 251, 252, 0.95), rgba(250, 251, 252, 0.95)),
+      repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(65, 198, 187, 0.02) 50px, rgba(65, 198, 187, 0.02) 51px);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -19,25 +20,52 @@
 
 @layer utilities {
   .treasure-border {
-    @apply border-2 border-ink-primary rounded-sm;
+    @apply border-2 border-cyan-primary/30 rounded-lg;
     box-shadow:
-      inset 0 0 0 1px theme('colors.parchment.dark'),
-      0 2px 8px rgba(44, 24, 16, 0.15);
+      inset 0 0 0 1px rgba(65, 198, 187, 0.1),
+      0 4px 12px rgba(65, 198, 187, 0.15),
+      0 0 0 1px rgba(26, 11, 46, 0.05);
   }
 
   .parchment-card {
     @apply bg-parchment-mid treasure-border p-6;
-    background-image:
-      linear-gradient(rgba(232, 220, 200, 0.95), rgba(232, 220, 200, 0.95)),
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.02) 2px, rgba(0,0,0,.02) 4px);
+    background:
+      linear-gradient(135deg, rgba(245, 247, 250, 0.98) 0%, rgba(250, 251, 252, 0.95) 100%);
+    backdrop-filter: blur(10px);
   }
 
   .compass-shadow {
-    filter: drop-shadow(0 4px 6px rgba(44, 24, 16, 0.2));
+    filter: drop-shadow(0 4px 12px rgba(65, 198, 187, 0.4))
+            drop-shadow(0 0 20px rgba(65, 198, 187, 0.2));
   }
 
   .text-shadow-treasure {
-    text-shadow: 2px 2px 4px rgba(217, 118, 66, 0.3);
+    text-shadow:
+      2px 2px 8px rgba(65, 198, 187, 0.4),
+      0 0 20px rgba(65, 198, 187, 0.2);
+  }
+
+  .cyber-glow {
+    box-shadow:
+      0 0 10px rgba(65, 198, 187, 0.3),
+      0 0 20px rgba(65, 198, 187, 0.2),
+      0 0 30px rgba(65, 198, 187, 0.1);
+  }
+
+  .tech-gradient {
+    background: linear-gradient(135deg,
+      #41C6BB 0%,
+      #5FD9D1 25%,
+      #9CEDE1 50%,
+      #41C6BB 100%
+    );
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 }
 
