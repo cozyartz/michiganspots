@@ -108,9 +108,13 @@ export function Hero() {
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="text-9xl"
+                    className="w-full h-full p-8"
                   >
-                    X
+                    <img
+                      src="/MiSpot_logo.png"
+                      alt="Michigan Spots Logo"
+                      className="w-full h-full object-contain"
+                    />
                   </motion.div>
                 </div>
               </div>
