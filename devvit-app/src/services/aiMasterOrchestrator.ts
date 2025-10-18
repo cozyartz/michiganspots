@@ -337,7 +337,7 @@ export class AIMasterOrchestrator {
       
       // Generate insights for each partner
       const partnerInsights = await Promise.all(
-        partners.map(partner => 
+        partners.map(async (partner) =>
           this.businessIntelligence.generateBusinessInsights(
             partner.id,
             await this.getPartnerBusinessData(partner.id)
@@ -354,7 +354,7 @@ export class AIMasterOrchestrator {
 
       // Calculate ROI optimizations
       const roiOptimizations = await Promise.all(
-        partners.map(partner => 
+        partners.map(async (partner) =>
           this.businessIntelligence.calculateTreasureHuntROI(
             partner.id,
             await this.getPartnerInvestmentData(partner.id),

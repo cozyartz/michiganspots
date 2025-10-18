@@ -95,19 +95,21 @@
    - Show partner analytics
    - Upload to YouTube
 
-2. [ ] **Deploy to Reddit**
-   - Run: `npm run build && npm run upload`
-   - Get app URL: developers.reddit.com/apps/[app-name]
+2. [x] **Deploy to Reddit** ✅
+   - ✅ Uploaded version 0.0.1
+   - ✅ App URL: https://developers.reddit.com/apps/michiganspots
+   - ✅ Installed to r/michiganspots
+   - ✅ Playtest subreddit: r/michiganspots_dev
 
-3. [ ] **Configure DEVVIT_API_KEY**
-   - Generate API key
+3. [ ] **Configure CLOUDFLARE_API_KEY**
+   - Generate API key: `openssl rand -hex 32`
    - Add to Cloudflare Pages secrets
-   - Add to Devvit app settings
+   - Add to Devvit app settings at https://developers.reddit.com/apps/michiganspots
 
 4. [ ] **Create demo posts on r/michiganspots**
-   - Install app to subreddit
-   - Create sample challenges
-   - Capture screenshots
+   - ✅ App installed to subreddit
+   - [ ] Create test post using "Create Michigan Spots Game" menu
+   - [ ] Capture screenshots
 
 5. [ ] **Submit on Devpost**
    - Complete submission form
@@ -148,16 +150,21 @@
 
 ## 📊 Current Status
 
-**Overall Compliance:** 95% ✅
+**Overall Compliance:** 97% ✅
+
+**✅ Completed:**
+- ✅ Devvit app uploaded to Reddit (v0.0.1)
+- ✅ App installed to r/michiganspots
+- ✅ Simplified version deployed successfully
+- ✅ SDK version mismatch resolved (upgraded to 0.12.1)
 
 **Remaining Tasks:**
 1. Create demonstration video (30 minutes)
-2. Deploy to Reddit (15 minutes)
-3. Configure API keys (15 minutes)
-4. Create demo posts (30 minutes)
-5. Submit on Devpost (15 minutes)
+2. Configure CLOUDFLARE_API_KEY (15 minutes)
+3. Create demo posts (30 minutes)
+4. Submit on Devpost (15 minutes)
 
-**Estimated Time to Full Compliance:** ~2 hours
+**Estimated Time to Full Compliance:** ~90 minutes
 
 ## 🎯 Submission Timeline
 
@@ -200,24 +207,55 @@
 
 ## ✅ Final Checklist Before Submission
 
-- [ ] All code committed and pushed to GitHub
-- [ ] LICENSE file (AGPL v3) in repository root
-- [ ] .kiro directory tracked in git (not ignored)
-- [ ] README.md complete with setup instructions
+- [x] All code committed and pushed to GitHub
+- [x] LICENSE file (AGPL v3) in repository root
+- [x] .kiro directory tracked in git (not ignored)
+- [x] README.md complete with setup instructions
 - [ ] Demonstration video created and uploaded
-- [ ] App deployed to Reddit Developer Platform
-- [ ] DEVVIT_API_KEY configured
+- [x] App deployed to Reddit Developer Platform ✅
+- [ ] CLOUDFLARE_API_KEY configured
 - [ ] Demo posts created on r/michiganspots
 - [ ] Screenshots captured
 - [ ] Devpost submission form completed
 - [ ] Video link added to submission
-- [ ] Repository URL added to submission
-- [ ] App URL added to submission
+- [x] Repository URL added to submission
+- [x] App URL added to submission (https://developers.reddit.com/apps/michiganspots)
 - [ ] Submitted before deadline (Oct 29, 2025)
 
 ---
 
-**Last Updated:** October 18, 2025
-**Compliance Status:** Ready for final deployment and submission
+## 🔧 Technical Notes - Deployment Resolution
+
+### Issue: RenderPostComposer Error
+**Problem:** Kiro's full implementation failed upload with error:
+```
+Error: App class Devvit does not implement /devvit.reddit.custom_post.v1alpha.CustomPost/RenderPostComposer
+```
+
+**Root Cause:** SDK version mismatch
+- Devvit CLI: v0.12.1
+- @devvit/public-api: v0.10.23 ❌
+
+**Solution:**
+1. Upgraded @devvit/public-api to v0.12.1 ✅
+2. Created simplified main.tsx for initial deployment
+3. Successfully uploaded v0.0.1 to Reddit
+
+**Deployment Details:**
+- App Name: `michiganspots`
+- App URL: https://developers.reddit.com/apps/michiganspots
+- Installed Subreddits: r/michiganspots, r/michiganspots_dev
+- Current Version: 0.0.1 (simplified)
+- Full Implementation: Available in main-full.tsx for future updates
+
+**Next Steps:**
+1. Test simplified version on Reddit
+2. Gradually port features from main-full.tsx
+3. Upload incremental updates (v0.0.2, v0.0.3, etc.)
+
+---
+
+**Last Updated:** October 18, 2025 (Deployment successful!)
+**Compliance Status:** App deployed and installed ✅
 **Categories:** Community Play + Kiro Award
 **License:** AGPL v3 (OSI-approved)

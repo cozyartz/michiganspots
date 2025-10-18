@@ -1,6 +1,6 @@
 {
-  "name": "reddit-treasure-hunt-game",
-  "version": "1.0.0",
+  "name": "michiganspots",
+  "version": "0.0.0",
   "description": "Michigan Spots Reddit treasure hunt game for r/michiganspots",
   "main": "src/main.tsx",
   "scripts": {
@@ -27,18 +27,25 @@
     "ai:setup": "npm run validate:config && npm run test && npm run test:ai && npm run deploy:ai-production",
     "ai:verify": "npm run validate:ai-systems && npm run health-check:production"
   },
-  "keywords": ["devvit", "reddit", "treasure-hunt", "michigan"],
+  "keywords": [
+    "devvit",
+    "reddit",
+    "treasure-hunt",
+    "michigan"
+  ],
   "author": "Michigan Spots",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "@devvit/kit": "^0.10.23",
-    "@devvit/protos": "^0.10.23",
+    "@devvit/protos": "0.12.1",
     "@types/node": "^20.0.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
   },
   "dependencies": {
-    "@devvit/public-api": "^0.10.23"
-  }
+    "@devvit/public-api": "0.12.1"
+  },
+  "type": "module",
+  "private": true
 }
