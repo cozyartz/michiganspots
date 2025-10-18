@@ -1,36 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { PartnerDashboard } from '../../components/PartnerDashboard';
-
-// This page requires server-side rendering for auth check
-export const prerender = false;
-
-// Check authentication
-const sessionCookie = Astro.cookies.get('session');
-if (!sessionCookie) {
-  return Astro.redirect('/login?redirect=/partner/dashboard');
-}
-
-// Verify session and role
-const runtime = Astro.locals.runtime as any;
-const db = runtime?.env?.DB;
-
-if (!db) {
-  return Astro.redirect('/login?error=db_unavailable');
-}
-
-const session = await db
-  .prepare(`
-    SELECT u.* FROM sessions s
-    JOIN users u ON s.user_id = u.id
-    WHERE s.id = ? AND s.expires_at > unixepoch()
-  `)
-  .bind(sessionCookie.value)
-  .first();
-
-if (!session || (session.role !== 'partner' && session.role !== 'super_admin')) {
-  return Astro.redirect('/?error=unauthorized');
-}
 ---
 
 <Layout
@@ -38,5 +8,33 @@ if (!session || (session.role !== 'partner' && session.role !== 'super_admin')) 
   description="View your partnership performance and analytics"
   keywords="partner dashboard, analytics, michigan spots"
 >
-  <PartnerDashboard client:load />
+  <div id="auth-check" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <p>Verifying authentication...</p>
+  </div>
+  <div id="partner-content" style="display: none;">
+    <PartnerDashboard client:load />
+  </div>
+
+  <script>
+    // Client-side authentication check
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/user');
+        const data = await response.json();
+
+        if (!data.user || (data.user.role !== 'partner' && data.user.role !== 'super_admin')) {
+          window.location.href = '/?error=unauthorized';
+          return;
+        }
+
+        // User is authenticated as partner or super admin
+        document.getElementById('auth-check')!.style.display = 'none';
+        document.getElementById('partner-content')!.style.display = 'block';
+      } catch (error) {
+        window.location.href = '/login?redirect=/partner/dashboard';
+      }
+    }
+
+    checkAuth();
+  </script>
 </Layout>
