@@ -10,9 +10,9 @@ import {
 } from '../types/core.js';
 import { 
   ValidationResult, 
-  FraudDetectionResult,
   ErrorType 
 } from '../types/errors.js';
+import { FraudDetectionResult } from './fraudDetection.js';
 
 export interface SecurityEvent {
   id: string;
