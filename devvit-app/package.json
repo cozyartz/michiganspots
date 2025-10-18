@@ -1,0 +1,26 @@
+{
+  "name": "reddit-treasure-hunt-game",
+  "version": "1.0.0",
+  "description": "Michigan Spots Reddit treasure hunt game for r/michiganspots",
+  "main": "src/main.tsx",
+  "scripts": {
+    "build": "devvit build",
+    "dev": "devvit dev",
+    "upload": "devvit upload",
+    "test": "vitest --run",
+    "test:watch": "vitest"
+  },
+  "keywords": ["devvit", "reddit", "treasure-hunt", "michigan"],
+  "author": "Michigan Spots",
+  "license": "MIT",
+  "devDependencies": {
+    "@devvit/kit": "^0.10.23",
+    "@devvit/protos": "^0.10.23",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "@devvit/public-api": "^0.10.23"
+  }
+}

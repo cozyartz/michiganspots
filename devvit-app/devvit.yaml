@@ -1,0 +1,33 @@
+name: reddit-treasure-hunt-game
+version: 1.0.0
+description: Michigan Spots Reddit treasure hunt game for r/michiganspots
+
+permissions:
+  - identity
+  - read
+  - write
+  - moderation
+  - flair
+  - wiki
+  - posts
+  - comments
+
+settings:
+  - name: CLOUDFLARE_API_KEY
+    type: string
+    description: API key for Cloudflare Workers analytics integration
+    isSecret: true
+  - name: ANALYTICS_BASE_URL
+    type: string
+    description: Base URL for analytics API
+    default: "https://michiganspots.com/api/analytics"
+  - name: GPS_VERIFICATION_RADIUS
+    type: number
+    description: GPS verification radius in meters
+    default: 100
+  - name: MAX_SUBMISSIONS_PER_USER_PER_DAY
+    type: number
+    description: Maximum submissions per user per day for rate limiting
+    default: 10
+
+redis: true
