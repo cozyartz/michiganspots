@@ -26,3 +26,9 @@ export * from './aiPersonalizationService.js';
 export * from './aiExperimentService.js';
 export * from './aiExperimentDashboard.js';
 export * from './aiOrchestrator.js';
+
+// Advanced AI Services
+export * from './aiGameIntelligence.js';
+export * from './aiCommunityManager.js';
+export * from './aiBusinessIntelligence.js';
+export * from './aiMasterOrchestrator.js';
