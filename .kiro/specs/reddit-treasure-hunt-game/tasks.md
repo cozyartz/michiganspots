@@ -148,21 +148,21 @@
     - Ensure proper event formatting for existing analytics API endpoints
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 6.5_
 
-  - [ ]* 8.3 Write unit tests for social integration
+  - [x] 8.3 Write unit tests for social integration
     - Test Reddit event listeners and filtering logic
     - Verify analytics event generation for social interactions
     - Test event context extraction and data formatting
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 9. Implement fraud prevention and security
-  - [ ] 9.1 Create submission validation system
+- [x] 9. Implement fraud prevention and security
+  - [x] 9.1 Create submission validation system
     - Implement comprehensive validation for all proof submission types
     - Add duplicate submission prevention using user-challenge tracking
     - Create rate limiting for submissions to prevent spam
     - Add basic photo validation for business signage presence
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-  - [ ] 9.2 Build security monitoring
+  - [x] 9.2 Build security monitoring
     - Implement logging for suspicious activities and validation failures
     - Add flagging system for manual review of questionable submissions
     - Create security metrics tracking for monitoring fraud attempts

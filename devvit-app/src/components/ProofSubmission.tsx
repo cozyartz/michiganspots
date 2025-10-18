@@ -17,6 +17,9 @@ import {
 import { verifyLocationWithinRadius, validateAndNormalizeCoordinate } from '../utils/gpsUtils.js';
 import { getAnalyticsClient } from '../services/analytics.js';
 import { ChallengeCompletion } from '../types/analytics.js';
+import { SubmissionValidationService } from '../services/submissionValidation.js';
+import { SecurityMonitoringService } from '../services/securityMonitoring.js';
+import { ValidationResult } from '../types/errors.js';
 
 export interface ProofSubmissionProps {
   challenge: Challenge;
@@ -38,6 +41,8 @@ export interface SubmissionFormState {
  * Handles the complete proof submission flow including GPS verification
  */
 export class ProofSubmissionComponent {
+  private static validationService = new SubmissionValidationService();
+  private static securityService = new SecurityMonitoringService();
 
   /**
    * Get current user location with timeout and error handling
@@ -197,33 +202,58 @@ export class ProofSubmissionComponent {
         return { success: false, error: 'User not authenticated' };
       }
 
-      // Verify GPS location
-      const locationVerification = this.verifyGPSLocation(userLocation, challenge);
-      if (!locationVerification.isValid) {
-        return { success: false, error: locationVerification.message };
-      }
+      // Create preliminary submission for validation
+      const preliminarySubmission: Submission = {
+        id: `submission_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        challengeId: challenge.id,
+        userRedditUsername: currentUser.username,
+        proofType: proofSubmission.type,
+        proofData: proofSubmission.data,
+        submittedAt: new Date(),
+        verificationStatus: 'pending',
+        gpsCoordinates: userLocation,
+        fraudRiskScore: 0,
+      };
 
-      // Validate proof data based on type
-      let validationResult;
-      switch (proofSubmission.type) {
-        case 'photo':
-          validationResult = this.validatePhotoProof(proofSubmission.data);
-          break;
-        case 'receipt':
-          validationResult = this.validateReceiptProof(proofSubmission.data);
-          break;
-        case 'location_question':
-          validationResult = this.validateQuestionProof(proofSubmission.data, challenge);
-          break;
-        case 'gps_checkin':
-          validationResult = { isValid: true, errors: [] }; // GPS already verified above
-          break;
-        default:
-          return { success: false, error: 'Invalid proof type' };
-      }
+      // Get user submission history for validation
+      const userHistory = await this.getUserSubmissionHistory(context, currentUser.username);
 
+      // Comprehensive validation using the new validation service
+      const validationResult = await this.validationService.validateSubmission(
+        preliminarySubmission,
+        challenge,
+        userHistory,
+        proofSubmission
+      );
+
+      // Log validation failures to security monitoring
       if (!validationResult.isValid) {
-        return { success: false, error: validationResult.errors.join(', ') };
+        await this.securityService.logValidationFailure(
+          currentUser.username,
+          challenge.id,
+          preliminarySubmission.id,
+          validationResult
+        );
+
+        return { 
+          success: false, 
+          error: validationResult.errors.map(e => e.message).join(', ') 
+        };
+      }
+
+      // Check for warnings that might require flagging
+      if (validationResult.warnings && validationResult.warnings.length > 0) {
+        const warningMessages = validationResult.warnings.map(w => w.message);
+        await this.securityService.flagSubmissionForReview(
+          preliminarySubmission.id,
+          currentUser.username,
+          challenge.id,
+          `Validation warnings: ${warningMessages.join(', ')}`,
+          'low',
+          warningMessages,
+          0.3,
+          { validationWarnings: validationResult.warnings }
+        );
       }
 
       // Create submission record
@@ -332,9 +362,82 @@ export class ProofSubmissionComponent {
 
     } catch (error) {
       console.error('Proof submission error:', error);
+      
+      // Log system errors to security monitoring
+      if (currentUser) {
+        await this.securityService.logSecurityEvent(
+          'VALIDATION_FAILURE' as any,
+          'medium',
+          currentUser.username,
+          `System error during submission: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          { 
+            error: error instanceof Error ? error.message : 'Unknown error',
+            challengeId: challenge.id,
+            proofType: proofSubmission.type
+          },
+          challenge.id
+        );
+      }
+      
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
+      };
+    }
+  }
+
+  /**
+   * Get user submission history for validation
+   */
+  private static async getUserSubmissionHistory(
+    context: Devvit.Context,
+    username: string
+  ): Promise<UserSubmissionHistory> {
+    try {
+      // Get user's submission history from Redis
+      const submissionKeys = await context.redis.scan({
+        pattern: `submission:*`,
+        count: 1000
+      });
+
+      const userSubmissions: Submission[] = [];
+      let lastSubmissionAt: Date | undefined;
+      let suspiciousActivityCount = 0;
+
+      for (const key of submissionKeys) {
+        const submissionData = await context.redis.get(key);
+        if (submissionData) {
+          const submission: Submission = JSON.parse(submissionData);
+          if (submission.userRedditUsername === username) {
+            userSubmissions.push(submission);
+            
+            if (!lastSubmissionAt || submission.submittedAt > lastSubmissionAt) {
+              lastSubmissionAt = submission.submittedAt;
+            }
+
+            // Count suspicious activities (rejected submissions)
+            if (submission.verificationStatus === 'rejected') {
+              suspiciousActivityCount++;
+            }
+          }
+        }
+      }
+
+      return {
+        userRedditUsername: username,
+        submissions: userSubmissions,
+        lastSubmissionAt,
+        totalSubmissions: userSubmissions.length,
+        suspiciousActivityCount
+      };
+
+    } catch (error) {
+      console.error('Error getting user submission history:', error);
+      return {
+        userRedditUsername: username,
+        submissions: [],
+        totalSubmissions: 0,
+        suspiciousActivityCount: 0
       };
     }
   }
