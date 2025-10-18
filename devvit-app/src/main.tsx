@@ -626,6 +626,48 @@ Devvit.addSchedulerJob({
   }
 });
 
+// Loading Screen Component
+const LoadingScreen: Devvit.BlockComponent = () => {
+  return (
+    <vstack
+      height="100%"
+      width="100%"
+      alignment="center middle"
+      backgroundColor="#F5E6D3"
+      gap="medium"
+    >
+      <image
+        imageHeight={128}
+        imageWidth={128}
+        url="https://i.redd.it/snoovatar/avatars/nftv2_bmZ0X2VpcDE1NToxMzdfZjE0MzM3M2YyNjJjODMyMWUxZDMzNGQwNjY4MjAzNmQyOTRkZmQwMl8xMzE1MjY_rare_f417bf15-b64d-4fae-9f0e-04e6cfc9b79c-transparent.png"
+        description="Michigan Spots Logo"
+        resizeMode="fit"
+      />
+      <vstack alignment="center middle" gap="small">
+        <text size="xxlarge" weight="bold" color="#D2691E">
+          Michigan Spots
+        </text>
+        <text size="medium" color="#CD853F">
+          Treasure Hunt Game
+        </text>
+      </vstack>
+      <spacer size="medium" />
+      <text size="medium" color="#6b7280">
+        Loading challenges...
+      </text>
+      <vstack width="60%" height="4px" backgroundColor="#e5e7eb" cornerRadius="full">
+        <hstack width="100%" height="100%">
+          <spacer size="small" />
+        </hstack>
+      </vstack>
+      <spacer size="large" />
+      <text size="small" color="#9ca3af">
+        🗺️ Discover Michigan's Hidden Gems
+      </text>
+    </vstack>
+  );
+};
+
 // AI-Enhanced Main App Component
 const App: Devvit.CustomPostComponent = async (context) => {
   try {
@@ -893,7 +935,9 @@ const App: Devvit.CustomPostComponent = async (context) => {
 Devvit.addCustomPostType({
   name: 'Michigan Spots Treasure Hunt',
   description: 'Interactive treasure hunt game for discovering local Michigan businesses',
+  height: 'tall',
   render: App,
+  loading: LoadingScreen,
 });
 
 // Export the configured Devvit app
