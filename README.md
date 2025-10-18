@@ -25,7 +25,7 @@
 
 **A sophisticated geolocation gaming platform that transforms local discovery into competitive, community-driven engagement**
 
-Built by **[Cozyartz Media Group](https://cozyartz.com)** • Battle Creek, Michigan
+Built by **[Cozyartz Media Group](https://cozyartzmedia.com)** • Battle Creek, Michigan
 
 ---
 
@@ -572,7 +572,7 @@ This repository serves as a **portfolio showcase** of proprietary software devel
 
 For licensing, partnership, or business inquiries:
 - **Email**: partnerships@michiganspots.com
-- **Website**: [cozyartz.com](https://cozyartz.com)
+- **Website**: [cozyartzmedia.com](https://cozyartzmedia.com)
 - **Platform**: [michiganspots.com](https://michiganspots.com)
 
 ---
@@ -582,7 +582,7 @@ For licensing, partnership, or business inquiries:
 ## 🔗 Professional Links
 
 [![Live Platform](https://img.shields.io/badge/🌐_Platform-michiganspots.com-FF5D01?style=for-the-badge&labelColor=2C1810)](https://michiganspots.com)
-[![Cozyartz Portfolio](https://img.shields.io/badge/🏢_Agency-cozyartz.com-2E5077?style=for-the-badge&labelColor=2C1810)](https://cozyartz.com)
+[![Cozyartz Portfolio](https://img.shields.io/badge/🏢_Agency-cozyartzmedia.com-2E5077?style=for-the-badge&labelColor=2C1810)](https://cozyartzmedia.com)
 [![Reddit Community](https://img.shields.io/badge/💬_Community-r/michiganspots-FF4500?style=for-the-badge&logo=reddit&logoColor=white&labelColor=2C1810)](https://reddit.com/r/michiganspots)
 
 ---

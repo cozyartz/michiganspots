@@ -2,7 +2,7 @@
 
 /* TEAM */
 Developer: Cozyartz Media Group
-Site: https://cozyartz.com
+Site: https://cozyartzmedia.com
 Location: Battle Creek, Michigan, USA
 
 /* THANKS */

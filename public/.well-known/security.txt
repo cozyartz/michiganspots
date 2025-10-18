@@ -1,4 +1,4 @@
-Contact: mailto:security@cozyartz.com
+Contact: mailto:security@cozyartzmedia.com
 Expires: 2026-12-31T23:59:59.000Z
 Encryption: https://michiganspots.com/.well-known/pgp-key.txt
 Preferred-Languages: en

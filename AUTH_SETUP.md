@@ -432,7 +432,7 @@ After setup, you can:
 ## Support
 
 For help:
-- **Technical issues**: security@cozyartz.com
+- **Technical issues**: security@cozyartzmedia.com
 - **PurelyMail SMTP**: support@purelymail.com
 - **GitHub OAuth**: https://github.com/settings/developers
 - **Google OAuth**: https://console.cloud.google.com/support
