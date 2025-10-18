@@ -1,11 +1,37 @@
-import { Compass, Menu, X, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { Compass, Menu, X, ChevronDown, LogIn, LogOut, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+
+interface UserData {
+  id: string;
+  username: string;
+  email: string | null;
+  name: string | null;
+  avatar_url: string | null;
+  role: 'user' | 'partner' | 'super_admin';
+}
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPartnershipsOpen, setIsPartnershipsOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch current user session
+    fetch('/api/auth/user')
+      .then(res => res.json())
+      .then(data => {
+        setUser(data.user || null);
+        setLoading(false);
+      })
+      .catch(() => {
+        setUser(null);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-parchment-mid/95 backdrop-blur-sm treasure-border border-b-2">
@@ -71,12 +97,79 @@ export function Header() {
                 )}
               </AnimatePresence>
             </div>
-            <a
-              href="#signup"
-              className="px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors"
-            >
-              Join the Hunt
-            </a>
+            {!loading && (
+              <>
+                {user ? (
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setIsUserMenuOpen(true)}
+                    onMouseLeave={() => setIsUserMenuOpen(false)}
+                  >
+                    <button className="flex items-center space-x-2 font-heading text-ink-primary hover:text-cyan-primary transition-colors">
+                      {user.avatar_url ? (
+                        <img src={user.avatar_url} alt={user.username} className="w-8 h-8 rounded-full" />
+                      ) : (
+                        <User className="w-8 h-8" />
+                      )}
+                      <span>{user.username}</span>
+                      <ChevronDown className={cn("w-4 h-4 transition-transform", isUserMenuOpen && "rotate-180")} />
+                    </button>
+                    <AnimatePresence>
+                      {isUserMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="absolute top-full right-0 mt-2 w-48 bg-parchment-light treasure-border border-2 shadow-lg"
+                        >
+                          {user.role === 'super_admin' && (
+                            <>
+                              <a
+                                href="/admin/dashboard"
+                                className="block px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors border-b border-ink-faded/20"
+                              >
+                                Admin Dashboard
+                              </a>
+                              <a
+                                href="/admin/database"
+                                className="block px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors border-b border-ink-faded/20"
+                              >
+                                Database Viewer
+                              </a>
+                            </>
+                          )}
+                          {(user.role === 'partner' || user.role === 'super_admin') && (
+                            <a
+                              href="/partner/dashboard"
+                              className="block px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors border-b border-ink-faded/20"
+                            >
+                              Partner Dashboard
+                            </a>
+                          )}
+                          <form action="/api/auth/logout" method="POST">
+                            <button
+                              type="submit"
+                              className="w-full text-left px-4 py-3 font-heading text-ink-primary hover:bg-cyan-light/20 hover:text-cyan-primary transition-colors flex items-center space-x-2"
+                            >
+                              <LogOut className="w-4 h-4" />
+                              <span>Logout</span>
+                            </button>
+                          </form>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  <a
+                    href="/api/auth/github"
+                    className="px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors flex items-center space-x-2"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>Login</span>
+                  </a>
+                )}
+              </>
+            )}
           </div>
 
           <button
@@ -140,12 +233,63 @@ export function Header() {
                   )}
                 </AnimatePresence>
               </div>
-              <a
-                href="#signup"
-                className="block text-center px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors"
-              >
-                Join the Hunt
-              </a>
+              {!loading && (
+                <>
+                  {user ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 p-2 bg-parchment-light treasure-border">
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt={user.username} className="w-8 h-8 rounded-full" />
+                        ) : (
+                          <User className="w-8 h-8" />
+                        )}
+                        <span className="font-heading text-ink-primary">{user.username}</span>
+                      </div>
+                      {user.role === 'super_admin' && (
+                        <>
+                          <a
+                            href="/admin/dashboard"
+                            className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors"
+                          >
+                            Admin Dashboard
+                          </a>
+                          <a
+                            href="/admin/database"
+                            className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors"
+                          >
+                            Database Viewer
+                          </a>
+                        </>
+                      )}
+                      {(user.role === 'partner' || user.role === 'super_admin') && (
+                        <a
+                          href="/partner/dashboard"
+                          className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors"
+                        >
+                          Partner Dashboard
+                        </a>
+                      )}
+                      <form action="/api/auth/logout" method="POST">
+                        <button
+                          type="submit"
+                          className="flex items-center space-x-2 font-heading text-ink-primary hover:text-cyan-primary transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Logout</span>
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
+                    <a
+                      href="/api/auth/github"
+                      className="block text-center px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors flex items-center justify-center space-x-2"
+                    >
+                      <LogIn className="w-4 h-4" />
+                      <span>Login</span>
+                    </a>
+                  )}
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
