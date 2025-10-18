@@ -1,5 +1,6 @@
 # robots.txt for Michigan Spots
 # https://michiganspots.com
+# Last updated: 2025-10-18
 
 # Sitemaps
 Sitemap: https://michiganspots.com/sitemap.xml
@@ -13,9 +14,83 @@ Crawl-delay: 1
 # Google - priority access
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 # Bing
 User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+
+# AI Crawlers - Allow with Rate Limiting
+# OpenAI GPT
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 2
+
+# Common Crawl
+User-agent: CCBot
+Allow: /
+Crawl-delay: 2
+
+# Anthropic Claude
+User-agent: anthropic-ai
+Allow: /
+Crawl-delay: 1
+
+# Google Bard/Gemini
+User-agent: Google-Extended
+Allow: /
+Crawl-delay: 1
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Crawl-delay: 1
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+Crawl-delay: 2
+
+# AI2 Bot
+User-agent: AI2Bot
+Allow: /
+Crawl-delay: 2
+
+# Applebot (Siri/Spotlight)
+User-agent: Applebot
+Allow: /
+
+# Facebook/Meta
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter/X
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# Pinterest
+User-agent: Pinterestbot
+Allow: /
+
+# Reddit
+User-agent: Redditbot
 Allow: /
 
 # Block admin/internal paths
@@ -24,7 +99,21 @@ Disallow: /api/internal/
 Disallow: /.wrangler/
 Disallow: /.astro/
 Disallow: /admin/
+Disallow: /partner/
 Disallow: /partnership-acceptance
+
+# Block known bad bots
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
 
 # Host
 Host: https://michiganspots.com

@@ -1,0 +1,12 @@
+Contact: mailto:security@cozyartz.com
+Expires: 2026-12-31T23:59:59.000Z
+Encryption: https://michiganspots.com/.well-known/pgp-key.txt
+Preferred-Languages: en
+Canonical: https://michiganspots.com/.well-known/security.txt
+Policy: https://michiganspots.com/security-policy
+Acknowledgments: https://michiganspots.com/security-acknowledgments
+
+# Security Contact Information for Michigan Spots
+# Please report security vulnerabilities to the contact above
+# Expected response time: 48 hours
+# Bounty program: Contact for details

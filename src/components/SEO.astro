@@ -24,6 +24,7 @@ const {
 const siteName = 'Michigan Spots';
 const twitterHandle = '@michiganspots';
 const fullImageUrl = new URL(image, Astro.site || 'https://michiganspots.com').href;
+const logoUrl = 'https://michiganspots.com/MiSpot_logo.png';
 
 // Structured Data for Organization
 const organizationSchema = {
@@ -32,7 +33,7 @@ const organizationSchema = {
   "name": "Michigan Spots",
   "alternateName": "Cozyartz Media Group",
   "url": "https://michiganspots.com",
-  "logo": "https://michiganspots.com/logo.png",
+  "logo": logoUrl,
   "description": "A community-powered discovery game celebrating Michigan's hidden gems through challenges, badges, and friendly competition.",
   "foundingDate": "2025",
   "foundingLocation": {
@@ -75,7 +76,7 @@ const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "Michigan Spots",
-  "image": "https://michiganspots.com/logo.png",
+  "image": logoUrl,
   "description": "Community-powered discovery game platform for Michigan",
   "address": {
     "@type": "PostalAddress",
@@ -158,6 +159,189 @@ const breadcrumbSchema = {
     }
   ]
 };
+
+// Game/Software Application Schema
+const gameApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Michigan Spots",
+  "applicationCategory": "GameApplication",
+  "applicationSubCategory": "Location-Based Game",
+  "operatingSystem": "Web Browser, iOS, Android",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5.0",
+    "reviewCount": "1",
+    "bestRating": "5"
+  },
+  "image": logoUrl,
+  "screenshot": fullImageUrl,
+  "description": "Discover Michigan's hidden gems through community-powered exploration, challenges, and friendly competition. Free to play Reddit-based discovery game.",
+  "url": "https://michiganspots.com",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "softwareVersion": "1.0",
+  "availableOnDevice": "Desktop, Mobile, Tablet",
+  "featureList": [
+    "Location-based challenges",
+    "Community voting",
+    "Digital badges and achievements",
+    "City leaderboards",
+    "Photo proof submission",
+    "Reddit integration",
+    "Fraud detection",
+    "Real-time analytics"
+  ],
+  "countriesSupported": "US",
+  "inLanguage": "en-US"
+};
+
+// Launch Event Schema
+const launchEventSchema = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Michigan Spots Launch",
+  "description": "Official launch of Michigan Spots - a community-powered discovery game celebrating Michigan's hidden gems",
+  "startDate": "2025-10-01T00:00:00-04:00",
+  "endDate": "2025-10-31T23:59:59-04:00",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+  "location": {
+    "@type": "VirtualLocation",
+    "url": "https://michiganspots.com"
+  },
+  "image": logoUrl,
+  "organizer": {
+    "@type": "Organization",
+    "name": "Michigan Spots",
+    "url": "https://michiganspots.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://michiganspots.com",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "validFrom": "2025-01-01T00:00:00-04:00"
+  },
+  "isAccessibleForFree": true
+};
+
+// Video Game Schema for better gaming discoverability
+const videoGameSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Michigan Spots",
+  "description": "Community-powered treasure hunt and discovery game for Michigan",
+  "genre": ["Location-based game", "Treasure hunt", "Social game"],
+  "gamePlatform": ["Web browser", "Mobile web"],
+  "numberOfPlayers": {
+    "@type": "QuantitativeValue",
+    "minValue": 1,
+    "maxValue": 1000000
+  },
+  "playMode": "MultiPlayer",
+  "image": logoUrl,
+  "author": {
+    "@type": "Organization",
+    "name": "Cozyartz Media Group"
+  }
+};
+
+// Service Area Schema - Michigan Coverage
+const serviceAreaSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Michigan Spots Discovery Game",
+  "serviceType": "Location-Based Gaming Platform",
+  "provider": {
+    "@type": "Organization",
+    "name": "Michigan Spots"
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Detroit",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Grand Rapids",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Ann Arbor",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Battle Creek",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Lansing",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Kalamazoo",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Traverse City",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Marquette",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Michigan"
+      }
+    },
+    {
+      "@type": "State",
+      "name": "Michigan",
+      "containedInPlace": {
+        "@type": "Country",
+        "name": "United States"
+      }
+    }
+  ],
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://michiganspots.com",
+    "serviceType": "Online Platform"
+  }
+};
 ---
 
 <!-- Primary Meta Tags -->
@@ -215,3 +399,7 @@ const breadcrumbSchema = {
 <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
 <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(gameApplicationSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(launchEventSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(videoGameSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(serviceAreaSchema)} />

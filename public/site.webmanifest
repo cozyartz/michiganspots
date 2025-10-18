@@ -1,0 +1,22 @@
+{
+  "name": "Michigan Spots",
+  "short_name": "MiSpots",
+  "description": "Discover Michigan's hidden gems through community-powered exploration and friendly competition",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5E6D3",
+  "theme_color": "#D2691E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/MiSpot_logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment", "lifestyle", "travel"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "scope": "/"
+}

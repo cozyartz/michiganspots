@@ -1,0 +1,27 @@
+# Michigan Spots - Discover Michigan's Hidden Gems
+
+/* TEAM */
+Developer: Cozyartz Media Group
+Site: https://cozyartz.com
+Location: Battle Creek, Michigan, USA
+
+/* THANKS */
+Reddit Community: r/michiganspots
+Michigan Tourism: Pure Michigan
+Local Chambers: Michigan Chamber Network
+
+/* SITE */
+Last update: 2025/10/18
+Standards: HTML5, CSS3, JavaScript ES2024
+Components: Astro, React, Tailwind CSS
+Software: VS Code, Claude Code
+Hosting: Cloudflare Pages
+Database: Cloudflare D1
+AI: Anthropic Claude
+
+/* VALUES */
+Community: First
+Privacy: Respected
+Security: Priority
+Free: Always
+Michigan: Forever
