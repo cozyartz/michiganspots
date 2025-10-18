@@ -542,3 +542,714 @@ describe('Error Recovery Actions', () => {
     expect(loginAction?.label).toBe('Log In Again');
   });
 });
+
+describe('Comprehensive Error Classification and User Messages', () => {
+  let errorHandler: ErrorHandler;
+
+  beforeEach(() => {
+    errorHandler = new ErrorHandler();
+  });
+
+  describe('GPS Error Classification', () => {
+    it('should classify GPS permission denied errors', () => {
+      const gpsError = new Error('User denied geolocation');
+      (gpsError as any).code = 1; // PERMISSION_DENIED
+
+      const classified = (errorHandler as any).classifyError(gpsError);
+
+      expect(classified.type).toBe(ErrorType.GPS_PERMISSION_DENIED);
+      expect(classified.userMessage).toContain('Location permission is required');
+      expect(classified.severity).toBe(ErrorSeverity.HIGH);
+      expect(classified.recoverable).toBe(true);
+    });
+
+    it('should classify GPS unavailable errors', () => {
+      const gpsError = new Error('Position unavailable');
+      (gpsError as any).code = 2; // POSITION_UNAVAILABLE
+
+      const classified = (errorHandler as any).classifyError(gpsError);
+
+      expect(classified.type).toBe(ErrorType.GPS_UNAVAILABLE);
+      expect(classified.userMessage).toContain('Location services are not available');
+      expect(classified.severity).toBe(ErrorSeverity.MEDIUM);
+    });
+
+    it('should classify GPS timeout errors', () => {
+      const gpsError = new Error('GPS timeout');
+      (gpsError as any).code = 3; // TIMEOUT
+
+      const classified = (errorHandler as any).classifyError(gpsError);
+
+      expect(classified.type).toBe(ErrorType.TIMEOUT_ERROR);
+      expect(classified.userMessage).toContain('taking too long');
+      expect(classified.retryable).toBe(true);
+    });
+  });
+
+  describe('Network Error Classification', () => {
+    it('should classify network connection errors', () => {
+      const networkError = new Error('Network connection failed');
+      networkError.name = 'NetworkError';
+
+      const classified = (errorHandler as any).classifyError(networkError);
+
+      expect(classified.type).toBe(ErrorType.NETWORK_ERROR);
+      expect(classified.userMessage).toContain('check your internet connection');
+      expect(classified.retryable).toBe(true);
+    });
+
+    it('should classify timeout errors', () => {
+      const timeoutError = new Error('Request timeout');
+      timeoutError.name = 'TimeoutError';
+
+      const classified = (errorHandler as any).classifyError(timeoutError);
+
+      expect(classified.type).toBe(ErrorType.TIMEOUT_ERROR);
+      expect(classified.userMessage).toContain('taking too long');
+      expect(classified.retryable).toBe(true);
+    });
+
+    it('should classify rate limiting errors', () => {
+      const rateLimitError = new Error('Too many requests');
+      (rateLimitError as any).status = 429;
+
+      const classified = (errorHandler as any).classifyError(rateLimitError);
+
+      expect(classified.type).toBe(ErrorType.RATE_LIMITED);
+      expect(classified.userMessage).toContain('doing that too often');
+      expect(classified.severity).toBe(ErrorSeverity.MEDIUM);
+    });
+  });
+
+  describe('Authentication Error Classification', () => {
+    it('should classify 401 errors as authentication errors', () => {
+      const authError = new Error('Unauthorized');
+      (authError as any).status = 401;
+
+      const classified = (errorHandler as any).classifyError(authError);
+
+      expect(classified.type).toBe(ErrorType.AUTHENTICATION_ERROR);
+      expect(classified.userMessage).toContain('log in again');
+      expect(classified.severity).toBe(ErrorSeverity.HIGH);
+      expect(classified.retryable).toBe(false);
+    });
+
+    it('should classify 403 errors as authorization errors', () => {
+      const authzError = new Error('Forbidden');
+      (authzError as any).status = 403;
+
+      const classified = (errorHandler as any).classifyError(authzError);
+
+      expect(classified.type).toBe(ErrorType.AUTHORIZATION_ERROR);
+      expect(classified.userMessage).toContain('don\'t have permission');
+      expect(classified.severity).toBe(ErrorSeverity.HIGH);
+    });
+  });
+
+  describe('Storage Error Classification', () => {
+    it('should classify quota exceeded errors', () => {
+      const storageError = new Error('Storage quota exceeded');
+      storageError.name = 'QuotaExceededError';
+
+      const classified = (errorHandler as any).classifyError(storageError);
+
+      expect(classified.type).toBe(ErrorType.STORAGE_ERROR);
+      expect(classified.userMessage).toContain('save your progress');
+      expect(classified.severity).toBe(ErrorSeverity.HIGH);
+    });
+
+    it('should classify validation errors', () => {
+      const validationError = new Error('Invalid data format');
+      validationError.name = 'ValidationError';
+
+      const classified = (errorHandler as any).classifyError(validationError);
+
+      expect(classified.type).toBe(ErrorType.VALIDATION_ERROR);
+      expect(classified.userMessage).toContain('not valid');
+      expect(classified.severity).toBe(ErrorSeverity.MEDIUM);
+    });
+  });
+
+  describe('Server Error Classification', () => {
+    it('should classify 5xx errors as API errors', () => {
+      const serverError = new Error('Internal server error');
+      (serverError as any).status = 500;
+
+      const classified = (errorHandler as any).classifyError(serverError);
+
+      expect(classified.type).toBe(ErrorType.API_ERROR);
+      expect(classified.userMessage).toContain('Something went wrong on our end');
+      expect(classified.severity).toBe(ErrorSeverity.HIGH);
+      expect(classified.retryable).toBe(true);
+    });
+  });
+
+  describe('User Message Generation', () => {
+    it('should generate appropriate user messages for all error types', () => {
+      const errorTypes = Object.values(ErrorType);
+      
+      errorTypes.forEach(errorType => {
+        const error = errorHandler.createError(errorType);
+        
+        expect(error.userMessage).toBeDefined();
+        expect(error.userMessage.length).toBeGreaterThan(0);
+        expect(error.userMessage).not.toContain('undefined');
+        expect(error.userMessage).not.toContain('null');
+        
+        // User messages should be user-friendly, not technical
+        expect(error.userMessage).not.toMatch(/Error|Exception|Stack|Trace/i);
+      });
+    });
+
+    it('should provide actionable user messages', () => {
+      const gpsError = errorHandler.createError(ErrorType.GPS_UNAVAILABLE);
+      expect(gpsError.userMessage).toMatch(/enable|try|manual/i);
+
+      const networkError = errorHandler.createError(ErrorType.NETWORK_ERROR);
+      expect(networkError.userMessage).toMatch(/check|connection|try again/i);
+
+      const authError = errorHandler.createError(ErrorType.AUTHENTICATION_ERROR);
+      expect(authError.userMessage).toMatch(/log in|login/i);
+    });
+  });
+});
+
+describe('Offline Mode and Data Sync Testing', () => {
+  let degradationService: GracefulDegradationService;
+
+  beforeEach(() => {
+    degradationService = new GracefulDegradationService();
+    vi.clearAllMocks();
+  });
+
+  describe('Offline Mode Detection', () => {
+    it('should detect offline mode correctly', () => {
+      expect(degradationService.isOffline()).toBe(false);
+      
+      degradationService.setOfflineMode(true);
+      expect(degradationService.isOffline()).toBe(true);
+      
+      degradationService.setOfflineMode(false);
+      expect(degradationService.isOffline()).toBe(false);
+    });
+
+    it('should apply offline strategies when network is unavailable', async () => {
+      const networkError: GameError = {
+        type: ErrorType.NETWORK_ERROR,
+        message: 'Network failed',
+        userMessage: 'Network failed',
+        severity: ErrorSeverity.MEDIUM,
+        recoverable: true,
+        retryable: true,
+        timestamp: new Date()
+      };
+
+      const result = await degradationService.applyDegradation(networkError, 'loadChallenges');
+
+      expect(result.degraded).toBe(true);
+      expect(result.strategy?.name).toBe('offline_challenges');
+      expect(result.strategy?.userMessage).toContain('cached challenges');
+    });
+
+    it('should apply GPS fallback strategies', async () => {
+      const gpsError: GameError = {
+        type: ErrorType.GPS_UNAVAILABLE,
+        message: 'GPS unavailable',
+        userMessage: 'GPS unavailable',
+        severity: ErrorSeverity.MEDIUM,
+        recoverable: true,
+        retryable: false,
+        timestamp: new Date()
+      };
+
+      const result = await degradationService.applyDegradation(gpsError, 'getLocation');
+
+      expect(result.degraded).toBe(true);
+      expect(result.strategy?.name).toBe('manual_location');
+      expect(result.strategy?.userMessage).toContain('enter your location manually');
+    });
+  });
+
+  describe('Data Caching and Retrieval', () => {
+    it('should cache data with TTL', async () => {
+      const testData = { challenges: ['challenge1', 'challenge2'] };
+      const ttl = 5000; // 5 seconds
+
+      await degradationService.cacheData('test_challenges', testData, ttl);
+      
+      // Should retrieve immediately
+      const retrieved = await degradationService.getCachedData('test_challenges');
+      expect(retrieved).toEqual(testData);
+    });
+
+    it('should handle cache expiration', async () => {
+      const testData = { test: 'data' };
+      const shortTtl = 1; // 1ms
+
+      await degradationService.cacheData('short_lived', testData, shortTtl);
+      
+      // Wait for expiration
+      await new Promise(resolve => setTimeout(resolve, 10));
+      
+      const retrieved = await degradationService.getCachedData('short_lived');
+      expect(retrieved).toBeNull();
+    });
+
+    it('should handle cache storage failures gracefully', async () => {
+      // Import Devvit from the mock
+      const { Devvit } = await import('@devvit/public-api');
+      
+      // Mock KV store failure
+      vi.mocked(Devvit.kvStore.put).mockRejectedValue(new Error('Storage failed'));
+      
+      const testData = { test: 'data' };
+      
+      // Should not throw error
+      await expect(degradationService.cacheData('test_key', testData)).resolves.not.toThrow();
+    });
+
+    it('should handle cache retrieval failures gracefully', async () => {
+      // Import Devvit from the mock
+      const { Devvit } = await import('@devvit/public-api');
+      
+      // Mock KV store failure
+      vi.mocked(Devvit.kvStore.get).mockRejectedValue(new Error('Retrieval failed'));
+      
+      const result = await degradationService.getCachedData('test_key');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('Fallback Strategy Execution', () => {
+    it('should execute fallback strategies without errors', async () => {
+      const strategies = [
+        { error: ErrorType.NETWORK_ERROR, operation: 'loadChallenges' },
+        { error: ErrorType.GPS_UNAVAILABLE, operation: 'getLocation' },
+        { error: ErrorType.API_ERROR, operation: 'submitProof' }
+      ];
+
+      for (const { error, operation } of strategies) {
+        const gameError: GameError = {
+          type: error,
+          message: 'Test error',
+          userMessage: 'Test error',
+          severity: ErrorSeverity.MEDIUM,
+          recoverable: true,
+          retryable: true,
+          timestamp: new Date()
+        };
+
+        const result = await degradationService.applyDegradation(gameError, operation);
+        
+        if (result.degraded) {
+          expect(result.strategy).toBeDefined();
+          expect(result.strategy?.userMessage).toBeDefined();
+          expect(result.data).toBeDefined();
+        }
+      }
+    });
+
+    it('should handle fallback strategy failures', async () => {
+      const networkError: GameError = {
+        type: ErrorType.NETWORK_ERROR,
+        message: 'Network failed',
+        userMessage: 'Network failed',
+        severity: ErrorSeverity.MEDIUM,
+        recoverable: true,
+        retryable: true,
+        timestamp: new Date()
+      };
+
+      // Mock fallback failure
+      vi.spyOn(degradationService as any, 'getCachedChallenges')
+        .mockRejectedValue(new Error('Fallback failed'));
+
+      const result = await degradationService.applyDegradation(networkError, 'loadChallenges');
+      
+      // Should handle fallback failure gracefully
+      expect(result.degraded).toBe(false);
+      expect(result.data).toBeNull();
+    });
+  });
+
+  describe('Cache Management', () => {
+    it('should clear all cached data', async () => {
+      // Add some cached data
+      await degradationService.cacheData('test1', { data: 'test1' });
+      await degradationService.cacheData('test2', { data: 'test2' });
+      
+      // Clear cache
+      await degradationService.clearCache();
+      
+      // Should return null for all cached items
+      const result1 = await degradationService.getCachedData('test1');
+      const result2 = await degradationService.getCachedData('test2');
+      
+      expect(result1).toBeNull();
+      expect(result2).toBeNull();
+    });
+  });
+});
+
+describe('Retry Mechanisms and Graceful Degradation', () => {
+  let retryMechanism: RetryMechanism;
+
+  beforeEach(() => {
+    retryMechanism = new RetryMechanism();
+    vi.clearAllMocks();
+  });
+
+  describe('Exponential Backoff', () => {
+    it('should implement exponential backoff correctly', async () => {
+      const delays: number[] = [];
+      const operation = vi.fn().mockRejectedValue(Object.assign(new Error('Network error'), { name: 'NetworkError' }));
+      
+      // Mock sleep to capture delays
+      vi.spyOn(retryMechanism as any, 'sleep').mockImplementation((ms: number) => {
+        delays.push(ms);
+        return Promise.resolve();
+      });
+
+      try {
+        await retryMechanism.executeWithRetry(operation, {
+          maxAttempts: 3,
+          baseDelay: 1000,
+          backoffMultiplier: 2
+        });
+      } catch (e) {
+        // Expected to fail
+      }
+
+      expect(delays).toHaveLength(2); // 2 retries
+      expect(delays[0]).toBeGreaterThanOrEqual(1000); // First retry >= base delay
+      expect(delays[1]).toBeGreaterThanOrEqual(2000); // Second retry >= base delay * 2
+    });
+
+    it('should respect maximum delay', async () => {
+      const delays: number[] = [];
+      const operation = vi.fn().mockRejectedValue(new Error('Network error'));
+      
+      vi.spyOn(retryMechanism as any, 'sleep').mockImplementation((ms: number) => {
+        delays.push(ms);
+        return Promise.resolve();
+      });
+
+      try {
+        await retryMechanism.executeWithRetry(operation, {
+          maxAttempts: 5,
+          baseDelay: 1000,
+          backoffMultiplier: 3,
+          maxDelay: 5000
+        });
+      } catch (e) {
+        // Expected to fail
+      }
+
+      // All delays should be <= maxDelay
+      delays.forEach(delay => {
+        expect(delay).toBeLessThanOrEqual(5000);
+      });
+    });
+
+    it('should add jitter to prevent thundering herd', async () => {
+      const delays: number[] = [];
+      const operation = vi.fn().mockRejectedValue(Object.assign(new Error('Network error'), { name: 'NetworkError' }));
+      
+      vi.spyOn(retryMechanism as any, 'sleep').mockImplementation((ms: number) => {
+        delays.push(ms);
+        return Promise.resolve();
+      });
+
+      // Run multiple times to check for jitter
+      for (let i = 0; i < 3; i++) {
+        try {
+          await retryMechanism.executeWithRetry(operation, {
+            maxAttempts: 2,
+            baseDelay: 1000
+          });
+        } catch (e) {
+          // Expected to fail
+        }
+      }
+
+      // Should have at least some delays recorded
+      expect(delays.length).toBeGreaterThan(0);
+      
+      // Check that delays are in expected range (with jitter they should vary)
+      delays.forEach(delay => {
+        expect(delay).toBeGreaterThan(900); // Should be close to base delay with jitter
+        expect(delay).toBeLessThan(1200); // Should not be too far from base delay
+      });
+    });
+  });
+
+  describe('Circuit Breaker Integration', () => {
+    it('should open circuit after failure threshold', async () => {
+      const operation = vi.fn().mockRejectedValue(new Error('Service unavailable'));
+      const circuitKey = 'test-service';
+
+      // Trigger failures to open circuit
+      for (let i = 0; i < 5; i++) {
+        try {
+          await retryMechanism.executeWithCircuitBreaker(operation, circuitKey);
+        } catch (e) {
+          // Expected to fail
+        }
+      }
+
+      const state = retryMechanism.getCircuitBreakerStatus(circuitKey);
+      expect(state).toBe(CircuitState.OPEN);
+    });
+
+    it('should reject immediately when circuit is open', async () => {
+      const operation = vi.fn().mockRejectedValue(new Error('Service unavailable'));
+      const circuitKey = 'test-service-2';
+
+      // Open the circuit
+      for (let i = 0; i < 5; i++) {
+        try {
+          await retryMechanism.executeWithCircuitBreaker(operation, circuitKey);
+        } catch (e) {
+          // Expected to fail
+        }
+      }
+
+      // Next call should be rejected immediately
+      const startTime = Date.now();
+      try {
+        await retryMechanism.executeWithCircuitBreaker(operation, circuitKey);
+      } catch (e) {
+        const duration = Date.now() - startTime;
+        expect(duration).toBeLessThan(100); // Should fail quickly
+      }
+    });
+
+    it('should reset circuit breaker', () => {
+      const circuitKey = 'test-service-reset';
+      
+      retryMechanism.resetCircuitBreaker(circuitKey);
+      const state = retryMechanism.getCircuitBreakerStatus(circuitKey);
+      
+      // Should be null if circuit doesn't exist or closed if it does
+      expect(state === null || state === CircuitState.CLOSED).toBe(true);
+    });
+  });
+
+  describe('Batch Operations with Retry', () => {
+    it('should handle mixed success and failure in batch operations', async () => {
+      const operations = [
+        vi.fn().mockResolvedValue('success1'),
+        vi.fn().mockRejectedValue(new Error('failure')),
+        vi.fn().mockResolvedValue('success2'),
+        vi.fn()
+          .mockRejectedValueOnce(Object.assign(new Error('temp failure'), { name: 'NetworkError' }))
+          .mockResolvedValue('success after retry')
+      ];
+
+      const results = await retryMechanism.retryBatch(operations, {
+        maxAttempts: 2
+      });
+
+      expect(results).toHaveLength(4);
+      expect(results[0].success).toBe(true);
+      expect(results[0].result).toBe('success1');
+      expect(results[1].success).toBe(false);
+      expect(results[2].success).toBe(true);
+      expect(results[2].result).toBe('success2');
+      expect(results[3].success).toBe(true);
+      expect(results[3].result).toBe('success after retry');
+    });
+  });
+
+  describe('Custom Retry Logic', () => {
+    it('should respect custom shouldRetry function', async () => {
+      const operation = vi.fn()
+        .mockRejectedValueOnce(new Error('Retryable error'))
+        .mockRejectedValueOnce(new Error('Non-retryable error'))
+        .mockResolvedValue('success');
+
+      const shouldRetry = vi.fn()
+        .mockReturnValueOnce(true)  // First error is retryable
+        .mockReturnValueOnce(false); // Second error is not retryable
+
+      try {
+        await retryMechanism.executeWithRetry(operation, {
+          maxAttempts: 3,
+          shouldRetry
+        });
+      } catch (e) {
+        expect((e as Error).message).toBe('Non-retryable error');
+      }
+
+      expect(operation).toHaveBeenCalledTimes(2);
+      expect(shouldRetry).toHaveBeenCalledTimes(2);
+    });
+
+    it('should call onRetry callback with correct parameters', async () => {
+      const operation = vi.fn()
+        .mockRejectedValueOnce(Object.assign(new Error('First failure'), { name: 'NetworkError' }))
+        .mockRejectedValueOnce(Object.assign(new Error('Second failure'), { name: 'NetworkError' }))
+        .mockResolvedValue('success');
+
+      const onRetry = vi.fn();
+
+      await retryMechanism.executeWithRetry(operation, {
+        maxAttempts: 3,
+        onRetry
+      });
+
+      expect(onRetry).toHaveBeenCalledTimes(2);
+      expect(onRetry).toHaveBeenNthCalledWith(1, 1, expect.objectContaining({
+        message: 'First failure'
+      }));
+      expect(onRetry).toHaveBeenNthCalledWith(2, 2, expect.objectContaining({
+        message: 'Second failure'
+      }));
+    });
+  });
+
+  describe('Error Type Specific Retry Logic', () => {
+    it('should retry network errors', () => {
+      const networkError = new Error('Network failed');
+      networkError.name = 'NetworkError';
+
+      const isRetryable = (retryMechanism as any).isRetryableError(
+        networkError, 
+        [ErrorType.NETWORK_ERROR, ErrorType.API_ERROR]
+      );
+
+      expect(isRetryable).toBe(true);
+    });
+
+    it('should retry timeout errors', () => {
+      const timeoutError = new Error('Timeout');
+      timeoutError.name = 'TimeoutError';
+
+      const isRetryable = (retryMechanism as any).isRetryableError(
+        timeoutError,
+        [ErrorType.TIMEOUT_ERROR]
+      );
+
+      expect(isRetryable).toBe(true);
+    });
+
+    it('should retry 5xx HTTP errors', () => {
+      const serverError = new Error('Server error');
+      (serverError as any).status = 500;
+
+      const isRetryable = (retryMechanism as any).isRetryableError(
+        serverError,
+        [ErrorType.API_ERROR]
+      );
+
+      expect(isRetryable).toBe(true);
+    });
+
+    it('should not retry 4xx HTTP errors (except 408, 429)', () => {
+      const clientError = new Error('Bad request');
+      (clientError as any).status = 400;
+
+      const isRetryable = (retryMechanism as any).isRetryableError(
+        clientError,
+        [ErrorType.API_ERROR]
+      );
+
+      expect(isRetryable).toBe(false);
+    });
+
+    it('should retry 408 and 429 HTTP errors', () => {
+      const timeoutError = new Error('Request timeout');
+      (timeoutError as any).status = 408;
+
+      const rateLimitError = new Error('Rate limited');
+      (rateLimitError as any).status = 429;
+
+      const isTimeoutRetryable = (retryMechanism as any).isRetryableError(
+        timeoutError,
+        [ErrorType.TIMEOUT_ERROR]
+      );
+
+      const isRateLimitRetryable = (retryMechanism as any).isRetryableError(
+        rateLimitError,
+        [ErrorType.RATE_LIMITED]
+      );
+
+      expect(isTimeoutRetryable).toBe(true);
+      expect(isRateLimitRetryable).toBe(true);
+    });
+  });
+});
+
+describe('Integration: Error Handling with Offline Sync', () => {
+  let errorHandler: ErrorHandler;
+  let degradationService: GracefulDegradationService;
+
+  beforeEach(() => {
+    errorHandler = new ErrorHandler();
+    degradationService = new GracefulDegradationService();
+    vi.clearAllMocks();
+  });
+
+  it('should handle network errors with graceful degradation', async () => {
+    const networkError = new Error('Network connection failed');
+    networkError.name = 'NetworkError';
+
+    // Classify the error
+    const gameError = await errorHandler.handleError(networkError);
+    expect(gameError.type).toBe(ErrorType.NETWORK_ERROR);
+
+    // Apply graceful degradation
+    const degradationResult = await degradationService.applyDegradation(
+      gameError, 
+      'loadChallenges'
+    );
+
+    expect(degradationResult.degraded).toBe(true);
+    expect(degradationResult.strategy?.name).toBe('offline_challenges');
+
+    // Get recovery actions
+    const actions = errorHandler.getRecoveryActions(gameError);
+    expect(actions.some(a => a.type === 'retry')).toBe(true);
+    expect(actions.some(a => a.type === 'fallback')).toBe(true);
+  });
+
+  it('should handle GPS errors with manual fallback', async () => {
+    const gpsError = new Error('GPS unavailable');
+    (gpsError as any).code = 2;
+
+    const gameError = await errorHandler.handleError(gpsError);
+    expect(gameError.type).toBe(ErrorType.GPS_UNAVAILABLE);
+
+    const degradationResult = await degradationService.applyDegradation(
+      gameError,
+      'getLocation'
+    );
+
+    expect(degradationResult.degraded).toBe(true);
+    expect(degradationResult.strategy?.name).toBe('manual_location');
+
+    const actions = errorHandler.getRecoveryActions(gameError);
+    expect(actions.some(a => a.type === 'manual')).toBe(true);
+  });
+
+  it('should provide comprehensive error context for debugging', async () => {
+    const context = {
+      userId: 'user123',
+      challengeId: 'challenge456',
+      component: 'ChallengeDetail',
+      operation: 'submitProof',
+      additionalData: { attempt: 2, gpsAccuracy: 50 }
+    };
+
+    const error = errorHandler.createError(
+      ErrorType.LOCATION_TOO_FAR,
+      new Error('User too far from location'),
+      context
+    );
+
+    expect(error.correlationId).toBeDefined();
+    expect(error.context).toEqual(context.additionalData);
+    expect(error.timestamp).toBeInstanceOf(Date);
+    expect(error.userMessage).toContain('100 meters');
+  });
+});

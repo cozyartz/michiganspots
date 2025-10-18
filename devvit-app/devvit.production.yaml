@@ -1,0 +1,58 @@
+name: reddit-treasure-hunt-game
+version: 1.0.0
+description: Michigan Spots Reddit treasure hunt game for r/michiganspots - Production Configuration
+
+# Production permissions - minimal required set
+permissions:
+  - identity      # Required for user authentication
+  - read         # Required to read posts and comments
+  - write        # Required to create posts and comments
+  - posts        # Required to interact with posts
+  - comments     # Required to interact with comments
+
+# Production settings with secure defaults
+settings:
+  - name: CLOUDFLARE_API_KEY
+    type: string
+    description: Production API key for Cloudflare Workers analytics integration
+    isSecret: true
+    
+  - name: ANALYTICS_BASE_URL
+    type: string
+    description: Production analytics API base URL
+    default: "https://michiganspots.com/api/analytics"
+    
+  - name: GPS_VERIFICATION_RADIUS
+    type: number
+    description: GPS verification radius in meters for production
+    default: 100
+    
+  - name: MAX_SUBMISSIONS_PER_USER_PER_DAY
+    type: number
+    description: Production rate limit for submissions per user per day
+    default: 10
+    
+  - name: ENABLE_FRAUD_DETECTION
+    type: boolean
+    description: Enable fraud detection in production
+    default: true
+    
+  - name: ENABLE_PERFORMANCE_MONITORING
+    type: boolean
+    description: Enable performance monitoring in production
+    default: true
+    
+  - name: LOG_LEVEL
+    type: string
+    description: Production logging level (error, warn, info, debug)
+    default: "info"
+
+# Enable Redis for production caching and leaderboards
+redis: true
+
+# Production-specific metadata
+metadata:
+  environment: production
+  target_subreddit: michiganspots
+  deployment_date: "2024-10-18"
+  version: "1.0.0"

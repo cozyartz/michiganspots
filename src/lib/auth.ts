@@ -1,5 +1,5 @@
-// Authentication library using GitHub OAuth
-import { GitHub } from 'arctic';
+// Authentication library using OAuth providers (GitHub, Google)
+import { GitHub, Google } from 'arctic';
 
 // Generate random session ID
 export function generateSessionId(): string {
@@ -20,26 +20,36 @@ export function createGitHubClient(clientId: string, clientSecret: string, redir
   return new GitHub(clientId, clientSecret, redirectUri);
 }
 
+// Initialize Google OAuth client
+export function createGoogleClient(clientId: string, clientSecret: string, redirectUri: string) {
+  return new Google(clientId, clientSecret, redirectUri);
+}
+
 // User roles
 export type UserRole = 'user' | 'partner' | 'super_admin';
 
-// User interface
+// User interface (matching D1 schema)
 export interface User {
-  id: string;
-  github_id: number;
-  username: string;
-  email: string | null;
-  name: string | null;
+  id: number;
+  github_id: number | null;
+  username: string | null;
+  email: string;
+  name: string;
+  city: string;
+  reddit_username: string | null;
   avatar_url: string | null;
   role: UserRole;
-  created_at: number;
-  updated_at: number;
+  total_spots: number;
+  total_badges: number;
+  team_id: number | null;
+  created_at: string;
+  updated_at: string;
 }
 
 // Session interface
 export interface Session {
   id: string;
-  user_id: string;
+  user_id: number;
   expires_at: number;
   created_at: number;
 }
@@ -54,7 +64,7 @@ export interface SessionWithUser {
 const SESSION_DURATION = 1000 * 60 * 60 * 24 * 30;
 
 // Create a new session
-export function createSession(userId: string): { id: string; expiresAt: number } {
+export function createSession(userId: number): { id: string; expiresAt: number } {
   const sessionId = generateSessionId();
   const expiresAt = Date.now() + SESSION_DURATION;
 

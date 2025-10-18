@@ -2,16 +2,21 @@
 import type { APIRoute } from 'astro';
 import { createGitHubClient, generateState } from '../../../lib/auth';
 
-export const GET: APIRoute = async ({ redirect, cookies }) => {
+export const GET: APIRoute = async ({ redirect, cookies, locals }) => {
   // Get GitHub OAuth credentials from environment
-  const clientId = import.meta.env.GITHUB_CLIENT_ID;
-  const clientSecret = import.meta.env.GITHUB_CLIENT_SECRET;
-  const redirectUri = import.meta.env.PUBLIC_SITE_URL
-    ? `${import.meta.env.PUBLIC_SITE_URL}/api/auth/github/callback`
+  // In Cloudflare, secrets are in runtime.env
+  const runtime = locals.runtime as any;
+  const env = runtime?.env || import.meta.env;
+
+  const clientId = env.GITHUB_CLIENT_ID;
+  const clientSecret = env.GITHUB_CLIENT_SECRET;
+  const siteUrl = env.PUBLIC_SITE_URL || import.meta.env.PUBLIC_SITE_URL;
+  const redirectUri = siteUrl
+    ? `${siteUrl}/api/auth/github/callback`
     : 'http://localhost:4321/api/auth/github/callback';
 
   if (!clientId || !clientSecret) {
-    return new Response('GitHub OAuth not configured', { status: 500 });
+    return new Response('GitHub OAuth not configured. Please add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET to Cloudflare environment variables.', { status: 500 });
   }
 
   const github = createGitHubClient(clientId, clientSecret, redirectUri);

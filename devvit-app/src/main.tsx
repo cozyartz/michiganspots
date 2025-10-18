@@ -57,8 +57,9 @@ Devvit.addTrigger({
       const settings = await context.settings.getAll();
       const apiKey = settings.CLOUDFLARE_API_KEY as string;
       const baseUrl = (settings.ANALYTICS_BASE_URL as string) || 'https://michiganspots.com/api/analytics';
+      const logLevel = (settings.LOG_LEVEL as string) || 'info';
       
-      if (apiKey) {
+      if (apiKey && apiKey !== 'your_production_api_key_here') {
         initializeAnalyticsClient({
           baseUrl,
           apiKey,
@@ -66,12 +67,42 @@ Devvit.addTrigger({
           retryDelay: 1000,
           timeout: 5000
         });
-        console.log('Analytics client initialized successfully');
+        
+        if (logLevel === 'info' || logLevel === 'debug') {
+          console.log('Analytics client initialized successfully for production');
+          console.log(`Base URL: ${baseUrl}`);
+        }
       } else {
-        console.warn('CLOUDFLARE_API_KEY not configured - analytics will not work');
+        console.error('CLOUDFLARE_API_KEY not properly configured for production');
+        console.error('Please set the production API key in app settings');
       }
     } catch (error) {
       console.error('Failed to initialize analytics client:', error);
+    }
+  }
+});
+
+// App upgrade trigger - reinitialize analytics on updates
+Devvit.addTrigger({
+  event: 'AppUpgrade',
+  handler: async (event, context) => {
+    try {
+      const settings = await context.settings.getAll();
+      const apiKey = settings.CLOUDFLARE_API_KEY as string;
+      const baseUrl = (settings.ANALYTICS_BASE_URL as string) || 'https://michiganspots.com/api/analytics';
+      
+      if (apiKey && apiKey !== 'your_production_api_key_here') {
+        initializeAnalyticsClient({
+          baseUrl,
+          apiKey,
+          retryAttempts: 3,
+          retryDelay: 1000,
+          timeout: 5000
+        });
+        console.log('Analytics client reinitialized after app upgrade');
+      }
+    } catch (error) {
+      console.error('Failed to reinitialize analytics client after upgrade:', error);
     }
   }
 });
@@ -205,11 +236,16 @@ Devvit.addTrigger({
 
 // Main app component - demonstrates challenge browser functionality
 const App: Devvit.CustomPostComponent = (context) => {
-  console.log('Michigan Spots Treasure Hunt App initialized');
-  
-  // Get mock data for demonstration
-  const mockChallenges = ChallengeService.getMockChallenges();
-  const userCompletedChallenges = ['challenge-5']; // Mock completed challenges
+  try {
+    const logLevel = context.settings.get('LOG_LEVEL') || 'info';
+    
+    if (logLevel === 'info' || logLevel === 'debug') {
+      console.log('Michigan Spots Treasure Hunt App initialized');
+    }
+    
+    // Get mock data for demonstration
+    const mockChallenges = ChallengeService.getMockChallenges();
+    const userCompletedChallenges = ['challenge-5']; // Mock completed challenges
   
   // Use the challenge browser utilities to get display data
   const activeChallenges = ChallengeBrowserUtils.getActiveChallengesOnly(
@@ -312,6 +348,38 @@ const App: Devvit.CustomPostComponent = (context) => {
       }
     ]
   } as any;
+  
+  } catch (error) {
+    console.error('Error in main app component:', error);
+    
+    // Return error state component
+    return {
+      type: 'vstack',
+      gap: 'medium',
+      padding: 'medium',
+      children: [
+        {
+          type: 'text',
+          size: 'large',
+          weight: 'bold',
+          color: 'red',
+          text: '⚠️ App Error'
+        },
+        {
+          type: 'text',
+          size: 'medium',
+          color: '#6b7280',
+          text: 'The Michigan Spots app encountered an error. Please try refreshing or contact support.'
+        },
+        {
+          type: 'text',
+          size: 'small',
+          color: '#9ca3af',
+          text: 'Error details have been logged for debugging.'
+        }
+      ]
+    } as any;
+  }
 };
 
 // Register the main app component

@@ -14,10 +14,15 @@ export const GET: APIRoute = async ({ url, cookies, redirect, locals }) => {
 
   try {
     // Get GitHub OAuth credentials
-    const clientId = import.meta.env.GITHUB_CLIENT_ID;
-    const clientSecret = import.meta.env.GITHUB_CLIENT_SECRET;
-    const redirectUri = import.meta.env.PUBLIC_SITE_URL
-      ? `${import.meta.env.PUBLIC_SITE_URL}/api/auth/github/callback`
+    // In Cloudflare, secrets are in runtime.env
+    const runtime = locals.runtime as any;
+    const env = runtime?.env || import.meta.env;
+
+    const clientId = env.GITHUB_CLIENT_ID;
+    const clientSecret = env.GITHUB_CLIENT_SECRET;
+    const siteUrl = env.PUBLIC_SITE_URL || import.meta.env.PUBLIC_SITE_URL;
+    const redirectUri = siteUrl
+      ? `${siteUrl}/api/auth/github/callback`
       : 'http://localhost:4321/api/auth/github/callback';
 
     if (!clientId || !clientSecret) {
@@ -65,9 +70,8 @@ export const GET: APIRoute = async ({ url, cookies, redirect, locals }) => {
       role = 'super_admin';
     }
 
-    // Access D1 database
-    const runtime = locals.runtime as any;
-    const db = runtime?.env?.DB;
+    // Access D1 database (already accessed above for env)
+    const db = env.DB || runtime?.env?.DB;
 
     if (!db) {
       return new Response('Database not available', { status: 500 });
@@ -79,7 +83,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect, locals }) => {
       .bind(githubUser.id)
       .first();
 
-    let userId: string;
+    let userId: number;
 
     if (existingUser) {
       // Update existing user
@@ -87,35 +91,42 @@ export const GET: APIRoute = async ({ url, cookies, redirect, locals }) => {
       await db
         .prepare(`
           UPDATE users
-          SET username = ?, email = ?, name = ?, avatar_url = ?, updated_at = unixepoch()
+          SET username = ?, email = ?, name = ?, avatar_url = ?, role = ?, updated_at = CURRENT_TIMESTAMP
           WHERE id = ?
         `)
         .bind(
           githubUser.login,
-          email,
-          githubUser.name,
+          email || existingUser.email,
+          githubUser.name || existingUser.name,
           githubUser.avatar_url,
+          role, // Update role in case user became super admin
           userId
         )
         .run();
     } else {
-      // Create new user
-      userId = crypto.randomUUID();
-      await db
+      // Create new user (id will auto-increment)
+      // Need to set required fields from existing schema: email, name, city, created_at
+      const result = await db
         .prepare(`
-          INSERT INTO users (id, github_id, username, email, name, avatar_url, role)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO users (
+            github_id, username, email, name, city, avatar_url, role,
+            total_spots, total_badges, created_at, updated_at
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         `)
         .bind(
-          userId,
           githubUser.id,
           githubUser.login,
-          email,
-          githubUser.name,
+          email || '',
+          githubUser.name || githubUser.login,
+          'Unknown', // Default city, can be updated later
           githubUser.avatar_url,
           role
         )
         .run();
+
+      // Get the auto-generated user ID
+      userId = result.meta.last_row_id as number;
     }
 
     // Create session

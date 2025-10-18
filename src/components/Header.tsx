@@ -161,7 +161,7 @@ export function Header() {
                   </div>
                 ) : (
                   <a
-                    href="/api/auth/github"
+                    href="/login"
                     className="px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors flex items-center space-x-2"
                   >
                     <LogIn className="w-4 h-4" />
@@ -281,7 +281,7 @@ export function Header() {
                     </div>
                   ) : (
                     <a
-                      href="/api/auth/github"
+                      href="/login"
                       className="block text-center px-6 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors flex items-center justify-center space-x-2"
                     >
                       <LogIn className="w-4 h-4" />

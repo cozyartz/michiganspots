@@ -8,7 +8,14 @@
     "dev": "devvit dev",
     "upload": "devvit upload",
     "test": "vitest --run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deploy:production": "./scripts/deploy-production.sh",
+    "validate:config": "ts-node scripts/validate-production-config.ts",
+    "health:check": "ts-node scripts/production-health-check.ts",
+    "integration:test": "ts-node scripts/test-production-integration.ts",
+    "comprehensive:test": "ts-node scripts/comprehensive-production-test.ts",
+    "production:setup": "npm run validate:config && npm run test && npm run deploy:production",
+    "production:verify": "npm run health:check && npm run integration:test && npm run comprehensive:test"
   },
   "keywords": ["devvit", "reddit", "treasure-hunt", "michigan"],
   "author": "Michigan Spots",
@@ -17,6 +24,7 @@
     "@devvit/kit": "^0.10.23",
     "@devvit/protos": "^0.10.23",
     "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
   },
