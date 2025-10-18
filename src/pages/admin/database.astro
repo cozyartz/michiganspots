@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DatabaseViewer } from '../../components/DatabaseViewer';
+---
+
+<Layout
+  title="Database Viewer | Michigan Spots Admin"
+  description="View and manage D1 database tables"
+  keywords="database, admin, D1, viewer"
+>
+  <DatabaseViewer client:load />
+</Layout>
