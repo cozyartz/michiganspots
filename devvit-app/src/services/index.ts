@@ -17,3 +17,12 @@ export * from './socialEngagementService.js';
 export * from './submissionValidation.js';
 export * from './securityMonitoring.js';
 export * from './userProfileService.js';
+
+// AI Services
+export * from './aiService.js';
+export * from './aiValidationService.js';
+export * from './aiChallengeService.js';
+export * from './aiPersonalizationService.js';
+export * from './aiExperimentService.js';
+export * from './aiExperimentDashboard.js';
+export * from './aiOrchestrator.js';
