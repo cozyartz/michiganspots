@@ -13,6 +13,7 @@
 - [x] **Built with Reddit Developer Platform** - Uses Devvit framework
 - [x] **Uses Interactive Posts** - Full Devvit Web implementation
 - [x] **Uses Devvit Web technology** - React-based components in main.tsx
+- [x] **Splash screen implemented** - Custom loading screen with branding
 - [x] **Successfully installs and runs** - Tested and functional
 - [x] **Functions as described** - All features working
 - [x] **Newly created during submission period** - Created Oct 2025
@@ -63,10 +64,19 @@
 
 ### Devvit App Features
 - [x] **Interactive Posts** - Challenge browser, leaderboards, profiles
+- [x] **Splash Screen** - Custom loading screen with Michigan Spots branding
 - [x] **Multiplayer mechanics** - Community-wide treasure hunt
 - [x] **Reddit integration** - Native Devvit UI components
 - [x] **Working demo** - Fully functional game logic
 - [x] **Production-ready** - Comprehensive testing suite
+
+### Splash Screen Implementation
+- [x] **Loading component created** - LoadingScreen in main.tsx
+- [x] **Custom post type configured** - `loading` property set
+- [x] **Branded design** - Michigan Spots colors and logo
+- [x] **User feedback** - "Loading challenges..." message
+- [x] **Visual indicator** - Progress bar and tagline
+- [x] **Documentation** - Complete implementation guide in SPLASH_SCREEN_IMPLEMENTATION.md
 
 ### Infrastructure
 - [x] **Cloudflare Workers integration** - Analytics API deployed
