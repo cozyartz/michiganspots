@@ -9,11 +9,14 @@ interface Env {
 }
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
-  const { env } = context;
+  const { env, request } = context;
 
   const clientId = env.GITHUB_CLIENT_ID;
   const clientSecret = env.GITHUB_CLIENT_SECRET;
-  const siteUrl = env.PUBLIC_SITE_URL || 'http://localhost:4321';
+
+  // Auto-detect site URL from request origin
+  const requestUrl = new URL(request.url);
+  const siteUrl = env.PUBLIC_SITE_URL || `${requestUrl.protocol}//${requestUrl.host}`;
   const redirectUri = `${siteUrl}/api/auth/github/callback`;
 
   if (!clientId || !clientSecret) {
