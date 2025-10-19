@@ -1,0 +1,43 @@
+---
+title: Michigan Spots Documentation
+description: Complete documentation for the AI-powered treasure hunt platform
+template: splash
+hero:
+  tagline: Welcome to Michigan Spots - the world's first AI-powered treasure hunt platform
+  actions:
+    - text: Get Started
+      link: /getting-started/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/michiganspots/platform
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Quick Links
+
+<CardGrid>
+  <Card title="Getting Started" icon="rocket">
+    New to Michigan Spots? Start here to learn the basics.
+
+    [Quick Start Guide →](/getting-started/quick-start/)
+  </Card>
+  <Card title="AI System" icon="seti:config">
+    Learn about our advanced AI capabilities.
+
+    [AI Overview →](/ai-system/overview/)
+  </Card>
+  <Card title="API Reference" icon="open-book">
+    Complete API documentation and examples.
+
+    [View API Docs →](/api/reference/)
+  </Card>
+  <Card title="Deployment" icon="rocket">
+    Deploy and configure your instance.
+
+    [Production Setup →](/deployment/production/)
+  </Card>
+</CardGrid>
