@@ -32,3 +32,6 @@ export * from './aiGameIntelligence.js';
 export * from './aiCommunityManager.js';
 export * from './aiBusinessIntelligence.js';
 export * from './aiMasterOrchestrator.js';
+
+// Multi-Subreddit Management
+export * from './multiSubredditManager.js';

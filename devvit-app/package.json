@@ -22,6 +22,8 @@
     "comprehensive:test": "ts-node scripts/comprehensive-production-test.ts",
     "ai:demo": "ts-node src/examples/advancedAiFeatures.ts",
     "ai:experiment": "ts-node src/examples/aiExperimentExample.ts",
+    "generate-posts": "ts-node scripts/generate-subreddit-posts.ts",
+    "generate-posts:all": "ts-node scripts/generate-subreddit-posts.ts generate",
     "production:setup": "npm run validate:config && npm run test && npm run deploy:production",
     "production:verify": "npm run health:check && npm run integration:test && npm run comprehensive:test",
     "ai:setup": "npm run validate:config && npm run test && npm run test:ai && npm run deploy:ai-production",
@@ -36,12 +38,13 @@
   "author": "Michigan Spots",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@devvit/kit": "^0.10.23",
+    "@devvit/kit": "^1.1.4",
     "@devvit/protos": "0.12.1",
     "@types/node": "^20.0.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
+    "vitest": "^3.2.4",
+    "wrangler": "^4.43.0"
   },
   "dependencies": {
     "@devvit/public-api": "0.12.1"
