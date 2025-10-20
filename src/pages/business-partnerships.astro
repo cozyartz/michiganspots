@@ -91,185 +91,247 @@ import { Store, TrendingUp, Users, MapPin, Target, CheckCircle, DollarSign, Cale
         </p>
       </Card>
 
-      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">Partnership Options</h2>
+      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">Partnership Tiers</h2>
 
       <div class="space-y-6 mb-12">
         <Card className="border-lakes-blue bg-lakes-blue/5">
           <div class="flex justify-between items-start mb-4">
             <div>
-              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Single Challenge</h3>
-              <p class="text-ink-secondary mb-2">Perfect for testing the waters with one 30-day challenge</p>
-              <p class="text-sm text-copper-orange font-semibold">Regular price: $299</p>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">💡 Spot Partner</h3>
+              <p class="text-ink-secondary mb-2">Perfect for individual businesses getting started</p>
             </div>
             <div class="text-right">
-              <div class="font-heading text-3xl font-bold text-lakes-blue">$99</div>
-              <div class="text-sm text-ink-secondary">one-time</div>
-              <div class="text-xs text-forest-green mt-1">Save $200!</div>
+              <div class="font-heading text-3xl font-bold text-lakes-blue">$99/mo</div>
+              <div class="text-sm text-ink-secondary">or save with longer terms</div>
             </div>
           </div>
           <ul class="space-y-2 mb-4">
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">30-day challenge featuring your business</span>
+              <span class="text-ink-secondary">1 active challenge per month</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Custom challenge page with your branding</span>
+              <span class="text-ink-secondary">Basic business profile</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Social media promotion on r/michiganspots</span>
+              <span class="text-ink-secondary">Monthly analytics reports</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Analytics report with visit tracking</span>
-            </li>
-            <li class="flex items-start space-x-2">
-              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">No long-term commitment required</span>
+              <span class="text-ink-secondary">Partner directory listing</span>
             </li>
           </ul>
-          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
-            <p class="text-sm font-semibold text-ink-primary mb-1">Example Challenge:</p>
-            <p class="text-sm text-ink-secondary">"Find Battle Creek's Hidden Coffee Gem" at Fieldstone Coffee</p>
-            <p class="text-xs text-forest-green mt-2">Expected: 50-150 visits</p>
+          <div class="grid md:grid-cols-3 gap-3 mb-4">
+            <div class="bg-parchment-light p-3 rounded border border-ink-faded/20 text-center">
+              <p class="text-sm font-semibold text-ink-primary">Monthly</p>
+              <p class="text-lg font-bold text-lakes-blue">$99</p>
+            </div>
+            <div class="bg-parchment-light p-3 rounded border border-ink-faded/20 text-center">
+              <p class="text-sm font-semibold text-ink-primary">Quarterly</p>
+              <p class="text-lg font-bold text-lakes-blue">$249</p>
+              <p class="text-xs text-forest-green">Save $48</p>
+            </div>
+            <div class="bg-gold-treasure/20 p-3 rounded border border-gold-treasure text-center">
+              <p class="text-sm font-semibold text-ink-primary">Yearly</p>
+              <p class="text-lg font-bold text-lakes-blue">$999</p>
+              <p class="text-xs text-forest-green">2 months FREE!</p>
+            </div>
+          </div>
+          <div class="bg-lakes-blue/10 p-3 rounded border border-lakes-blue/30">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Optional Add-Ons:</p>
+            <p class="text-sm text-ink-secondary">• Prize Package (+$50-100/month) - Gift cards, tickets, swag</p>
+            <p class="text-sm text-ink-secondary">• Web/Dev Services - Landing pages, analytics integration</p>
           </div>
         </Card>
 
         <Card className="border-copper-orange bg-copper-orange/5">
           <div class="flex justify-between items-start mb-4">
             <div>
-              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Seasonal Campaign</h3>
-              <p class="text-ink-secondary mb-2">Sustained engagement with 3 consecutive monthly challenges</p>
-              <p class="text-sm text-copper-orange font-semibold">Regular price: $899</p>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">⭐ Featured Partner</h3>
+              <p class="text-ink-secondary mb-2">Enhanced visibility and ongoing engagement</p>
             </div>
             <div class="text-right">
-              <div class="font-heading text-3xl font-bold text-copper-orange">$249</div>
-              <div class="text-sm text-ink-secondary">3 months</div>
-              <div class="text-xs text-forest-green mt-1">Save $650!</div>
+              <div class="font-heading text-3xl font-bold text-copper-orange">$699/qtr</div>
+              <div class="text-sm text-ink-secondary">$233/mo • Save $198</div>
             </div>
           </div>
           <ul class="space-y-2 mb-4">
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">3 custom challenges over 3 months</span>
+              <span class="text-ink-secondary">2-3 challenges per month</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Seasonal theme integration (summer, fall, winter)</span>
+              <span class="text-ink-secondary">Enhanced profile with photo gallery</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Progressive badges for repeat visitors</span>
+              <span class="text-ink-secondary">Featured placement in app</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Detailed monthly analytics reports</span>
+              <span class="text-ink-secondary">Bi-weekly analytics + monthly strategy call</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Enhanced social media promotion</span>
-            </li>
-            <li class="flex items-start space-x-2">
-              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Priority customer support</span>
+              <span class="text-ink-secondary">Social media features (2-3 posts/quarter)</span>
             </li>
           </ul>
-          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
-            <p class="text-sm font-semibold text-ink-primary mb-1">Example Campaign:</p>
-            <p class="text-sm text-ink-secondary">"Summer Ice Cream Tour" with rotating flavors each month</p>
-            <p class="text-xs text-forest-green mt-2">Expected: 200-500 visits over 3 months</p>
+          <div class="grid md:grid-cols-2 gap-3 mb-4">
+            <div class="bg-parchment-light p-3 rounded border border-ink-faded/20 text-center">
+              <p class="text-sm font-semibold text-ink-primary">Quarterly</p>
+              <p class="text-lg font-bold text-copper-orange">$699</p>
+              <p class="text-xs text-forest-green">$233/mo</p>
+            </div>
+            <div class="bg-gold-treasure/20 p-3 rounded border border-gold-treasure text-center">
+              <p class="text-sm font-semibold text-ink-primary">Yearly</p>
+              <p class="text-lg font-bold text-copper-orange">$2,399</p>
+              <p class="text-xs text-forest-green">3 months FREE!</p>
+            </div>
+          </div>
+          <div class="bg-copper-orange/10 p-3 rounded border border-copper-orange/30">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Optional Add-On:</p>
+            <p class="text-sm text-ink-secondary">• Prize Package (+$100-250/quarter)</p>
           </div>
         </Card>
 
         <Card className="border-gold-treasure bg-gold-treasure/5">
           <div class="flex justify-between items-start mb-4">
             <div>
-              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Multi-Location Package</h3>
-              <p class="text-ink-secondary mb-2">Perfect for businesses with multiple locations across Michigan</p>
-              <p class="text-sm text-copper-orange font-semibold">Regular price: $399/location</p>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">🏆 Premium Sponsor</h3>
+              <p class="text-ink-secondary mb-2">Unlimited challenges + web/dev services included</p>
             </div>
             <div class="text-right">
-              <div class="font-heading text-3xl font-bold text-gold-treasure">$149</div>
-              <div class="text-sm text-ink-secondary">per location</div>
-              <div class="text-xs text-forest-green mt-1">Save $250!</div>
+              <div class="font-heading text-3xl font-bold text-gold-treasure">$1,499/qtr</div>
+              <div class="text-sm text-ink-secondary">$500/mo • Save $597</div>
             </div>
           </div>
           <ul class="space-y-2 mb-4">
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Multi-stop challenge across your locations (3-5 stops)</span>
+              <span class="text-ink-secondary">Unlimited challenges</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">OR individual challenges for each location</span>
+              <span class="text-ink-secondary">Homepage featured slots</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">45-day challenge runtime</span>
+              <span class="text-ink-secondary">Weekly analytics + bi-weekly strategy sessions</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Unified analytics across all locations</span>
+              <span class="text-ink-secondary">Dedicated account manager</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Brand consistency across challenges</span>
+              <span class="text-ink-secondary font-semibold">Web/Dev Services: Landing pages, QR codes, analytics</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Drive traffic to all your Michigan locations</span>
+              <span class="text-ink-secondary font-semibold">Marketing Consulting: ROI optimization</span>
             </li>
           </ul>
-          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
-            <p class="text-sm font-semibold text-ink-primary mb-1">Example Multi-Location Challenge:</p>
-            <p class="text-sm text-ink-secondary">"Visit All 4 Fieldstone Coffee Locations" across Battle Creek, Kalamazoo, Grand Rapids, and Lansing</p>
-            <p class="text-xs text-ink-secondary mt-1">Cost: $149/location × 4 = $596 total</p>
-            <p class="text-xs text-forest-green mt-2">Expected: 100-300 visits per location</p>
+          <div class="grid md:grid-cols-2 gap-3 mb-4">
+            <div class="bg-parchment-light p-3 rounded border border-ink-faded/20 text-center">
+              <p class="text-sm font-semibold text-ink-primary">Quarterly</p>
+              <p class="text-lg font-bold text-gold-treasure">$1,499</p>
+            </div>
+            <div class="bg-gold-treasure/20 p-3 rounded border border-gold-treasure text-center">
+              <p class="text-sm font-semibold text-ink-primary">Yearly</p>
+              <p class="text-lg font-bold text-gold-treasure">$4,999</p>
+              <p class="text-xs text-forest-green">3 months FREE!</p>
+            </div>
+          </div>
+          <div class="bg-gold-treasure/10 p-3 rounded border border-gold-treasure/30">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Optional Add-On:</p>
+            <p class="text-sm text-ink-secondary">• Major Prize Package (+$500-1,000/quarter)</p>
           </div>
         </Card>
 
         <Card className="border-forest-green bg-forest-green/5">
           <div class="flex justify-between items-start mb-4">
             <div>
-              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">Event Sponsorship</h3>
-              <p class="text-ink-secondary mb-2">Promote festivals, concerts, seasonal events with challenges</p>
-              <p class="text-sm text-copper-orange font-semibold">Regular price: $599</p>
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">👑 Title Sponsor</h3>
+              <p class="text-ink-secondary mb-2">Enterprise-level partnership with full service package</p>
             </div>
             <div class="text-right">
-              <div class="font-heading text-3xl font-bold text-forest-green">$199</div>
-              <div class="text-sm text-ink-secondary">per event</div>
-              <div class="text-xs text-forest-green mt-1">Save $400!</div>
+              <div class="font-heading text-3xl font-bold text-forest-green">$3,999/qtr</div>
+              <div class="text-sm text-ink-secondary">$1,333/mo</div>
             </div>
           </div>
           <ul class="space-y-2 mb-4">
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Event-specific challenge (2-4 weeks)</span>
+              <span class="text-ink-secondary font-semibold">Everything in Premium Sponsor PLUS:</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Drive attendance and engagement</span>
+              <span class="text-ink-secondary">Full Web/Dev Package: Microsites, API integrations, custom dashboards</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Pre-event buzz and post-event follow-up</span>
+              <span class="text-ink-secondary">Comprehensive Marketing: Content creation, email campaigns, PR</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Social media amplification</span>
+              <span class="text-ink-secondary">Platform co-branding for seasons</span>
             </li>
             <li class="flex items-start space-x-2">
               <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-ink-secondary">Attendance tracking and analytics</span>
+              <span class="text-ink-secondary">Quarterly business reviews</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <CheckCircle class="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-ink-secondary">Partner summit invitations</span>
             </li>
           </ul>
-          <div class="bg-parchment-light p-4 rounded border border-ink-faded/20">
-            <p class="text-sm font-semibold text-ink-primary mb-1">Perfect for:</p>
-            <p class="text-sm text-ink-secondary">Festivals, concerts, art fairs, sports events, seasonal celebrations</p>
+          <div class="grid md:grid-cols-2 gap-3 mb-4">
+            <div class="bg-parchment-light p-3 rounded border border-ink-faded/20 text-center">
+              <p class="text-sm font-semibold text-ink-primary">Quarterly</p>
+              <p class="text-lg font-bold text-forest-green">$3,999</p>
+            </div>
+            <div class="bg-gold-treasure/20 p-3 rounded border border-gold-treasure text-center">
+              <p class="text-sm font-semibold text-ink-primary">Yearly</p>
+              <p class="text-lg font-bold text-forest-green">$12,999</p>
+              <p class="text-xs text-forest-green">3 months FREE!</p>
+            </div>
+          </div>
+          <div class="bg-forest-green/10 p-3 rounded border border-forest-green/30">
+            <p class="text-sm font-semibold text-ink-primary mb-1">Optional Add-On:</p>
+            <p class="text-sm text-ink-secondary">• Championship Prize Package (+$2,000-5,000/quarter)</p>
           </div>
         </Card>
       </div>
+
+      <Card className="mb-12 bg-lakes-blue/10 border-lakes-blue">
+        <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4 text-center">Web/Dev Services A La Carte</h3>
+        <p class="text-ink-secondary text-center mb-4">Available to any tier as one-time purchases:</p>
+        <div class="grid md:grid-cols-3 gap-4 text-sm">
+          <div class="text-center">
+            <p class="font-semibold text-ink-primary">Landing Page</p>
+            <p class="text-lg font-bold text-lakes-blue">$499</p>
+          </div>
+          <div class="text-center">
+            <p class="font-semibold text-ink-primary">E-Commerce Integration</p>
+            <p class="text-lg font-bold text-lakes-blue">$999</p>
+          </div>
+          <div class="text-center">
+            <p class="font-semibold text-ink-primary">Custom Dashboard</p>
+            <p class="text-lg font-bold text-lakes-blue">$799</p>
+          </div>
+          <div class="text-center">
+            <p class="font-semibold text-ink-primary">API Integration</p>
+            <p class="text-lg font-bold text-lakes-blue">$1,299</p>
+          </div>
+          <div class="text-center">
+            <p class="font-semibold text-ink-primary">Full Website Build</p>
+            <p class="text-lg font-bold text-lakes-blue">$2,999-5,999</p>
+          </div>
+        </div>
+      </Card>
 
       <Card className="mb-12">
         <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">Challenge Types</h2>
