@@ -71,7 +71,7 @@ Revenue automation
 
 ### 🗄️ **Database Architecture**
 
-38-table schema
+41-table schema
 Edge SQLite (D1)
 <5ms query time
 Complete analytics
@@ -243,20 +243,20 @@ Michigan Spots demonstrates a **multi-sided marketplace approach** with three di
 
 ### 🏛️ **Chamber Partnerships**
 
-Quarterly subscriptions
-**$299 - $1,999/quarter**
+Up to 10 member businesses
+**$899/qtr • $2,999/yr**
 
-60-70% founding discount
+Regional prize packages
 
 </td>
 <td width="33%" align="center">
 
-### 🏪 **Business Sponsorships**
+### 🏪 **Business Partnerships**
 
-Challenge-based packages
-**$99 - $249 per campaign**
+4 flexible tiers
+**$99/mo - $3,999/qtr**
 
-One-time activation fees
+Monthly, quarterly, yearly
 
 </td>
 <td width="33%" align="center">
@@ -264,7 +264,7 @@ One-time activation fees
 ### 🤝 **Community Programs**
 
 Non-profit support tiers
-**FREE - $100**
+**FREE - Custom**
 
 Mission-driven pricing
 
@@ -297,13 +297,13 @@ Mission-driven pricing
 
 **Component Architecture**: Modular React components with TypeScript for type safety
 **API Layer**: RESTful endpoints via Cloudflare Workers (signup, partner-signup, create-checkout, stripe-webhook)
-**Database Layer**: 38-table relational schema with comprehensive indexing and analytics
-**Payment Flow**: Complete Stripe integration with product creation scripts and webhook handlers
+**Database Layer**: 41-table relational schema with comprehensive indexing and analytics
+**Payment Flow**: Complete Stripe integration with enhanced tier system and webhook handlers
 **Styling System**: Custom Tailwind theme implementing unique treasure map aesthetic
 
 ### Key Technical Files
 
-- **Database Schema**: Comprehensive 38-table design covering users, spots, challenges, badges, payments, analytics
+- **Database Schema**: Comprehensive 41-table design covering users, spots, challenges, badges, partnerships, prize tracking, analytics
 - **Migration System**: Version-controlled database migrations for staged rollouts
 - **Stripe Integration**: Automated product creation, checkout sessions, webhook processing
 - **Partnership Forms**: Multi-tier intake system with dynamic pricing and instant payment
@@ -313,35 +313,92 @@ Mission-driven pricing
 
 ## 💼 Partnership Opportunities
 
-Michigan Spots offers **founding partner pricing** for early adopters (60-70% off regular rates):
+Michigan Spots offers **flexible partnership tiers** designed to maximize ROI for businesses, chambers, and community organizations:
 
-### 🏛️ Chambers of Commerce
+### 🏪 Business Partnership Tiers
 
-| Tier | Founding Price | Regular Price | Savings |
-|------|---------------|---------------|---------|
-| **Launch Partner** | $299/quarter | $2,500/quarter | **$2,001** |
-| **City Launch Partner** | $599/quarter | $5,000/quarter | **$4,001** |
-| **Regional Launch Partner** | $1,999/quarter | $10,000+/quarter | **$8,001+** |
+<table>
+<tr>
+<td width="25%" align="center">
 
-### 🏪 Individual Businesses
+#### 💡 **Spot Partner**
+Starting at **$99/mo**
 
-| Package | Founding Price | Regular Price | Savings |
-|---------|---------------|---------------|---------|
-| **Single Challenge** | $99 | $299 | **$200** |
-| **Seasonal Campaign** | $249 | $899 | **$650** |
-| **Multi-Location** | $149/location | $399/location | **$250** |
-| **Event Sponsorship** | $199 | $599 | **$400** |
+1 challenge/month
+Basic profile
+Monthly analytics
+
+*Save with longer terms*
+
+</td>
+<td width="25%" align="center">
+
+#### ⭐ **Featured Partner**
+**$699/qtr**
+
+2-3 challenges/month
+Enhanced profile
+Strategy calls
+
+*3 months FREE yearly*
+
+</td>
+<td width="25%" align="center">
+
+#### 🏆 **Premium Sponsor**
+**$1,499/qtr**
+
+Unlimited challenges
+Web/dev services
+Account manager
+
+*Enterprise features*
+
+</td>
+<td width="25%" align="center">
+
+#### 👑 **Title Sponsor**
+**$3,999/qtr**
+
+Full marketing suite
+Platform co-branding
+Custom development
+
+*White-glove service*
+
+</td>
+</tr>
+</table>
+
+**Optional Add-Ons:**
+- 🎁 **Prize Packages**: Gift cards, tickets, experiences, swag ($50-5,000/period)
+- 💻 **Web/Dev Services**: Landing pages ($499), E-commerce ($999), Custom dashboards ($799), Full websites ($2,999-5,999)
+
+---
+
+### 🏛️ Chamber & Tourism Partnerships
+
+| Package | Quarterly | Yearly | Includes |
+|---------|-----------|--------|----------|
+| **Chamber & Tourism** | **$899** | **$2,999** | Up to 10 member businesses, branded series, analytics for all members, event promotion |
+
+*Save 2 months with yearly commitment*
+
+---
 
 ### 🤝 Community Organizations
 
-| Tier | Price | Details |
-|------|-------|---------|
-| **FREE Tier** | $0 | Libraries, parks, non-profits |
-| **Minimal Budget** | $50 | Enhanced features |
-| **Modest Budget** | $100 | Full feature access |
+| Tier | Investment | Perfect For |
+|------|-----------|-------------|
+| **Community Tier** | **FREE - Custom** | Libraries, parks, museums, non-profits, educational groups |
 
-**📧 Inquiries**: partnerships@michiganspots.com
-**🌐 Learn More**: [michiganspots.com/partnerships](https://michiganspots.com/partnerships)
+We work with your budget to create meaningful community engagement. Mission-driven pricing available.
+
+---
+
+**📧 Partnership Inquiries**: partnerships@michiganspots.com
+**🌐 Explore Options**: [michiganspots.com/partnerships](https://michiganspots.com/partnerships)
+**📄 View Full Details**: [Partner Guide](PARTNER_GUIDE.md)
 
 ---
 
@@ -402,12 +459,12 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 
 | Metric | Value | Significance |
 |--------|-------|--------------|
-| **Lines of Code** | 14,437+ | Complete full-stack implementation |
-| **Database Tables** | 38 | Enterprise-scale data architecture |
-| **API Endpoints** | 4 production | Signup, partner interest, checkout, webhooks |
-| **Partnership Tiers** | 9 products | Chamber, business, community packages |
+| **Lines of Code** | 15,000+ | Complete full-stack implementation |
+| **Database Tables** | 41 | Enterprise-scale data architecture |
+| **API Endpoints** | 4 production | Signup, partner-signup, checkout, webhooks |
+| **Partnership Tiers** | 5 tiers | Spot, Featured, Premium, Title, Chamber |
 | **Component Library** | 15+ React | Modular, reusable architecture |
-| **Migration Scripts** | 3 versions | Professional database versioning |
+| **Migration Scripts** | 10 versions | Professional database versioning |
 | **Development Time** | Production-ready | Rapid delivery capability |
 
 </div>
@@ -415,11 +472,11 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 ### Technical Achievements
 
 🎨 **Custom Design System** - Unique "treasure map" aesthetic with 6-color palette and 4 custom web fonts
-💳 **Payment Automation** - Complete Stripe integration with webhook event handling
-🗄️ **Database Engineering** - Normalized schema with comprehensive indexing and relationships
+💳 **Payment Automation** - Complete Stripe integration with multi-tier system and webhook event handling
+🗄️ **Database Engineering** - 41-table normalized schema with comprehensive indexing and relationships
 ⚡ **Edge Computing** - Zero cold starts, global distribution, automatic scaling
 🔐 **Security Implementation** - Webhook signature verification, SQL injection prevention, HTTPS enforcement
-📊 **Analytics Architecture** - Multi-dimensional tracking of engagement, revenue, and user behavior
+📊 **Analytics Architecture** - Multi-dimensional tracking of engagement, revenue, partnerships, and user behavior
 
 ---
 
@@ -428,7 +485,7 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 <details>
 <summary><b>Click to expand full schema</b></summary>
 
-### Core Tables (38 total)
+### Core Tables (41 total)
 
 **User & Community**
 - `signups` - Waitlist registrations
@@ -457,8 +514,11 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 - `search_queries` - Search behavior
 - `daily_analytics` - Aggregated metrics
 
-**Partnerships**
-- `partner_signups` - Quick interest forms
+**Partnerships & Payments**
+- `partner_signups` - Partnership enrollments with tier/duration
+- `partner_prizes` - Prize package tracking and fulfillment
+- `partner_webdev_services` - Web/dev service deliverables
+- `partner_tier_history` - Tier changes and renewals
 - `partner_payments` - Stripe transactions
 - `stripe_customers` - Customer records
 - `partnership_activations` - Active partnerships
@@ -478,9 +538,10 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 ### ✅ Phase 1: Foundation (Complete)
 - [x] Landing page with treasure map design
 - [x] Waitlist signup system
-- [x] Partnership pages and intake forms
-- [x] Stripe payment integration
-- [x] Database schema (38 tables)
+- [x] Enhanced partnership tier system (5 tiers)
+- [x] Stripe payment integration with webhooks
+- [x] Database schema (41 tables)
+- [x] Prize package and web/dev services tracking
 - [x] Success page and payment flow
 
 ### 🚧 Phase 2: Core Game (In Progress)
@@ -517,7 +578,7 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 |----------|------------|----------------------|
 | **Geographic Reach** | Statewide coverage | Multi-city competition architecture |
 | **Concurrent Users** | 10,000+ supported | Edge computing auto-scaling |
-| **Database Performance** | <5ms query time | Optimized 38-table schema |
+| **Database Performance** | <5ms query time | Optimized 41-table schema |
 | **Revenue Automation** | 100% webhook-driven | Zero manual payment processing |
 | **Deployment Speed** | <2 minutes | Cloudflare Pages instant rollout |
 
