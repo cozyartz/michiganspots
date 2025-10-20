@@ -30,11 +30,12 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Getting Started',
+          badge: { text: 'Start Here', variant: 'success' },
           items: [
-            { label: 'How to Play', link: '/getting-started/how-to-play/' },
-            { label: 'Creating Your Account', link: '/getting-started/account-setup/' },
-            { label: 'Your First Spot', link: '/getting-started/first-spot/' },
-            { label: 'Understanding Challenges', link: '/getting-started/challenges/' },
+            { label: 'How to Play', link: '/getting-started/how-to-play/', badge: '1' },
+            { label: 'Creating Your Account', link: '/getting-started/account-setup/', badge: '2' },
+            { label: 'Your First Spot', link: '/getting-started/first-spot/', badge: '3' },
+            { label: 'Understanding Challenges', link: '/getting-started/challenges/', badge: '4' },
           ],
         },
         {
@@ -50,6 +51,7 @@ export default defineConfig({
         },
         {
           label: 'AI Assistant',
+          badge: { text: 'AI', variant: 'tip' },
           items: [
             { label: 'What is the AI?', link: '/ai-help/overview/' },
             { label: 'Getting Hints', link: '/ai-help/hints/' },
@@ -60,6 +62,7 @@ export default defineConfig({
         },
         {
           label: 'Challenges & Events',
+          badge: { text: 'New', variant: 'caution' },
           items: [
             { label: 'Weekly Challenges', link: '/challenges/weekly/' },
             { label: 'Seasonal Events', link: '/challenges/seasonal/' },
@@ -78,6 +81,7 @@ export default defineConfig({
         },
         {
           label: 'For Staff & Partners',
+          badge: { text: 'Staff', variant: 'note' },
           items: [
             { label: 'Staff Dashboard', link: '/staff/dashboard/' },
             { label: 'Managing Challenges', link: '/staff/challenge-management/' },
