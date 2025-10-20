@@ -32,43 +32,139 @@ NOW, THEREFORE, in consideration of the mutual covenants and agreements herein c
 ## 1. PARTNERSHIP PACKAGE AND SERVICES
 
 ### 1.1 Selected Partnership Package
-Partner has selected the following package:
-- [ ] **Single Challenge** - $99 one-time (1 sponsored challenge, 30-day duration, basic listing)
-- [ ] **Seasonal Package** - $249 one-time (3 challenges over 90 days, enhanced listing, social media feature)
-- [ ] **Multi-Location** - $149 one-time per location (for businesses with 2+ Michigan locations, challenges for each)
-- [ ] **Event Promotion** - $199 one-time (for specific events, festivals, or grand openings, 2-week intensive promotion)
+Partner has selected the following tier and duration:
 
-### 1.2 Services Provided by Michigan Spots
+**TIER 1: Spot Partner**
+- [ ] Monthly - $99/month
+- [ ] Quarterly - $249 ($83/mo)
+- [ ] Yearly - $999 ($83/mo)
 
-**All Packages Include:**
-- Business profile page with logo, description, hours, contact info, and directions
+**TIER 2: Featured Partner**
+- [ ] Quarterly - $699 ($233/mo)
+- [ ] Yearly - $2,399 ($200/mo)
+
+**TIER 3: Premium Sponsor**
+- [ ] Quarterly - $1,499 ($500/mo)
+- [ ] Yearly - $4,999 ($417/mo)
+
+**TIER 4: Title Sponsor**
+- [ ] Quarterly - $3,999 ($1,333/mo)
+- [ ] Yearly - $12,999 ($1,083/mo)
+
+**TIER 5: Chamber/Tourism Partnership**
+- [ ] Quarterly - $899 (up to 10 member businesses)
+- [ ] Yearly - $2,999
+
+### 1.2 Prize/Promotional Package Add-On (Optional)
+- [ ] **No Prize Package** - Standard partnership only
+- [ ] **Prize Package** - Partner will contribute prizes/promotions valued at: $[PRIZE_VALUE]
+  - Prize Type(s): [CASH/GIFT_CARDS/TICKETS/SWAG/EXPERIENCES/SERVICES/HYBRID]
+  - Prize Description: [DESCRIPTION]
+  - Additional Monthly/Quarterly Fee: $[ADDON_FEE]
+
+### 1.3 Web/Development Services Add-On (Optional, A La Carte)
+- [ ] Landing Page - $499 one-time
+- [ ] E-Commerce Integration - $999 one-time
+- [ ] Custom Dashboard - $799 one-time
+- [ ] API Integration - $1,299 one-time
+- [ ] Full Website Build - $[2,999-5,999] one-time
+
+### 1.4 Services Provided by Michigan Spots
+
+**TIER 1: Spot Partner Includes:**
+- 1 active challenge per month (or per billing period for quarterly/yearly)
+- Basic business profile with logo, photos, hours, contact info, directions
 - Link to Business website and social media
-- Sponsored challenge promoting Business's location or offerings
-- Business branding displayed on challenge page
-- Basic analytics: challenge views, starts, completions
-- Listing in "Partners" directory on Platform
+- Standard challenge rotation
+- Monthly analytics report (views, starts, completions, engagement)
+- Partner directory listing
 
-**Seasonal Package Additional Benefits:**
-- Three (3) challenges spread over 90-day period
-- Enhanced profile with photo gallery (up to 10 images)
-- Featured placement in challenge rotation
-- Social media post featuring Business (r/michiganspots)
-- Monthly performance report
+**TIER 2: Featured Partner Includes (Everything in Tier 1 PLUS):**
+- 2-3 challenges per month
+- Enhanced profile with photo gallery (up to 15 images)
+- Featured placement in challenge rotations
+- Bi-weekly analytics reports
+- Monthly strategy call with partnership team
+- Social media features (2-3 posts per quarter on r/michiganspots)
+- "Featured Partner" badge on profile
+- Event integration support
 
-**Multi-Location Additional Benefits:**
-- Separate challenge for each location
-- Coordinated multi-location promotion
-- "Visit all locations" bonus badge for users
-- Combined analytics across all locations
+**TIER 3: Premium Sponsor Includes (Everything in Tiers 1-2 PLUS):**
+- Unlimited challenges
+- Homepage featured slot rotation
+- Weekly analytics dashboard
+- Bi-weekly strategy sessions
+- Dedicated account manager
+- Co-branded promotional materials
+- **Premium Web/Dev Services:** Custom landing page, QR code integration, analytics setup, mobile-optimized pages
+- **Marketing Consulting:** ROI optimization, customer acquisition strategy, challenge performance optimization
 
-**Event Promotion Additional Benefits:**
-- Two-week intensive promotion window (timing coordinated with Business)
-- Homepage feature during event period
-- Multiple social media posts (pre-event, during event, recap)
-- Urgent/time-sensitive challenge mechanics
-- Post-event recap with engagement metrics
+**TIER 4: Title Sponsor Includes (Everything in Tiers 1-3 PLUS):**
+- **Full Web/Development Package:** Multi-page microsites, API integrations, custom dashboards, e-commerce integration, SEO optimization
+- **Comprehensive Marketing:** Multi-channel campaigns, content creation, email marketing, influencer outreach, PR
+- Platform co-branding for sponsored seasons
+- First access to new features and expansion markets
+- Quarterly business review presentations
+- Partner summit invitation
+- White-label challenge creation tools
+- Priority feature development requests
 
-### 1.3 Challenge Creation and Approval
+**TIER 5: Chamber/Tourism Partnership Includes:**
+- Challenges for up to 10 member businesses
+- Chamber/destination branded challenge series
+- Member business directory integration
+- Quarterly member analytics reports
+- Co-marketing to regional players
+- Event promotion for festivals/campaigns
+- Member onboarding support
+- Chamber-branded landing page
+
+### 1.5 Prize/Promotional Package Benefits (When Opted-In)
+
+**If Partner selects Prize Package Add-On, Partner receives:**
+- **"Prize Sponsor" Badge** displayed on all associated challenges
+- **Priority Placement** at top of challenge rotation feed
+- **Social Media Amplification** - Dedicated prize announcement posts with Partner branding
+- **Prize Showcase Gallery** - Visual display of prizes in challenge details page
+- **Winner Recognition** - Winners publicly thank Partner in completion posts
+- **Platform Bonus Match** - Michigan Spots adds 20% cash bonus to cash prizes
+- **Winner Stories** - Partner may request winner testimonials/photos (with winner consent)
+
+**Accepted Prize Types:**
+Partner may contribute any of the following prize types:
+- **Cash & Gift Cards:** Gift cards, store credit, prepaid cards, cash prizes
+- **Tickets & Experiences:** Event tickets, activity passes, tours, classes, spa packages
+- **Physical Prizes:** Branded merchandise, product bundles, exclusive items, gift baskets
+- **Services:** Service vouchers, discount packages, VIP upgrades, professional services
+- **Hybrid Packages:** Combinations of above (e.g., "Night Out" = dining + movie tickets)
+
+**Prize Submission & Fulfillment (REQUIRED BEFORE LAUNCH):**
+- **All prizes must be relinquished to Michigan Spots BEFORE challenge goes live**
+- Partner has 3 business days after challenge approval to submit prizes
+- Challenge will NOT launch until prizes are received and verified
+
+**Accepted Prize Submission Methods:**
+- **Physical Prizes/Swag:** Ship to Michigan Spots address or arrange local pickup (Battle Creek, MI)
+- **Gift Cards/Vouchers:** Provide physical cards or digital codes via secure email
+- **Tickets:** Transfer tickets to Michigan Spots or provide confirmation codes
+- **Service Vouchers:** Provide signed vouchers or digital redemption codes
+- **Experiences:** Provide booking confirmation or transferable reservation codes
+
+**Prize Holding & Distribution:**
+- Michigan Spots holds all prizes in secure storage until winner selection
+- Winners are randomly selected upon challenge completion or at scheduled date
+- Michigan Spots ships physical prizes to winners at no cost to Partner
+- Digital prizes (codes, vouchers) sent via email to winners
+- Partner receives winner notification and completion confirmation
+
+**Failure to Provide Prizes:**
+- If Partner fails to submit prizes within 3 business days of approval, challenge launch is postponed
+- If prizes not received within 7 business days, Michigan Spots reserves right to:
+  - Cancel challenge and refund Prize Package Add-On fee
+  - Substitute equivalent value prize from platform prize pool (Partner still charged Add-On fee)
+  - Terminate partnership for breach of agreement
+
+### 1.6 Challenge Creation and Approval
 
 **Challenge Content:**
 - Michigan Spots will work with Business to create challenge(s) highlighting:
@@ -89,7 +185,7 @@ Partner has selected the following package:
 - No promotion of illegal activities, tobacco, cannabis, or adult content
 - Must comply with FTC advertising disclosure requirements
 
-### 1.4 Partner Obligations
+### 1.7 Partner Obligations
 
 **Accurate Information:**
 - Business will provide accurate business information (hours, address, contact)
@@ -108,19 +204,26 @@ Partner has selected the following package:
 
 ## 2. PAYMENT TERMS
 
-### 2.1 Package Fee
-The one-time package fee is:
-- **[SELECTED_PACKAGE]: $[AMOUNT]**
+### 2.1 Partnership Fee
+The partnership fee is based on selected tier and duration:
+- **[SELECTED_TIER]: $[AMOUNT]** ([MONTHLY/QUARTERLY/YEARLY])
+- **Prize/Promo Add-On:** $[ADDON_AMOUNT] (if selected)
+- **Web/Dev Services:** $[WEBDEV_AMOUNT] one-time (if selected)
+- **Total Due:** $[TOTAL_AMOUNT]
 
 ### 2.2 Payment Method
 - Payment is processed via Stripe at time of signup
 - Full payment is required before challenge creation begins
 - Business will receive email confirmation of payment
+- Quarterly and yearly payments are one-time advance payments for the full duration
+- Monthly subscriptions are auto-billed monthly until cancelled
 
-### 2.3 No Recurring Charges
-- Business partnership packages are **one-time payments only**
-- There are no automatic renewals or recurring charges
-- Business may purchase additional packages at any time at current pricing
+### 2.3 Recurring Charges (Monthly Tier Only)
+- **Monthly subscriptions only**: Auto-renews monthly via Stripe subscription
+- Partner may cancel monthly subscription anytime (no refund for current month)
+- Cancellation takes effect at end of current billing period
+- **Quarterly and yearly tiers**: One-time payments, no auto-renewal
+- Partner may purchase new packages at end of duration at then-current pricing
 
 ### 2.4 Refund Policy
 **14-Day Money-Back Guarantee:**

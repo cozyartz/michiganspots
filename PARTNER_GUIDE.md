@@ -1,432 +1,500 @@
 # Michigan Spots - Partner Guide
 
-**Be a Founding Partner in Michigan's Community Discovery Game**
+**Join Michigan's Most Engaging Community Discovery Game**
 
-Michigan Spots is launching October 2025 as part of Reddit Community Games. We're looking for early partners who want to be part of something special from the beginning.
+Michigan Spots is a Reddit-powered treasure hunt game where players discover local businesses, complete challenges, and win real prizes. We're building a platform that drives real foot traffic and creates authentic community engagement.
 
 ---
 
 ## What is Michigan Spots?
 
-A Reddit-powered game where Michiganders discover hidden gems, complete challenges, and compete for badges. Think geocaching meets local pride, all built on community engagement and friendly city rivalries.
+A location-based discovery game where Michiganders:
+- Find and complete challenges at local businesses
+- Earn badges, points, and real prizes
+- Compete in city rivalries and seasonal events
+- Share discoveries on Reddit and social media
 
-**The Opportunity**: Get in early as a founding partner with special pricing and build this with us.
-
----
-
-## Why Partner with Us?
-
-### For Chambers of Commerce
-- Drive foot traffic to member businesses
-- Create engagement between events
-- New member recruitment tool
-- Measurable community impact
-- Get in at founding partner rates
-
-### For Business Owners
-- Attract discovery-minded customers
-- Create buzz without big ad spend
-- Track actual visits and engagement
-- Stand out from competitors
-- Be featured in a growing platform
-
-### For Community Organizations
-- Build local pride and awareness
-- Educational challenges about your cause
-- Free or low-cost participation
-- Measurable community impact
-- Support from day one
+**For Partners:** Get discovered by thousands of engaged players actively seeking new places to explore.
 
 ---
 
-## Founding Partner Pricing
+## Partnership Tiers
 
-**These prices are launch-only. Get in now while we're building the platform.**
+### **TIER 1: Spot Partner** 💡
+*Perfect for small businesses testing the platform*
 
-### Chambers of Commerce
+**Pricing:**
+- **Monthly:** $99/month
+- **Quarterly:** $249 ($83/mo, save $48)
+- **Yearly:** $999 ($83/mo, save $189 = 2 months free) ⭐
 
-#### Launch Partner - $299/quarter
-*Regular price will be $2,500+ after launch*
+**What's Included:**
+- 1 active challenge per month
+- Basic business profile with logo, photos, hours, directions
+- Standard challenge rotation
+- Monthly analytics report (views, completions, engagement)
+- Partner directory listing
+- Link to your website and social media
 
-**Perfect for**: Small to mid-sized chambers ready to try something new
-
-**What you get**:
-- 2 custom challenges per quarter
-- Your branding on challenge pages
-- Quarterly analytics report
-- Input on platform features
-- Listed as founding partner
-- Cancel anytime after first quarter
-
-**Example**: "Discover Downtown Battle Creek" featuring 5-8 member businesses
+**Optional Add-On: Prize Package** (+$50-100/month value)
+- Contribute prizes: gift cards, tickets, free items, swag
+- Get "Prize Challenge" featured badge
+- Priority placement in challenge rotation
+- Social media highlight post
 
 ---
 
-#### City Launch Partner - $599/quarter
-*Regular price will be $5,000+ after launch*
+### **TIER 2: Featured Partner** ⭐
+*For businesses wanting sustained quarterly visibility*
 
-**Perfect for**: Larger chambers or regional alliances
+**Pricing:**
+- **Quarterly:** $699 ($233/mo, save $198 from monthly)
+- **Yearly:** $2,399 ($200/mo, save $999 = 3 months free) ⭐⭐
 
-**What you get**:
-- 4-6 custom challenges per quarter
-- Event integration (festivals, seasonal campaigns)
-- Monthly analytics and check-ins
+**What's Included:**
+- **2-3 challenges per month**
+- Enhanced profile with photo gallery (up to 15 images)
+- Featured placement in challenge rotations
+- Bi-weekly analytics + monthly strategy call
+- Social media features (2-3 posts per quarter)
+- "Featured Partner" badge on profile
+- Event integration support
+
+**Optional Add-On: Prize Package** (+$100-250/quarter value)
+- Seasonal prize packages: gift cards, experiences, merchandise, event tickets
+- "Top Prize Sponsor" featured status
+- Dedicated prize announcement posts with photos
+- Player leaderboard sponsorship
+- Winner testimonial opportunities
+
+---
+
+### **TIER 3: Premium Sponsor** 🏆
+*For businesses wanting maximum exposure + marketing support*
+
+**Pricing:**
+- **Quarterly:** $1,499 ($500/mo, save $597 from monthly)
+- **Yearly:** $4,999 ($417/mo, save $2,989 = 3 months free) ⭐⭐⭐
+
+**What's Included - Everything in Featured Partner PLUS:**
+- **Unlimited challenges**
+- Homepage featured slot rotation
+- Weekly analytics dashboard + bi-weekly strategy sessions
+- **Dedicated account manager**
 - Co-branded promotional materials
-- Priority feature requests
-- Dedicated partner page
 
-**Example**: "Ann Arbor Brewery Trail" with 10+ member businesses
+**Premium Web/Dev Services Included:**
+- Custom landing page creation
+- QR code integration for in-store check-ins
+- Basic analytics integration
+- Mobile-optimized challenge pages
 
----
+**Marketing Consulting Included:**
+- ROI optimization recommendations
+- Customer acquisition strategy sessions
+- Challenge performance optimization
+- Competitive analysis insights
 
-#### Regional Launch Partner - $999/quarter
-*Regular price will be $10,000+ after launch*
-
-**Perfect for**: Major metro chambers and state-level organizations
-
-**What you get**:
-- Unlimited custom challenges
-- Full platform branding integration
-- Premium analytics with predictive insights
-- Dedicated account manager
-- API access for custom integrations
-- Co-marketing opportunities
-
-**Example**: "Pure Michigan Summer Explorer" statewide campaign
+**Optional Add-On: Major Prize Package** (+$500-1,000/quarter value)
+- Grand prize packages: VIP experiences, exclusive tickets, premium merchandise
+- "Title Sponsor" status for themed seasonal challenges
+- Exclusive winner event hosting rights
+- Player rewards program integration
+- Custom prize showcase page
 
 ---
 
-### Business Owners
+### **TIER 4: Title Sponsor** 👑
+*For major brands, enterprises, and destination marketing*
 
-#### Single Challenge - $99
-*Regular price will be $299+*
+**Pricing:**
+- **Quarterly:** $3,999 ($1,333/mo)
+- **Yearly:** $12,999 ($1,083/mo, save $2,989 = 3 months free) ⭐⭐⭐⭐
 
-**Perfect for**: Testing the waters with one challenge
+**What's Included - Everything in Premium Sponsor PLUS:**
 
-**What you get**:
-- 30-day challenge featuring your business
-- Challenge page with your branding
-- Basic analytics report
-- Social media promotion
-- No long-term commitment
+**Full Web/Development Package:**
+- Custom microsites and landing pages (multi-page)
+- API integrations with your systems (CRM, POS, booking)
+- Custom analytics dashboard with real-time data
+- E-commerce integration for prize redemption
+- SEO optimization and technical setup
+- Mobile app deep-linking
 
-**Example**: "Find the Secret Menu Item at [Your Cafe]"
+**Comprehensive Marketing Services:**
+- Multi-channel campaign management
+- Professional content creation (video, graphics, copywriting)
+- Email marketing campaigns to player base
+- Social media management support
+- Influencer and media outreach coordination
+- PR and press release distribution
 
-**Expected results**: 50-150 visits
+**Enterprise Features:**
+- Platform co-branding for sponsored seasons
+- First access to new features and expansion markets
+- Quarterly business review presentations with C-suite insights
+- Partner summit invitation (exclusive networking events)
+- White-label challenge creation tools
+- Priority feature development requests
 
----
-
-#### Three-Month Campaign - $249
-*Regular price will be $899+*
-
-**Perfect for**: Sustained engagement over a season
-
-**What you get**:
-- 3 consecutive monthly challenges
-- Seasonal theme integration
-- Detailed analytics
-- Progressive badges
-- Social media support
-
-**Example**: "Summer Ice Cream Tour" running June-August
-
-**Expected results**: 200-500 visits over 3 months
-
----
-
-#### Multi-Location Package - $149/location
-*For businesses with multiple locations*
-
-**Perfect for**: Businesses with 3-5 locations across Michigan
-
-**What you get**:
-- Multi-stop challenge across your locations
-- OR individual challenges for each location
-- 45-day runtime
-- Unified analytics across all locations
-- Brand consistency across challenges
-- Drive traffic to all your Michigan locations
-
-**Example**: "Visit All 4 Fieldstone Coffee Locations" across Battle Creek, Kalamazoo, Grand Rapids, and Lansing ($596 total)
-
-**Expected results**: 100-300 visits per location
+**Optional Add-On: Championship Prize Package** (+$2,000-5,000/quarter value)
+- Season-long championship series title sponsorship
+- Major grand prizes: vacation packages, concert VIP, exclusive experiences
+- Championship finale event hosting rights
+- Extensive media coverage and PR campaigns
+- Player championship merchandise with your branding
+- Winner recognition events
 
 ---
 
-### Community Partners
+### **TIER 5: Chamber & Tourism Partnerships** 🏛️
+*For chambers of commerce, CVBs, and destination marketing organizations*
 
-#### Parks, Arts, Non-Profits - FREE to $250
-*We want to support community organizations*
+**Pricing:**
+- **Quarterly:** $899 (covers up to 10 member businesses)
+- **Yearly:** $2,999 (save $599 = 2 months free) ⭐
 
-**We'll work with your budget**:
-- Educational challenges
-- Awareness campaigns
-- Event promotion
-- Fundraising support
-- Flexible arrangements
+**What's Included:**
+- Challenges for up to 10 member businesses
+- Chamber/destination branded challenge series
+- Member business directory integration
+- Quarterly analytics reports for all members
+- Co-marketing to regional player base
+- Event promotion for festivals, seasonal campaigns, tourism drives
+- Member onboarding and training support
+- Chamber-branded landing page
 
-**Examples**:
-- "Find All 10 City Parks"
-- "Public Mural Scavenger Hunt"
-- "Historic Landmark Tour"
+**Perfect For:**
+- "Discover Downtown [City]" campaigns
+- Seasonal tourism drives
+- Member engagement between chamber events
+- New member recruitment tools
+- Festival and event promotion
+
+**Optional Add-On: Regional Prize Fund** (+$300-600/quarter value)
+- Chamber-sponsored prize pool distributed among member challenges
+- Mix of member business gift cards, tickets, experiences
+- "Support Local" featured campaign series
+- Cross-promotion across all member businesses
+- Tourism incentive packages (hotel + dining + activity)
+
+---
+
+## Prize & Promotional Options
+
+We accept **any type of prize or promotional offering** that provides real value to players:
+
+### Prize Types Accepted:
+
+**💵 Cash & Gift Cards:**
+- Gift cards to your business (any amount)
+- Store credit vouchers
+- Prepaid debit cards
+- Cash prizes
+
+**🎟️ Tickets & Experiences:**
+- Event tickets (concerts, sports, festivals, theater)
+- Activity passes (museums, parks, attractions, golf)
+- Tour vouchers (brewery tours, historical tours, food tours)
+- Class or workshop registrations
+- Spa packages, adventure activities
+
+**🎁 Physical Prizes & Swag:**
+- Branded merchandise (t-shirts, hats, tumblers, etc.)
+- Product bundles from your inventory
+- Limited edition or exclusive items
+- Partner-created goods (artwork, baked goods, crafts, etc.)
+- Gift baskets and curated packages
+
+**⚙️ Services & Upgrades:**
+- Free service vouchers (haircuts, car washes, oil changes, etc.)
+- Discount packages (50% off dining, BOGO deals)
+- VIP upgrades (premium seating, fast-pass, private access)
+- Experience packages (spa day, golf outing, date night)
+- Professional services (photography session, consultation, etc.)
+
+**🎊 Hybrid Prize Packages:**
+- "Night Out" bundle: Dinner gift card + movie tickets
+- "Adventure Pack": Activity pass + branded gear + snacks
+- "Local Lover": Multiple small business gift cards in one package
+- "Grand Experience": Hotel stay + dining + activity + swag
+
+### Prize Value Guidelines:
+- **$50-100 value:** Small prizes (featured in weekly challenges)
+- **$100-250 value:** Medium prizes (featured monthly, higher engagement)
+- **$500-1,000 value:** Large prizes (seasonal campaigns, major promotion)
+- **$2,000+ value:** Grand prizes (championship events, title sponsorships)
+
+### Benefits for Prize Sponsors:
+✅ **"Prize Sponsor" Badge** on challenge pages
+✅ **Priority Placement** at top of player feeds
+✅ **Social Media Features** with prize photos and announcements
+✅ **Winner Recognition** - Players thank sponsors publicly
+✅ **Community Goodwill** - Build reputation as player-focused business
+✅ **Prize Showcase Gallery** - Visual display in challenge details
+✅ **Winner Stories** - Share testimonials and photos (with permission)
+✅ **Platform Bonus Match** - We add 20% cash bonus to cash prizes
+
+---
+
+## Web & Development Services
+
+### Basic Web Services (Included in Premium Sponsor):
+- Single landing page creation
+- Custom QR code integration
+- Basic analytics setup
+- Mobile-responsive design
+
+### Advanced Web Services (Included in Title Sponsor):
+- Multi-page microsites
+- E-commerce/booking integration
+- Custom API development
+- Advanced analytics dashboards
+- CRM system integration
+- Full SEO optimization
+
+### A La Carte Services (Available to Any Tier):
+- **Landing Page:** $499 one-time
+- **E-Commerce Integration:** $999 one-time
+- **Custom Dashboard:** $799 one-time
+- **API Integration:** $1,299 one-time
+- **Full Website Build:** $2,999-5,999
 
 ---
 
 ## How It Works
 
-### For Chambers
+### For Businesses:
 
-1. **Quick call** (20 minutes) to discuss your goals
-2. **Choose businesses** you want to feature
-3. **We create the challenges** (you approve)
-4. **Launch** and promote together
-5. **Track results** with simple analytics
-6. **Adjust** for next quarter based on what works
+**1. Choose Your Tier** (2 minutes)
+- Select partnership level and duration
+- Decide if you want to add prize package
+- Choose any web/dev services
 
-### For Businesses
+**2. Sign Up & Pay** (5 minutes)
+- Fill out business information form
+- Upload logo and photos
+- Secure payment via Stripe
+- Receive instant confirmation
 
-1. **Fill out simple form** about your business
-2. **20-minute planning call** to discuss challenge
-3. **We draft your challenge** (you review and approve)
-4. **Pay and schedule** your launch date
-5. **Promote** through your channels
-6. **Receive analytics** showing impact
+**3. Challenge Creation** (1 week)
+- We schedule a 20-minute planning call
+- We draft your challenge (showcasing your unique offerings)
+- You review and approve (2 revision rounds included)
+- Challenge goes live within 5 business days
 
-### For Community Partners
+**4. Launch & Promote** (ongoing)
+- We promote to player base
+- You share on your channels
+- Players discover and complete challenges
+- You see real-time foot traffic
 
-1. **Email us** your idea
-2. **Discuss** what you want to achieve
-3. **We work with your budget** (free to low-cost)
-4. **Create and launch** together
-5. **Measure impact** for your mission
+**5. Track Results** (monthly/quarterly)
+- Receive detailed analytics reports
+- See player engagement, completion rates, demographics
+- Strategy sessions to optimize (Featured+ tiers)
+- Renew, upgrade, or adjust as needed
+
+### For Chambers & Tourism Orgs:
+
+**1. Initial Consultation** (30 minutes)
+- Discuss your goals and member businesses
+- Identify which members to feature
+- Plan seasonal campaign themes
+
+**2. Member Onboarding** (2 weeks)
+- We coordinate with up to 10 member businesses
+- Collect info, photos, and challenge ideas
+- Create cohesive campaign strategy
+
+**3. Campaign Launch**
+- Branded challenge series goes live
+- Regional promotion to players
+- Cross-promotion among members
+
+**4. Quarterly Reporting**
+- Analytics for all member businesses
+- Member engagement summary
+- Recommendations for next quarter
 
 ---
 
-## What Makes This Different?
+## Why Partner with Michigan Spots?
 
-### AI-Powered Efficiency
-- Challenges auto-generate with AI
-- Automated moderation
-- Low overhead means low prices
-- More features, less cost
+### Real Results:
+✅ **Foot Traffic** - Players visit locations to complete challenges
+✅ **Social Proof** - Public completions, photos, and reviews on Reddit
+✅ **Measurable ROI** - GPS verification, analytics, completion tracking
+✅ **Community Goodwill** - Authentic discovery, not intrusive ads
+✅ **Competitive Advantage** - Stand out from non-participating businesses
 
-### Built for Michigan
-- State pride and local rivalry
-- Reddit community engagement
+### AI-Powered Efficiency:
+- Automated challenge generation and moderation
+- Smart player matching (right challenges to right players)
+- Predictive analytics and optimization
+- Low overhead = Better value for partners
+
+### Built for Michigan:
+- State pride and local community focus
+- City vs city rivalries drive engagement
+- Reddit community integration (r/michiganspots)
 - Real people discovering real places
-- Not corporate, just community
 
-### Measurable Results
-- GPS verification of visits
-- Photo submissions
-- Social media tracking
-- Real data you can use
-
-### Flexible and Collaborative
-- We're building this WITH partners
-- Feedback shapes the platform
-- Pilot programs available
-- No rigid contracts
+### Flexible & Transparent:
+- No hidden fees or surprise charges
+- Month-to-month options available
+- Cancel anytime (no long-term lock-in on monthly)
+- Responsive support team
 
 ---
 
-## Founding Partner Benefits
+## Partner Acceptance Criteria
 
-**Get in now and receive**:
-- 50-70% discount on regular pricing
-- Listed as founding partner on website
-- Input on feature development
-- First access to new features
-- Locked-in pricing for 1 year
-- Quarterly reviews to ensure value
+### ✅ We Welcome:
+- **All legitimate Michigan businesses** with proper licensing
+- **Any business size** - from sole proprietors to enterprise chains
+- **All industries** - restaurants, retail, services, attractions, entertainment, professional services, etc.
+- **Diverse prize types** - anything that provides real value to players
+- **Startups to established** - new businesses and long-time community staples
 
-**Why now?** We're launching in October 2025 and need 10-15 founding partners to build proof of concept. Your feedback directly shapes the platform.
+### ❌ We Only Reject:
+- Businesses operating illegally or without proper licenses
+- Scam operations, pyramid schemes, or multi-level marketing
+- Adult-only businesses (we're family-friendly)
+- Promotion of illegal substances or activities
+- Partners who harass players or abuse the platform
+- Misleading advertising or false claims
 
----
-
-## Pilot Programs Available
-
-### Not ready to commit? Try a pilot.
-
-**Free Pilot Challenge** - For chambers considering partnership
-- 1 free challenge
-- 30-day run
-- Basic analytics
-- No obligation
-- See results before committing
-
-**Single Business Test** - $49
-- One 2-week challenge
-- Test the concept
-- No long-term commitment
-- Upgrade to full challenge anytime
-
-**Let's learn together what works for your community.**
+**If you're a legitimate Michigan business, you're welcome here.**
 
 ---
 
-## Real Talk About Launch
+## Our Commitment to Players & Partners
 
-### What We're Building
-- October 2025 launch in Battle Creek
-- Reddit Community Games entry
-- Expanding to Grand Rapids, Ann Arbor, Detroit by Q1 2026
-- Statewide by mid-2026
+### Player-First Principles:
+1. **50% of prize revenue** goes back to players as platform bonus prizes
+2. **25% of profits** reinvested into new gameplay features
+3. **Monthly free challenges** from Michigan Spots (not sponsored)
+4. **No pay-to-win** - Sponsors can't buy competitive advantages
+5. **Transparent pricing** - All tier information publicly available
+6. **Community input** - Quarterly player surveys shape features
 
-### What We Need
-- 10-15 founding partners
-- Feedback on what works
-- Community champions
-- Word-of-mouth support
-- Patience as we iterate
-
-### What You Get
-- Ground floor opportunity
-- Shape a platform for your community
-- Incredible value pricing
-- Responsive team
-- Real partnership, not transaction
+### Partner Success Guarantees:
+- **14-Day Money-Back Guarantee** - Not satisfied? Full refund within 14 days
+- **Dedicated Support** - Real humans respond within 24 hours
+- **No Auto-Renewal** - You control when to renew (except monthly subscriptions)
+- **Performance Reports** - Always know your ROI and engagement metrics
 
 ---
 
-## Budget Flexibility
+## Frequently Asked Questions
 
-**We want to work with you, not price you out.**
+**Q: How do you verify player visits?**
+A: GPS check-in, photo uploads, or QR code scans. We use multiple verification methods to ensure legitimate completions.
 
-Got a budget constraint? Let's talk:
-- Payment plans available
-- Barter arrangements considered
-- Free options for non-profits
-- Co-op pricing for business groups
-- Negotiable based on commitment
+**Q: What if I don't get results?**
+A: We offer a 14-day money-back guarantee. Plus, Featured+ partners get strategy sessions to optimize challenges. We succeed when you succeed.
 
-**Our goal**: Make this accessible while building something sustainable.
+**Q: Can I offer non-cash prizes?**
+A: Absolutely! Gift cards, tickets, swag, experiences, services - anything with real value. Many partners find merchandise and experiences more effective than cash.
 
----
+**Q: Do I need to give discounts to players?**
+A: No. Players are simply discovering your business through challenges. You provide normal service. Prizes are optional add-ons.
 
-## FAQ
+**Q: Can I cancel anytime?**
+A: Monthly subscriptions can cancel anytime (no refund for current month). Quarterly/yearly are one-time payments for the duration (14-day refund window).
 
-**How do you verify visits?**
-GPS check-in, photo uploads, or QR codes. We'll find what works for your business.
+**Q: What happens if I close or relocate?**
+A: Just notify us and we'll pause/update your challenges immediately. We'll work with you on pro-rated refunds if needed.
 
-**What if results are disappointing?**
-We'll work with you to improve. Founding partners get extra attention to ensure success.
+**Q: Do you share customer contact info?**
+A: No. Analytics are aggregated and anonymized. You can't contact individual players directly (privacy protection).
 
-**Can we cancel?**
-Chambers: Yes, after first quarter. Businesses: Single challenges are one-time, campaigns can be paused.
+**Q: Can I change my challenge after it goes live?**
+A: Within first 48 hours, yes (free). After that, we recommend letting it run for accurate data. New challenges can be created as needed.
 
-**Do we have to do anything technical?**
-Nope. We build everything. You just provide info and photos.
-
-**What if we have a tiny budget?**
-Tell us your budget and goals. We'll figure out what works.
-
-**Can we change our challenge after launch?**
-Within first 48 hours, yes. After that, we recommend letting it run for accurate data.
-
-**What happens after launch pricing ends?**
-Founding partners keep their discounted rate for 1 year. After that, we'll work out fair ongoing pricing.
+**Q: What if players leave negative reviews?**
+A: We moderate for inappropriate content, but can't remove honest opinions. Great service usually = great reviews. We're here to help you succeed.
 
 ---
 
-## Challenge Types We Can Create
+## Get Started Today
 
-**Discovery**: "Find the historic marker downtown"
+### Ready to Partner?
 
-**Collection**: "Visit 5 local breweries"
+**📧 Email:** partnerships@michiganspots.com
+**🌐 Website:** michiganspots.com/partnerships
+**📱 Phone:** (269) 555-SPOTS (leave message, we call back within 24hrs)
 
-**Photo Hunt**: "Photograph 10 murals around town"
-
-**Trivia**: "Answer questions about city history"
-
-**Event**: "Complete during the art fair weekend"
-
-**Team Battle**: "Battle Creek vs Kalamazoo showdown"
-
-**We'll help you pick what fits your goals.**
-
----
-
-## How to Get Started
-
-### Chambers
-Email partnerships@michiganspots.com with:
-- Your chamber name
-- How many members
-- What you want to achieve
-- Budget range (if any)
-
-### Businesses
-Email partnerships@michiganspots.com with:
-- Your business name and type
-- What makes you unique
-- When you'd like to launch
+### What to Include in Your Email:
+- Business name and type
+- Desired partnership tier
 - Questions you have
+- Best time for a quick call
 
-### Community Organizations
-Email partnerships@michiganspots.com with:
-- Your organization and mission
-- What you want to accomplish
-- Budget situation
-- Timeline you're thinking
-
-**Or just say "tell me more" and we'll schedule a quick call.**
+**Or just say "tell me more" and we'll reach out.**
 
 ---
 
-## The Vision
+## Special Launch Offers
 
-Michigan Spots isn't about transactions. It's about building something that celebrates Michigan's communities, supports local businesses, and creates shared experiences.
+**🎉 First 50 Annual Partners Get:**
+- **Extra 10% discount** (already included in yearly pricing)
+- **Founding Partner** badge and recognition
+- **Free upgrade** to next tier for first quarter
+- **Priority feature requests**
+- **Input on platform development**
 
-We're looking for founding partners who get excited about:
-- Community building
-- Local pride
-- Supporting small businesses
-- Trying new things
-- Being part of something from the start
+**🏆 Prize Sponsor Early Adopters:**
+- First 25 businesses who add prize packages get:
+- Free social media feature package ($299 value)
+- "Launch Sponsor" special badge
+- Featured in Platform launch PR
 
-**If that's you, let's talk.**
+---
+
+## The Michigan Spots Vision
+
+We're not just building another marketing platform. We're creating a movement that:
+- **Celebrates Michigan communities** and local pride
+- **Supports small businesses** with affordable, effective marketing
+- **Creates shared experiences** that bring people together
+- **Builds lasting relationships** between businesses and customers
+- **Makes discovery fun** through gamification and friendly competition
+
+**We're looking for partners who want to be part of something bigger than a transaction.**
+
+If that's you, let's talk.
 
 ---
 
 ## Contact
 
-**Email**: partnerships@michiganspots.com
+**Partnerships Team**
+Email: partnerships@michiganspots.com
+Phone: (269) 555-SPOTS
+Website: michiganspots.com
 
-**Phone**: (269) 555-SPOTS *(leave voicemail, we'll call back)*
-
-**Website**: michiganspots.com
-
-**We respond within 24 hours**
-
----
-
-## Why Trust Us?
-
-**Built by**: Cozyartz Media Group, Battle Creek, Michigan
-
-**Our background**: Web development, local business support, AI integration
-
-**Our commitment**: If you're not happy, we'll make it right or refund you
-
-**Our pitch**: Let's build Michigan Spots together and create something that lasts
+**Response Time:** Within 24 hours (usually same business day)
 
 ---
 
-## Let's Do This
+## About Us
 
-Michigan has incredible communities, hidden gems, and local pride. Michigan Spots gives people a reason to explore, businesses a way to be discovered, and chambers a tool to drive real engagement.
+**Built by:** Cozyartz Media Group, Battle Creek, Michigan
 
-**Founding partner pricing ends when we hit 15 partners or launch date, whichever comes first.**
+**Our Background:**
+- Web development and AI integration experts
+- Local business support and community building
+- Reddit Community Games 2025 participant
+- Committed to sustainable, player-first platform
 
-Ready to be part of this?
-
-**partnerships@michiganspots.com**
-
-Let's build something great for Michigan.
+**Our Promise:**
+If we can't deliver value, we'll make it right or refund you. Simple as that.
 
 ---
 
-*Built for Reddit Community Games 2025*
+**Let's build something great for Michigan. Together.**
 
-*Powered by Michigan pride and AI efficiency*
+*© 2025 Cozyartz Media Group. All rights reserved.*
+*Powered by Michigan pride, AI efficiency, and community passion.*

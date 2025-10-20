@@ -27,22 +27,122 @@ This comprehensive guide provides business partners with all the resources, tool
 
 ### Partnership Tiers
 
-#### Chamber of Commerce Partnerships
-- **Launch Partner**: $299/quarter (60% off regular pricing)
-- **City Launch Partner**: $599/quarter (70% off regular pricing)
-- **Regional Launch Partner**: $1,999/quarter (80% off regular pricing)
-- **Benefits**: City-wide promotion, challenge sponsorship, analytics access
+#### TIER 1: Spot Partner 💡
+**Pricing:**
+- Monthly: $99/month
+- Quarterly: $249 ($83/mo, save $48)
+- Yearly: $999 ($83/mo, save $189 = 2 months free)
 
-#### Individual Business Partnerships
-- **Single Challenge**: $99 (67% off regular pricing)
-- **Seasonal Campaign**: $249 (72% off regular pricing)
-- **Multi-Location**: $149/location (63% off regular pricing)
-- **Event Sponsorship**: $199 (67% off regular pricing)
+**Includes:**
+- 1 active challenge per month
+- Basic business profile
+- Monthly analytics reports
+- Partner directory listing
 
-#### Community Organization Support
-- **FREE Tier**: Libraries, parks, non-profits
-- **Minimal Budget**: $50 for enhanced features
-- **Modest Budget**: $100 for full feature access
+**Optional Add-On:** Prize Package (+$50-100/month value)
+
+---
+
+#### TIER 2: Featured Partner ⭐
+**Pricing:**
+- Quarterly: $699 ($233/mo, save $198)
+- Yearly: $2,399 ($200/mo, save $999 = 3 months free)
+
+**Includes:**
+- 2-3 challenges per month
+- Enhanced profile with photo gallery
+- Featured placement
+- Bi-weekly analytics + monthly strategy call
+- Social media features (2-3 posts/quarter)
+
+**Optional Add-On:** Prize Package (+$100-250/quarter value)
+
+---
+
+#### TIER 3: Premium Sponsor 🏆
+**Pricing:**
+- Quarterly: $1,499 ($500/mo, save $597)
+- Yearly: $4,999 ($417/mo, save $2,989 = 3 months free)
+
+**Includes:**
+- Unlimited challenges
+- Homepage featured slots
+- Weekly analytics + bi-weekly strategy sessions
+- Dedicated account manager
+- **Web/Dev Services:** Landing pages, QR codes, analytics integration
+- **Marketing Consulting:** ROI optimization, strategy sessions
+
+**Optional Add-On:** Major Prize Package (+$500-1,000/quarter value)
+
+---
+
+#### TIER 4: Title Sponsor 👑
+**Pricing:**
+- Quarterly: $3,999 ($1,333/mo)
+- Yearly: $12,999 ($1,083/mo, save $2,989 = 3 months free)
+
+**Includes:**
+- Everything in Premium Sponsor PLUS:
+- **Full Web/Dev Package:** Microsites, API integrations, custom dashboards, e-commerce
+- **Comprehensive Marketing:** Content creation, email marketing, influencer outreach, PR
+- Platform co-branding for seasons
+- Quarterly business reviews
+- Partner summit invitations
+
+**Optional Add-On:** Championship Prize Package (+$2,000-5,000/quarter value)
+
+---
+
+#### TIER 5: Chamber & Tourism Partnerships 🏛️
+**Pricing:**
+- Quarterly: $899 (up to 10 member businesses)
+- Yearly: $2,999 (save $599 = 2 months free)
+
+**Includes:**
+- Challenges for up to 10 member businesses
+- Chamber/destination branded series
+- Member directory integration
+- Quarterly analytics for all members
+- Event promotion support
+- Member onboarding
+
+**Optional Add-On:** Regional Prize Fund (+$300-600/quarter value)
+
+---
+
+### Prize Package Add-Ons
+
+**Accepted Prize Types:**
+- **Cash & Gift Cards:** Gift cards, store credit, cash prizes
+- **Tickets & Experiences:** Event tickets, activity passes, tours, classes
+- **Physical Prizes:** Branded merchandise, products, exclusive items
+- **Services:** Service vouchers, VIP upgrades, professional services
+- **Hybrid Packages:** Combinations (e.g., "Night Out" = dining + movie tickets)
+
+**Prize Submission Requirement:**
+- **All prizes must be submitted BEFORE challenge launch**
+- Partner has 3 business days after approval to submit
+- Physical prizes ship to Michigan Spots or local pickup
+- Digital prizes (codes, vouchers) via secure email
+- Challenge will NOT launch until prizes received
+
+**Benefits for Prize Sponsors:**
+- "Prize Sponsor" badge on challenges
+- Priority placement in feed
+- Social media features with prize photos
+- Winner testimonials and stories
+- 20% platform cash bonus match (for cash prizes)
+
+---
+
+### Web/Dev Services Add-Ons (A La Carte)
+
+Available to any tier:
+- **Landing Page:** $499 one-time
+- **E-Commerce Integration:** $999 one-time
+- **Custom Dashboard:** $799 one-time
+- **API Integration:** $1,299 one-time
+- **Full Website Build:** $2,999-5,999 one-time
 
 ## Getting Started as a Partner
 
