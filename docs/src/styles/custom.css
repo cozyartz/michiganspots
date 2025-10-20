@@ -1,25 +1,26 @@
 /* Michigan Spots Documentation Custom Styles */
-/* Modern Tech-Inspired Branding to match michiganspots.com */
+/* Dark Theme with Cyan Accents - Matching michiganspots.com */
 
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Merriweather:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Michigan Spots Modern Color Palette */
-  /* Ultra-light modern backgrounds */
-  --parchment-light: #FAFBFC;
-  --parchment-mid: #F5F7FA;
-  --parchment-dark: #E8ECF1;
-
-  /* Deep purple-navy text colors */
-  --ink-primary: #1A0B2E;
-  --ink-secondary: #3D2963;
-  --ink-faded: #6B5B8C;
+  /* Michigan Spots Dark Theme Color Palette */
+  --black-pure: #000000;
+  --black-dark: #0A0A0A;
+  --black-card: #111111;
+  --black-elevated: #1A1A1A;
+  --gray-darker: #222222;
+  --gray-dark: #2A2A2A;
+  --gray-medium: #404040;
+  --gray-light: #666666;
+  --gray-lighter: #999999;
 
   /* Signature cyan/turquoise - primary brand color */
   --cyan-primary: #41C6BB;
   --cyan-light: #9CEDE1;
   --cyan-dark: #2BA89E;
   --cyan-glow: #5FD9D1;
+  --cyan-dim: #2A7A73;
 
   /* Vibrant accent colors */
   --amber-primary: #FFB800;
@@ -28,220 +29,307 @@
   --coral-light: #FFB3D1;
   --orange-primary: #FF8C42;
   --forest-green: #2D7A5F;
+  --purple-accent: #9D4EDD;
 
-  /* Starlight Theme Overrides */
+  /* Text colors for dark theme */
+  --text-bright: #FFFFFF;
+  --text-primary: #E8E8E8;
+  --text-secondary: #B8B8B8;
+  --text-muted: #888888;
+
+  /* Starlight Dark Theme Overrides */
   --sl-color-accent: var(--cyan-primary);
-  --sl-color-accent-high: var(--cyan-dark);
-  --sl-color-accent-low: var(--cyan-light);
+  --sl-color-accent-high: var(--cyan-light);
+  --sl-color-accent-low: var(--cyan-dark);
 
-  --sl-color-text: var(--ink-primary);
+  --sl-color-white: var(--text-bright);
+  --sl-color-gray-1: var(--black-card);
+  --sl-color-gray-2: var(--black-elevated);
+  --sl-color-gray-3: var(--gray-darker);
+  --sl-color-gray-4: var(--gray-dark);
+  --sl-color-gray-5: var(--gray-medium);
+  --sl-color-gray-6: var(--gray-light);
+  --sl-color-gray-7: var(--text-primary);
+
+  --sl-color-black: var(--text-bright);
+  --sl-color-text: var(--text-primary);
   --sl-color-text-accent: var(--cyan-primary);
 
-  --sl-color-bg: var(--parchment-light);
-  --sl-color-bg-nav: var(--parchment-mid);
-  --sl-color-bg-sidebar: var(--parchment-light);
+  --sl-color-bg: var(--black-dark);
+  --sl-color-bg-nav: var(--black-pure);
+  --sl-color-bg-sidebar: var(--black-card);
+  --sl-color-bg-inline-code: var(--black-elevated);
 
-  --sl-color-gray-1: var(--parchment-light);
-  --sl-color-gray-2: var(--parchment-mid);
-  --sl-color-gray-3: var(--parchment-dark);
-  --sl-color-gray-4: #CDD5E0;
-  --sl-color-gray-5: var(--ink-faded);
-  --sl-color-gray-6: var(--ink-secondary);
+  --sl-color-hairline-shade: var(--gray-darker);
+  --sl-color-hairline-light: var(--gray-dark);
 
   /* Typography */
   --sl-font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --sl-font-headings: 'Merriweather', Georgia, serif;
+  --sl-line-height: 1.7;
+  --sl-line-height-headings: 1.3;
 }
 
-/* Modern Michigan Spots styling */
+/* Force dark mode */
+:root[data-theme='light'] {
+  --sl-color-accent: var(--cyan-primary);
+  --sl-color-accent-high: var(--cyan-light);
+  --sl-color-accent-low: var(--cyan-dark);
+
+  --sl-color-white: var(--text-bright);
+  --sl-color-gray-1: var(--black-card);
+  --sl-color-gray-2: var(--black-elevated);
+  --sl-color-gray-3: var(--gray-darker);
+  --sl-color-gray-4: var(--gray-dark);
+  --sl-color-gray-5: var(--gray-medium);
+  --sl-color-gray-6: var(--gray-light);
+  --sl-color-gray-7: var(--text-primary);
+
+  --sl-color-black: var(--text-bright);
+  --sl-color-text: var(--text-primary);
+  --sl-color-text-accent: var(--cyan-primary);
+
+  --sl-color-bg: var(--black-dark);
+  --sl-color-bg-nav: var(--black-pure);
+  --sl-color-bg-sidebar: var(--black-card);
+  --sl-color-bg-inline-code: var(--black-elevated);
+}
+
+/* Global body styling */
+body {
+  background: var(--black-dark) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Site title */
 .site-title {
   font-family: 'Crimson Pro', serif !important;
   font-weight: 700;
-  color: var(--ink-primary) !important;
+  color: var(--text-bright) !important;
+  text-shadow: 0 0 20px rgba(65, 198, 187, 0.3);
 }
 
-/* Heading styles to match main site */
+/* Heading styles */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Merriweather', Georgia, serif !important;
-  color: var(--ink-primary) !important;
+  color: var(--text-bright) !important;
 }
 
 h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  border-bottom: 3px solid var(--cyan-primary);
-  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--cyan-primary);
+  padding-bottom: 0.75rem;
   margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--text-bright), var(--cyan-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 h2 {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--cyan-primary) !important;
-  margin-top: 2rem;
+  color: var(--cyan-light) !important;
+  margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
 
 h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--ink-secondary) !important;
+  color: var(--text-primary) !important;
+  margin-top: 2rem;
+}
+
+h4, h5, h6 {
+  color: var(--text-secondary) !important;
 }
 
 /* Link styling */
 a {
   color: var(--cyan-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 a:hover {
-  color: var(--cyan-dark);
-  text-decoration: underline;
+  color: var(--cyan-light);
+  text-shadow: 0 0 8px rgba(65, 198, 187, 0.5);
 }
 
-/* Code blocks with modern theme */
+/* Code blocks */
 pre {
-  background: var(--parchment-mid) !important;
-  border: 2px solid var(--cyan-primary);
+  background: var(--black-card) !important;
+  border: 1px solid var(--gray-dark);
+  border-left: 3px solid var(--cyan-primary);
   border-radius: 8px;
   padding: 1.5rem !important;
-  box-shadow: 0 0 10px rgba(65, 198, 187, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 code {
-  background: var(--parchment-mid);
-  color: var(--ink-primary);
-  padding: 0.2rem 0.4rem;
+  background: var(--black-elevated);
+  color: var(--cyan-light);
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.9em;
+  border: 1px solid var(--gray-darker);
+}
+
+pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 /* Callouts and notes */
 .starlight-aside {
-  background: var(--parchment-mid);
+  background: var(--black-elevated);
+  border: 1px solid var(--gray-dark);
   border-left: 4px solid var(--cyan-primary);
   border-radius: 8px;
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
-  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 20px rgba(65, 198, 187, 0.1);
 }
 
 .starlight-aside--note {
   border-left-color: var(--cyan-primary);
+  background: linear-gradient(90deg, rgba(65, 198, 187, 0.05), var(--black-elevated));
 }
 
 .starlight-aside--tip {
   border-left-color: var(--forest-green);
+  background: linear-gradient(90deg, rgba(45, 122, 95, 0.05), var(--black-elevated));
 }
 
 .starlight-aside--caution {
   border-left-color: var(--amber-primary);
+  background: linear-gradient(90deg, rgba(255, 184, 0, 0.05), var(--black-elevated));
 }
 
 .starlight-aside--danger {
   border-left-color: var(--coral-primary);
+  background: linear-gradient(90deg, rgba(255, 107, 157, 0.05), var(--black-elevated));
 }
 
 /* Navigation styling */
 nav {
-  background: var(--parchment-mid) !important;
-  border-right: 2px solid var(--parchment-dark);
+  background: var(--black-card) !important;
+  border-right: 1px solid var(--gray-darker);
 }
 
 nav a {
-  color: var(--ink-primary);
+  color: var(--text-secondary);
   transition: all 0.2s ease;
 }
 
-nav a:hover,
+nav a:hover {
+  color: var(--cyan-light);
+  background: var(--black-elevated);
+}
+
 nav a[aria-current="page"] {
   color: var(--cyan-primary);
-  background: var(--parchment-light);
+  background: var(--black-elevated);
   border-left: 3px solid var(--cyan-primary);
+  font-weight: 600;
 }
 
 /* Table styling */
 table {
-  background: var(--parchment-light);
-  border: 2px solid var(--parchment-dark);
+  background: var(--black-card);
+  border: 1px solid var(--gray-dark);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 thead {
-  background: var(--cyan-primary);
-  color: var(--parchment-light);
+  background: linear-gradient(135deg, var(--cyan-dark), var(--cyan-primary));
+  color: var(--text-bright);
 }
 
 thead th {
-  color: var(--parchment-light) !important;
+  color: var(--text-bright) !important;
   font-weight: 600;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
 }
 
 tbody tr {
-  border-bottom: 1px solid var(--parchment-dark);
+  border-bottom: 1px solid var(--gray-darker);
+  transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+  background: var(--black-elevated);
 }
 
 tbody tr:nth-child(even) {
-  background: var(--parchment-mid);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 tbody td {
   padding: 0.75rem 1rem;
+  color: var(--text-secondary);
 }
 
 /* Buttons and interactive elements */
 button, .sl-button {
-  background: var(--cyan-primary);
-  color: white;
-  border: none;
+  background: linear-gradient(135deg, var(--cyan-primary), var(--cyan-dark));
+  color: var(--text-bright);
+  border: 1px solid var(--cyan-primary);
   border-radius: 6px;
-  padding: 0.5rem 1.5rem;
+  padding: 0.625rem 1.5rem;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.2);
+  box-shadow: 0 4px 12px rgba(65, 198, 187, 0.3), 0 0 20px rgba(65, 198, 187, 0.2);
 }
 
 button:hover, .sl-button:hover {
-  background: var(--cyan-dark);
+  background: linear-gradient(135deg, var(--cyan-light), var(--cyan-primary));
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(65, 198, 187, 0.4);
+  box-shadow: 0 6px 20px rgba(65, 198, 187, 0.5), 0 0 30px rgba(65, 198, 187, 0.3);
 }
 
 /* Search box */
 .search-input {
-  background: var(--parchment-light);
-  border: 2px solid var(--parchment-dark);
+  background: var(--black-elevated);
+  border: 1px solid var(--gray-dark);
   border-radius: 8px;
-  color: var(--ink-primary);
+  color: var(--text-primary);
 }
 
 .search-input:focus {
   border-color: var(--cyan-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(65, 198, 187, 0.2);
+  box-shadow: 0 0 0 3px rgba(65, 198, 187, 0.2), 0 0 20px rgba(65, 198, 187, 0.1);
+  background: var(--black-card);
 }
 
 /* Badges and pills */
 .badge {
-  background: var(--cyan-light);
-  color: var(--ink-primary);
+  background: linear-gradient(135deg, var(--cyan-dark), var(--cyan-primary));
+  color: var(--text-bright);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
   border: 1px solid var(--cyan-primary);
+  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.3);
 }
 
 /* Footer */
 footer {
-  background: var(--parchment-mid);
-  border-top: 3px solid var(--cyan-primary);
-  color: var(--ink-secondary);
+  background: var(--black-pure);
+  border-top: 2px solid var(--cyan-primary);
+  color: var(--text-secondary);
+  box-shadow: 0 -4px 20px rgba(65, 198, 187, 0.1);
 }
 
 /* Scrollbar */
@@ -250,17 +338,18 @@ footer {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--parchment-mid);
+  background: var(--black-card);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--cyan-primary);
+  background: linear-gradient(180deg, var(--cyan-primary), var(--cyan-dark));
   border-radius: 6px;
-  border: 2px solid var(--parchment-mid);
+  border: 2px solid var(--black-card);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-dark);
+  background: linear-gradient(180deg, var(--cyan-light), var(--cyan-primary));
+  box-shadow: 0 0 10px rgba(65, 198, 187, 0.5);
 }
 
 /* Responsive adjustments */
@@ -282,39 +371,119 @@ footer {
 @media print {
   body {
     background: white;
-    color: var(--ink-primary);
-  }
-
-  a {
-    color: var(--cyan-primary);
+    color: black;
   }
 }
 
-/* Additional modern enhancements */
-/* Subtle background pattern like main site */
-body {
+/* Dark background with subtle grid pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-image:
-    linear-gradient(rgba(250, 251, 252, 0.95), rgba(250, 251, 252, 0.95)),
-    repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(65, 198, 187, 0.02) 50px, rgba(65, 198, 187, 0.02) 51px);
+    radial-gradient(circle at 1px 1px, rgba(65, 198, 187, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* Modern card styling */
-.sl-card {
-  border: 2px solid var(--parchment-dark);
-  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.08);
-  transition: all 0.2s ease;
+/* Card styling */
+.sl-card,
+[class*="card"] {
+  background: var(--black-card);
+  border: 1px solid var(--gray-dark);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(65, 198, 187, 0.05);
+  transition: all 0.3s ease;
 }
 
-.sl-card:hover {
+.sl-card:hover,
+[class*="card"]:hover {
   border-color: var(--cyan-primary);
-  box-shadow: 0 4px 12px rgba(65, 198, 187, 0.15);
-  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(65, 198, 187, 0.2);
+  transform: translateY(-4px);
 }
 
 /* Accent glow effects */
 .accent-glow {
   box-shadow:
-    0 0 10px rgba(65, 198, 187, 0.3),
-    0 0 20px rgba(65, 198, 187, 0.2),
-    0 0 30px rgba(65, 198, 187, 0.1);
+    0 0 20px rgba(65, 198, 187, 0.4),
+    0 0 40px rgba(65, 198, 187, 0.2),
+    0 0 60px rgba(65, 198, 187, 0.1);
+}
+
+/* Fix empty icon issue - hide empty SVGs */
+svg.icon:empty,
+svg[aria-hidden="true"]:not([viewBox*="24"]) {
+  display: none !important;
+}
+
+/* Improve icon spacing */
+.icon {
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Header improvements */
+header {
+  background: var(--black-pure);
+  border-bottom: 1px solid var(--gray-darker);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Sidebar improvements */
+aside.sidebar {
+  background: var(--black-card);
+  border-right: 1px solid var(--gray-darker);
+}
+
+/* Main content area */
+main {
+  background: var(--black-dark);
+}
+
+/* Paragraph spacing */
+p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* Strong text */
+strong {
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+/* Lists */
+ul, ol {
+  color: var(--text-secondary);
+}
+
+li {
+  margin: 0.5rem 0;
+}
+
+/* Horizontal rules */
+hr {
+  border-color: var(--gray-darker);
+  box-shadow: 0 1px 2px rgba(65, 198, 187, 0.1);
+}
+
+/* Blockquotes */
+blockquote {
+  background: var(--black-elevated);
+  border-left: 4px solid var(--cyan-primary);
+  color: var(--text-secondary);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+blockquote p {
+  margin: 0;
 }

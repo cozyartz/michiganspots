@@ -24,6 +24,9 @@ export default defineConfig({
         { icon: 'reddit', label: 'Reddit', href: 'https://reddit.com/r/michiganspots' },
         { icon: 'external', label: 'Play Now', href: 'https://michiganspots.com' },
       ],
+      expressiveCode: {
+        themes: ['dracula', 'github-light'],
+      },
       sidebar: [
         {
           label: 'Getting Started',
