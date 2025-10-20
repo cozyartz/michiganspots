@@ -1,10 +1,16 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightImageZoom from 'starlight-image-zoom';
+import starlightLinksValidator from 'starlight-links-validator';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
+      plugins: [
+        starlightImageZoom(),
+        starlightLinksValidator(),
+      ],
       title: 'Michigan Spots Player Guide',
       description: 'Your complete guide to playing Michigan Spots - the treasure hunt game',
       defaultLocale: 'root',

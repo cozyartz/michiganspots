@@ -1,39 +1,50 @@
 /* Michigan Spots Documentation Custom Styles */
-/* Treasure Map Branding to match michiganspots.com */
+/* Modern Tech-Inspired Branding to match michiganspots.com */
 
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Merriweather:wght@400;700&family=Inter:wght@400;500;600&family=Pirata+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Merriweather:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Michigan Spots Treasure Map Color Palette */
-  --parchment-light: #F4EFE5;
-  --parchment-dark: #E8DCC9;
-  --ink-primary: #2C1810;
-  --ink-secondary: #4A3429;
-  --ink-faded: #6B5648;
+  /* Michigan Spots Modern Color Palette */
+  /* Ultra-light modern backgrounds */
+  --parchment-light: #FAFBFC;
+  --parchment-mid: #F5F7FA;
+  --parchment-dark: #E8ECF1;
 
-  --lakes-blue: #2E5077;
-  --lakes-blue-light: #4A7C9B;
-  --copper-orange: #D97642;
-  --sunset-red: #C75D3B;
-  --gold-treasure: #F4A261;
-  --forest-green: #4A7C59;
+  /* Deep purple-navy text colors */
+  --ink-primary: #1A0B2E;
+  --ink-secondary: #3D2963;
+  --ink-faded: #6B5B8C;
+
+  /* Signature cyan/turquoise - primary brand color */
+  --cyan-primary: #41C6BB;
+  --cyan-light: #9CEDE1;
+  --cyan-dark: #2BA89E;
+  --cyan-glow: #5FD9D1;
+
+  /* Vibrant accent colors */
+  --amber-primary: #FFB800;
+  --amber-light: #FFC933;
+  --coral-primary: #FF6B9D;
+  --coral-light: #FFB3D1;
+  --orange-primary: #FF8C42;
+  --forest-green: #2D7A5F;
 
   /* Starlight Theme Overrides */
-  --sl-color-accent: var(--copper-orange);
-  --sl-color-accent-high: var(--sunset-red);
-  --sl-color-accent-low: var(--gold-treasure);
+  --sl-color-accent: var(--cyan-primary);
+  --sl-color-accent-high: var(--cyan-dark);
+  --sl-color-accent-low: var(--cyan-light);
 
   --sl-color-text: var(--ink-primary);
-  --sl-color-text-accent: var(--lakes-blue);
+  --sl-color-text-accent: var(--cyan-primary);
 
   --sl-color-bg: var(--parchment-light);
-  --sl-color-bg-nav: var(--parchment-dark);
+  --sl-color-bg-nav: var(--parchment-mid);
   --sl-color-bg-sidebar: var(--parchment-light);
 
   --sl-color-gray-1: var(--parchment-light);
-  --sl-color-gray-2: var(--parchment-dark);
-  --sl-color-gray-3: #D4C4B0;
-  --sl-color-gray-4: #B8A894;
+  --sl-color-gray-2: var(--parchment-mid);
+  --sl-color-gray-3: var(--parchment-dark);
+  --sl-color-gray-4: #CDD5E0;
   --sl-color-gray-5: var(--ink-faded);
   --sl-color-gray-6: var(--ink-secondary);
 
@@ -42,7 +53,7 @@
   --sl-font-headings: 'Merriweather', Georgia, serif;
 }
 
-/* Custom treasure map styling */
+/* Modern Michigan Spots styling */
 .site-title {
   font-family: 'Crimson Pro', serif !important;
   font-weight: 700;
@@ -58,7 +69,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  border-bottom: 3px solid var(--copper-orange);
+  border-bottom: 3px solid var(--cyan-primary);
   padding-bottom: 0.5rem;
   margin-bottom: 1.5rem;
 }
@@ -66,7 +77,7 @@ h1 {
 h2 {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--lakes-blue) !important;
+  color: var(--cyan-primary) !important;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
@@ -79,26 +90,27 @@ h3 {
 
 /* Link styling */
 a {
-  color: var(--lakes-blue);
+  color: var(--cyan-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: var(--copper-orange);
+  color: var(--cyan-dark);
   text-decoration: underline;
 }
 
-/* Code blocks with treasure theme */
+/* Code blocks with modern theme */
 pre {
-  background: var(--parchment-dark) !important;
-  border: 2px solid var(--ink-faded);
+  background: var(--parchment-mid) !important;
+  border: 2px solid var(--cyan-primary);
   border-radius: 8px;
   padding: 1.5rem !important;
+  box-shadow: 0 0 10px rgba(65, 198, 187, 0.1);
 }
 
 code {
-  background: var(--parchment-dark);
+  background: var(--parchment-mid);
   color: var(--ink-primary);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
@@ -107,15 +119,16 @@ code {
 
 /* Callouts and notes */
 .starlight-aside {
-  background: var(--parchment-dark);
-  border-left: 4px solid var(--copper-orange);
+  background: var(--parchment-mid);
+  border-left: 4px solid var(--cyan-primary);
   border-radius: 8px;
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
+  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.08);
 }
 
 .starlight-aside--note {
-  border-left-color: var(--lakes-blue);
+  border-left-color: var(--cyan-primary);
 }
 
 .starlight-aside--tip {
@@ -123,17 +136,17 @@ code {
 }
 
 .starlight-aside--caution {
-  border-left-color: var(--gold-treasure);
+  border-left-color: var(--amber-primary);
 }
 
 .starlight-aside--danger {
-  border-left-color: var(--sunset-red);
+  border-left-color: var(--coral-primary);
 }
 
 /* Navigation styling */
 nav {
-  background: var(--parchment-dark) !important;
-  border-right: 2px solid var(--ink-faded);
+  background: var(--parchment-mid) !important;
+  border-right: 2px solid var(--parchment-dark);
 }
 
 nav a {
@@ -143,20 +156,22 @@ nav a {
 
 nav a:hover,
 nav a[aria-current="page"] {
-  color: var(--copper-orange);
+  color: var(--cyan-primary);
   background: var(--parchment-light);
+  border-left: 3px solid var(--cyan-primary);
 }
 
 /* Table styling */
 table {
   background: var(--parchment-light);
-  border: 2px solid var(--ink-faded);
+  border: 2px solid var(--parchment-dark);
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.08);
 }
 
 thead {
-  background: var(--lakes-blue);
+  background: var(--cyan-primary);
   color: var(--parchment-light);
 }
 
@@ -167,11 +182,11 @@ thead th {
 }
 
 tbody tr {
-  border-bottom: 1px solid var(--ink-faded);
+  border-bottom: 1px solid var(--parchment-dark);
 }
 
 tbody tr:nth-child(even) {
-  background: var(--parchment-dark);
+  background: var(--parchment-mid);
 }
 
 tbody td {
@@ -180,51 +195,52 @@ tbody td {
 
 /* Buttons and interactive elements */
 button, .sl-button {
-  background: var(--copper-orange);
-  color: var(--parchment-light);
-  border: 2px solid var(--ink-primary);
+  background: var(--cyan-primary);
+  color: white;
+  border: none;
   border-radius: 6px;
   padding: 0.5rem 1.5rem;
   font-weight: 600;
   transition: all 0.2s ease;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.2);
 }
 
 button:hover, .sl-button:hover {
-  background: var(--sunset-red);
+  background: var(--cyan-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(65, 198, 187, 0.4);
 }
 
 /* Search box */
 .search-input {
   background: var(--parchment-light);
-  border: 2px solid var(--ink-faded);
+  border: 2px solid var(--parchment-dark);
   border-radius: 8px;
   color: var(--ink-primary);
 }
 
 .search-input:focus {
-  border-color: var(--copper-orange);
+  border-color: var(--cyan-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(217, 118, 66, 0.2);
+  box-shadow: 0 0 0 3px rgba(65, 198, 187, 0.2);
 }
 
 /* Badges and pills */
 .badge {
-  background: var(--gold-treasure);
+  background: var(--cyan-light);
   color: var(--ink-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid var(--ink-faded);
+  border: 1px solid var(--cyan-primary);
 }
 
 /* Footer */
 footer {
-  background: var(--parchment-dark);
-  border-top: 3px solid var(--copper-orange);
+  background: var(--parchment-mid);
+  border-top: 3px solid var(--cyan-primary);
   color: var(--ink-secondary);
 }
 
@@ -234,17 +250,17 @@ footer {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--parchment-dark);
+  background: var(--parchment-mid);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--copper-orange);
+  background: var(--cyan-primary);
   border-radius: 6px;
-  border: 2px solid var(--parchment-dark);
+  border: 2px solid var(--parchment-mid);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--sunset-red);
+  background: var(--cyan-dark);
 }
 
 /* Responsive adjustments */
@@ -262,7 +278,7 @@ footer {
   }
 }
 
-/* Print styles for treasure map feel */
+/* Print styles */
 @media print {
   body {
     background: white;
@@ -270,6 +286,35 @@ footer {
   }
 
   a {
-    color: var(--lakes-blue);
+    color: var(--cyan-primary);
   }
+}
+
+/* Additional modern enhancements */
+/* Subtle background pattern like main site */
+body {
+  background-image:
+    linear-gradient(rgba(250, 251, 252, 0.95), rgba(250, 251, 252, 0.95)),
+    repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(65, 198, 187, 0.02) 50px, rgba(65, 198, 187, 0.02) 51px);
+}
+
+/* Modern card styling */
+.sl-card {
+  border: 2px solid var(--parchment-dark);
+  box-shadow: 0 2px 8px rgba(65, 198, 187, 0.08);
+  transition: all 0.2s ease;
+}
+
+.sl-card:hover {
+  border-color: var(--cyan-primary);
+  box-shadow: 0 4px 12px rgba(65, 198, 187, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Accent glow effects */
+.accent-glow {
+  box-shadow:
+    0 0 10px rgba(65, 198, 187, 0.3),
+    0 0 20px rgba(65, 198, 187, 0.2),
+    0 0 30px rgba(65, 198, 187, 0.1);
 }
