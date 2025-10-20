@@ -108,6 +108,14 @@ body {
   color: var(--text-bright) !important;
 }
 
+/* Hero tagline */
+.hero .tagline,
+.hero p,
+[class*="hero"] .tagline,
+[class*="tagline"] {
+  color: var(--cyan-primary) !important;
+}
+
 /* Heading styles */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Merriweather', Georgia, serif !important;
@@ -266,9 +274,9 @@ tbody td {
 
 /* Buttons and interactive elements */
 button, .sl-button {
-  background: var(--cyan-primary);
+  background: var(--cyan-primary) !important;
   color: #FFFFFF !important;
-  border: 1px solid var(--cyan-primary);
+  border: 1px solid var(--cyan-primary) !important;
   border-radius: 4px;
   padding: 0.625rem 1.5rem;
   font-weight: 600;
@@ -277,8 +285,21 @@ button, .sl-button {
 }
 
 button:hover, .sl-button:hover {
-  background: var(--cyan-light);
-  color: var(--black-dark) !important;
+  background: var(--cyan-light) !important;
+  color: #FFFFFF !important;
+}
+
+/* Action buttons */
+.action,
+[class*="action"] a,
+.actions a {
+  color: #FFFFFF !important;
+}
+
+.action:hover,
+[class*="action"] a:hover,
+.actions a:hover {
+  color: #FFFFFF !important;
 }
 
 /* Search box */
