@@ -1,6 +1,6 @@
 <div align="center">
 
-![Michigan Spots Logo](./public/MiSpot_logo.png)
+<img src="./public/MiSpot_logo.png" alt="Michigan Spots Logo" width="150" height="150"/>
 
 <br/>
 <br/>
