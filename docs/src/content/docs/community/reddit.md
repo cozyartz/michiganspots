@@ -7,6 +7,10 @@ description: Learn how Michigan Spots integrates with Reddit and how to particip
 
 Michigan Spots is deeply integrated with Reddit, creating a vibrant community where players share discoveries, discuss strategies, and participate in exclusive challenges. Here's everything you need to know about the Reddit connection.
 
+:::tip[Community Guidelines]
+Before participating on Reddit, make sure to read the **[r/MichiganSpots Community Guidelines](https://michiganspots.com/community-guidelines)** which includes posting rules, flairs, point system, and moderation policies.
+:::
+
 ## Why Reddit?
 
 ### Perfect Platform for Community

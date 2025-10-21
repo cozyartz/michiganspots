@@ -7,6 +7,10 @@ description: Learn the basics of playing Michigan Spots treasure hunt game
 
 Welcome to Michigan Spots, the treasure hunt game that turns all of Michigan into your playground! Here's everything you need to know to start your adventure.
 
+:::tip[Read the Rules First]
+Before you start playing, make sure to review the **[Community Guidelines](https://michiganspots.com/community-guidelines)** to understand the rules, point system, and community expectations.
+:::
+
 ## What is Michigan Spots?
 
 Michigan Spots is a location-based treasure hunt game where you:

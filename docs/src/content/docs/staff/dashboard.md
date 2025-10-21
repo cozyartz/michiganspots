@@ -7,6 +7,10 @@ description: Complete guide to using the Michigan Spots staff dashboard for mana
 
 The Michigan Spots staff dashboard is your command center for managing the game, creating content, and engaging with the community. This guide covers all the tools and features available to staff members.
 
+:::note[Partnership Management]
+For detailed information about managing business partnerships, visit **[Partner Resources](/staff/partner-resources/)** or **[Partnerships Page](https://michiganspots.com/partnerships)**.
+:::
+
 ## Dashboard Overview
 
 ### Main Navigation
