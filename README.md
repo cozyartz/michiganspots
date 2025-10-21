@@ -20,21 +20,28 @@
 
 <table>
 <tr>
-<td width="33%" align="center">
+<td width="25%" align="center">
+<img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" alt="Reddit"/>
+<br/>
+<strong>Social Platform</strong>
+<br/>
+Devvit • OAuth • Native Integration
+</td>
+<td width="25%" align="center">
 <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white" alt="Cloudflare"/>
 <br/>
 <strong>Edge Platform</strong>
 <br/>
-Workers • Pages • D1 • R2
+Workers • Pages • D1 • R2 • AI
 </td>
-<td width="33%" align="center">
+<td width="25%" align="center">
 <img src="https://img.shields.io/badge/Astro-FF5D01?style=for-the-badge&logo=astro&logoColor=white" alt="Astro"/>
 <br/>
 <strong>Frontend Framework</strong>
 <br/>
 Static + React Islands
 </td>
-<td width="33%" align="center">
+<td width="25%" align="center">
 <img src="https://img.shields.io/badge/Stripe-008CDD?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe"/>
 <br/>
 <strong>Payment Platform</strong>
@@ -135,6 +142,158 @@ Built on **Cloudflare's edge computing platform** with a modern JavaScript stack
 
 ---
 
+## 🎮 Reddit Devvit Integration
+
+<div align="center">
+
+### **Native Reddit App Built with Devvit Framework**
+
+[![Reddit](https://img.shields.io/badge/Platform-Reddit_Native-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://reddit.com/r/michiganspots)
+![Devvit](https://img.shields.io/badge/Framework-Devvit-FF4500?style=for-the-badge)
+![AI Powered](https://img.shields.io/badge/AI-Cloudflare_Workers_AI-F38020?style=for-the-badge)
+
+**85 Source Files • 1.5MB TypeScript/React Code • Production-Ready**
+
+</div>
+
+Michigan Spots features a **comprehensive Reddit Devvit app** that transforms r/michiganspots into an interactive treasure hunt game with AI-powered features, GPS verification, and real-time analytics.
+
+### Devvit App Features
+
+<table>
+<tr>
+<td width="50%">
+
+#### 🗺️ **Challenge System**
+- **GPS-Verified Completions** - 100m radius verification with anti-spoofing
+- **Challenge Browser** - Filterable by difficulty, partner, location
+- **Proof Submission** - Photo, receipt, GPS check-in, location quiz
+- **Real-Time Validation** - AI-powered photo/receipt verification
+- **Points & Badges** - Milestone achievements and rewards
+
+</td>
+<td width="50%">
+
+#### 🎯 **Interactive Games**
+- **5 Mini-Games** built into Reddit:
+  - Spot the Difference (Michigan landmarks)
+  - Word Search (Michigan themes)
+  - Trivia (Michigan history)
+  - Virtual Treasure Hunt (clue-based)
+  - Drawing Challenge (creative sketches)
+- **Timed Gameplay** with scoring
+- **Engagement Rewards** integrated
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+#### 📊 **Leaderboards & Profiles**
+- **Global Rankings** - Platform-wide competition
+- **City-Specific Boards** - Local bragging rights
+- **Time Filters** - Weekly, monthly, all-time
+- **User Profiles** - Stats, badges, completion history
+- **Achievement Tracking** - Progress visualization
+
+</td>
+<td width="50%">
+
+#### 🤖 **AI-Powered Intelligence**
+- **Master AI Orchestrator** - 7 coordinated AI subsystems
+- **Photo Validation** - Cloudflare vision AI (Llava-1.5-7b)
+- **Challenge Generation** - AI creates weekly challenges
+- **Personalization** - Context-aware user experiences
+- **Community Health** - Automated moderation & insights
+- **Business Intelligence** - Partner performance analytics
+
+</td>
+</tr>
+</table>
+
+### Custom Reddit Features
+
+**Reddit Integration Points:**
+- ✅ **Custom Post Types** - Treasure Hunt & Games Hub posts
+- ✅ **Subreddit Menu Actions** - "Play Games" & "Create Challenge"
+- ✅ **Reddit OAuth** - Seamless Reddit authentication
+- ✅ **Event Handlers** - App install, scheduled jobs, triggers
+- ✅ **Permissions** - Identity, read, write, moderation, flair, wiki
+
+### AI System Architecture
+
+The Devvit app includes a **comprehensive AI orchestration system** with 7 specialized subsystems:
+
+1. **AI Validation Service** - Photo/receipt OCR, confidence scoring (85% auto-approve threshold)
+2. **Challenge Generation** - Contextual, seasonal challenge creation with personalization
+3. **Personalization Engine** - Location/time/weather-aware experiences with emotional tone adaptation
+4. **Community Manager** - Real-time toxicity detection, automated moderation, health scoring
+5. **Business Intelligence** - Partner ROI analytics, competitive analysis, market trends
+6. **Game Intelligence** - Dynamic events, viral moment detection, social dynamics
+7. **Experiment Dashboard** - A/B testing framework, continuous optimization
+
+**AI Models Used:**
+- Llama 2 7B Chat (challenge generation, analysis)
+- Llava-1.5-7b (vision/photo validation)
+- DialoGPT-medium (conversational features)
+
+### Security & Fraud Prevention
+
+**Multi-Layer GPS Validation:**
+- Location normalization and accuracy verification
+- Speed analysis (walking/driving/flight limits)
+- Duplicate coordinate detection (spoofing indicator)
+- Travel time validation between submissions
+- Pattern analysis (rate limiting, timing patterns)
+- Risk scoring (Low/Medium/High with confidence %)
+
+**Rate Limiting:**
+- 10 submissions per user per day (configurable)
+- Minimum 60-second interval between submissions
+- Suspicious pattern detection and flagging
+
+### Analytics Pipeline
+
+**Real-Time Event Tracking to Cloudflare:**
+```
+Reddit Event → Devvit App → Analytics API → Cloudflare D1 → Partner Dashboards
+```
+
+**Events Tracked:**
+- Views, Comments, Upvotes, Shares, Awards
+- Challenge Completions (foot traffic)
+- GPS-verified business visits
+- User engagement patterns
+- Partner performance metrics
+
+### Production Deployment
+
+**Deployment Status:** 95% Production-Ready
+
+**Configuration Settings:**
+- Cloudflare API integration (Workers AI, Analytics)
+- GPS verification radius (100m default)
+- AI subsystem toggles (validation, generation, personalization, etc.)
+- Rate limiting and fraud detection thresholds
+- Multi-subreddit support (r/michiganspots, r/michigan, r/detroit, etc.)
+
+**Automated Jobs:**
+- Daily AI Pipeline (6 AM) - Ecosystem optimization
+- Weekly Challenge Generation (Mon 8 AM) - AI-created challenges
+- Hourly Community Health - Engagement metrics
+- Weekly Business Reports (Mon 9 AM) - Partner intelligence
+
+### Technical Achievements
+
+🏆 **85 TypeScript/React source files** - Comprehensive implementation
+🏆 **40+ specialized services** - Modular, testable architecture
+🏆 **20+ React components** - Challenge browser, games, profiles, leaderboards
+🏆 **Comprehensive test coverage** - Unit, integration, and system tests
+🏆 **Self-optimizing AI ecosystem** - Continuous improvement without manual intervention
+🏆 **Cross-platform compatibility** - Desktop, mobile, tablet Reddit clients
+
+---
+
 ## ✨ Key Features
 
 <table>
@@ -192,25 +351,30 @@ Built on **Cloudflare's edge computing platform** with a modern JavaScript stack
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **Frontend** | Astro + React | Static site generation with interactive islands |
+| **Social Platform** | **Reddit Devvit** | Native Reddit integration, custom posts, OAuth |
+| **AI Engine** | **Cloudflare Workers AI** | Llama 2 7B, Llava-1.5-7b vision, DialoGPT |
+| **Frontend** | Astro + React + TypeScript | Static site generation with interactive islands |
 | **Styling** | Tailwind CSS | Utility-first, treasure-map themed design |
 | **Animation** | Framer Motion | Smooth, delightful micro-interactions |
 | **Icons** | Lucide React | Beautiful, consistent iconography |
 | **Backend** | Cloudflare Workers | Edge computing for <100ms response times |
-| **Database** | Cloudflare D1 | Serverless SQLite at the edge |
+| **Database** | Cloudflare D1 + Redis | Serverless SQLite at the edge + caching |
 | **Storage** | Cloudflare R2 | Object storage for images |
 | **Payments** | Stripe | Secure partnership payment processing |
 | **Hosting** | Cloudflare Pages | Global CDN, auto-scaling |
+| **Analytics** | Custom Pipeline | Real-time event tracking to Cloudflare D1 |
 
 </div>
 
 ### Why This Stack?
 
+✅ **Reddit-Native** - Built directly into Reddit with Devvit for seamless user experience
+✅ **AI-Powered** - Cloudflare Workers AI for validation, generation, and personalization
 ✅ **Lightning Fast** - Sub-100ms global response times via edge computing
 ✅ **Cost Efficient** - 60-80% lower hosting costs vs traditional cloud
 ✅ **Infinitely Scalable** - Handle 10 or 10 million users seamlessly
 ✅ **Developer Friendly** - TypeScript everywhere, great DX
-✅ **Secure** - Built-in DDoS protection, automatic HTTPS
+✅ **Secure** - Built-in DDoS protection, automatic HTTPS, GPS anti-spoofing
 
 ---
 
@@ -492,24 +656,32 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 
 | Metric | Value | Significance |
 |--------|-------|--------------|
-| **Lines of Code** | 15,000+ | Complete full-stack implementation |
+| **Lines of Code** | 15,000+ (Web) + 1.5MB (Devvit) | Complete full-stack + Reddit native app |
+| **Devvit Source Files** | 85 TypeScript/React files | Comprehensive Reddit integration |
+| **AI Subsystems** | 7 coordinated systems | Master orchestrator with specialized AI |
 | **Database Tables** | 41 | Enterprise-scale data architecture |
-| **API Endpoints** | 4 production | Signup, partner-signup, checkout, webhooks |
+| **API Endpoints** | 4 production + analytics | Signup, partner-signup, checkout, webhooks |
 | **Partnership Tiers** | 5 tiers | Spot, Featured, Premium, Title, Chamber |
-| **Component Library** | 15+ React | Modular, reusable architecture |
+| **Component Library** | 15+ (Web) + 20+ (Devvit) | Modular, reusable architecture |
+| **Services Layer** | 40+ specialized services | Challenge, user, AI, analytics, fraud detection |
+| **Interactive Games** | 5 mini-games in Reddit | Spot difference, word search, trivia, hunt, drawing |
 | **Migration Scripts** | 10 versions | Professional database versioning |
-| **Development Time** | Production-ready | Rapid delivery capability |
 
 </div>
 
 ### Technical Achievements
 
+🎮 **Reddit Native Integration** - Full Devvit app with custom posts, menu actions, OAuth, and event handlers
+🤖 **AI Orchestration System** - 7 subsystems (validation, generation, personalization, community, business, game intelligence, experimentation)
+📸 **Computer Vision AI** - Cloudflare Llava-1.5-7b for photo/receipt validation with 85% auto-approve threshold
+🗺️ **GPS Anti-Spoofing** - Multi-layer fraud detection with speed analysis, pattern recognition, and risk scoring
 🎨 **Custom Design System** - Unique "treasure map" aesthetic with 6-color palette and 4 custom web fonts
 💳 **Payment Automation** - Complete Stripe integration with multi-tier system and webhook event handling
 🗄️ **Database Engineering** - 41-table normalized schema with comprehensive indexing and relationships
 ⚡ **Edge Computing** - Zero cold starts, global distribution, automatic scaling
-🔐 **Security Implementation** - Webhook signature verification, SQL injection prevention, HTTPS enforcement
-📊 **Analytics Architecture** - Multi-dimensional tracking of engagement, revenue, partnerships, and user behavior
+🔐 **Security Implementation** - Webhook signature verification, SQL injection prevention, HTTPS enforcement, GPS validation
+📊 **Analytics Architecture** - Real-time Reddit event tracking to Cloudflare D1 with partner dashboards
+🎯 **Self-Optimizing AI** - Daily intelligence pipeline that continuously improves without manual intervention
 
 ---
 
