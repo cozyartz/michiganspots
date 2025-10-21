@@ -1,0 +1,538 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/Card';
+import { Target, Heart, CheckCircle, Shield, Store, Camera, Trophy, Gamepad2, Calendar, Users, Flag, AlertTriangle, Handshake, Smartphone, Sparkles, Phone, MessageSquare, Globe, PartyPopper } from 'lucide-react';
+---
+
+<Layout
+  title="Community Guidelines | r/MichiganSpots | Reddit Community Games 2025"
+  description="Official community guidelines for r/MichiganSpots - Michigan's premier treasure hunting community on Reddit. Learn the rules, point system, and how to participate in challenges."
+  keywords="r/MichiganSpots rules, community guidelines, Reddit Michigan, treasure hunt rules, Michigan Spots policies, Reddit community games"
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-5xl mx-auto">
+      <!-- Hero Section -->
+      <div class="text-center mb-16">
+        <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-6">
+          r/MichiganSpots Community Guidelines
+        </h1>
+        <p class="text-xl text-ink-secondary max-w-3xl mx-auto">
+          Welcome to r/MichiganSpots - Michigan's premier treasure hunting community! 🗺️
+        </p>
+      </div>
+
+      <!-- Mission -->
+      <Card className="mb-12 bg-copper-orange/10 border-copper-orange">
+        <div class="flex items-start space-x-4">
+          <Target className="w-12 h-12 text-copper-orange flex-shrink-0" />
+          <div>
+            <h2 class="font-heading text-3xl font-bold text-ink-primary mb-4">Our Mission</h2>
+            <p class="text-ink-secondary text-lg leading-relaxed">
+              r/MichiganSpots is dedicated to discovering and celebrating Michigan's hidden gems through interactive treasure hunts, community challenges, and local business partnerships. We're building a vibrant community that explores the Great Lakes State while supporting local businesses.
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Community Rules -->
+      <div class="mb-16">
+        <h2 class="font-heading text-4xl font-bold text-ink-primary mb-8 text-center">Community Rules</h2>
+
+        <div class="grid gap-6">
+          <!-- Rule 1 -->
+          <Card>
+            <div class="flex items-start space-x-4">
+              <Target className="w-8 h-8 text-copper-orange flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-heading text-2xl font-bold text-ink-primary mb-3">1. Stay On-Topic</h3>
+                <div class="space-y-2">
+                  <div class="flex items-start space-x-2">
+                    <CheckCircle className="w-5 h-5 text-forest-green flex-shrink-0 mt-0.5" />
+                    <span class="text-ink-secondary"><strong>Allowed:</strong> Michigan locations, treasure hunt challenges, local business discoveries, game discussions, community events</span>
+                  </div>
+                  <div class="flex items-start space-x-2">
+                    <span class="text-sunset-red font-bold flex-shrink-0">✗</span>
+                    <span class="text-ink-secondary"><strong>Not Allowed:</strong> Off-topic content, spam, unrelated gaming content, non-Michigan locations</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <!-- Rule 2 -->
+          <Card>
+            <div class="flex items-start space-x-4">
+              <Heart className="w-8 h-8 text-sunset-red flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-heading text-2xl font-bold text-ink-primary mb-3">2. Respect & Kindness</h3>
+                <ul class="list-disc list-inside space-y-2 text-ink-secondary">
+                  <li>Treat all community members with respect and courtesy</li>
+                  <li>No harassment, bullying, or discriminatory language</li>
+                  <li>Constructive criticism is welcome; personal attacks are not</li>
+                  <li>Remember we're all here to have fun and explore Michigan together</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          <!-- Rule 3 -->
+          <Card>
+            <div class="flex items-start space-x-4">
+              <CheckCircle className="w-8 h-8 text-forest-green flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-heading text-2xl font-bold text-ink-primary mb-3">3. Authentic Participation</h3>
+                <ul class="list-disc list-inside space-y-2 text-ink-secondary">
+                  <li>Submit genuine challenge completions with real proof</li>
+                  <li>No fake GPS locations or manipulated evidence</li>
+                  <li>Honest reporting of business visits and experiences</li>
+                  <li>Play games fairly without cheating or exploiting</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          <!-- Rule 4 -->
+          <Card>
+            <div class="flex items-start space-x-4">
+              <Shield className="w-8 h-8 text-lakes-blue flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-heading text-2xl font-bold text-ink-primary mb-3">4. Privacy & Safety</h3>
+                <ul class="list-disc list-inside space-y-2 text-ink-secondary">
+                  <li><strong>Never share personal information</strong> (addresses, phone numbers, etc.)</li>
+                  <li>Be mindful when posting photos that might reveal private information</li>
+                  <li>Report any suspicious or unsafe behavior immediately</li>
+                  <li>Follow all local laws and business policies during visits</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          <!-- Rule 5 -->
+          <Card>
+            <div class="flex items-start space-x-4">
+              <Store className="w-8 h-8 text-copper-orange flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-heading text-2xl font-bold text-ink-primary mb-3">5. Business Partnership Respect</h3>
+                <ul class="list-disc list-inside space-y-2 text-ink-secondary">
+                  <li>Be respectful to partner businesses and their staff</li>
+                  <li>Follow business hours and policies</li>
+                  <li>Make purchases when participating in business challenges (when required)</li>
+                  <li>Leave positive reviews for great experiences</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+
+          <!-- Rule 6 -->
+          <Card>
+            <div class="flex items-start space-x-4">
+              <Camera className="w-8 h-8 text-lakes-blue flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <h3 class="font-heading text-2xl font-bold text-ink-primary mb-3">6. Quality Content Standards</h3>
+                <ul class="list-disc list-inside space-y-2 text-ink-secondary">
+                  <li><strong>Challenge Submissions:</strong> Include clear photos, GPS verification, and required proof</li>
+                  <li><strong>Game Posts:</strong> Use appropriate flairs and follow posting formats</li>
+                  <li><strong>Reviews:</strong> Provide honest, helpful feedback about locations</li>
+                  <li><strong>Photos:</strong> High-quality images that showcase Michigan's beauty</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Game-Specific Guidelines -->
+      <Card className="mb-12 bg-lakes-blue/10 border-lakes-blue">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <Gamepad2 className="w-10 h-10 text-lakes-blue" />
+          <span>Game-Specific Guidelines</span>
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">Treasure Hunt Challenges</h3>
+            <ul class="space-y-2 text-sm text-ink-secondary">
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Submit proof within 24 hours</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Include GPS coordinates and timestamp</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Follow challenge-specific requirements</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-sunset-red font-bold flex-shrink-0 mt-0.5">✗</span>
+                <span>No retroactive submissions older than 1 week</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">Interactive Mini-Games</h3>
+            <ul class="space-y-2 text-sm text-ink-secondary">
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Play fairly and honestly</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Share high scores and achievements</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Help other players with hints (when appropriate)</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-sunset-red font-bold flex-shrink-0 mt-0.5">✗</span>
+                <span>No cheating, exploiting, or sharing answers directly</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">Community Events</h3>
+            <ul class="space-y-2 text-sm text-ink-secondary">
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>RSVP for organized meetups</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Follow event-specific safety guidelines</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-forest-green flex-shrink-0 mt-0.5" />
+                <span>Be punctual and prepared</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-sunset-red font-bold flex-shrink-0 mt-0.5">✗</span>
+                <span>No last-minute cancellations without notice</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Post Flairs -->
+      <Card className="mb-12">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <Flag className="w-10 h-10 text-copper-orange" />
+          <span>Post Flairs & Formatting</span>
+        </h2>
+
+        <div class="mb-6">
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Required Flairs:</h3>
+          <div class="grid md:grid-cols-2 gap-3">
+            <div class="flex items-center space-x-2 p-3 bg-parchment-light border-2 border-ink-primary rounded">
+              <Trophy className="w-5 h-5 text-gold-treasure" />
+              <span class="text-ink-secondary"><strong>Challenge Complete</strong> - Completed treasure hunt submissions</span>
+            </div>
+            <div class="flex items-center space-x-2 p-3 bg-parchment-light border-2 border-ink-primary rounded">
+              <Gamepad2 className="w-5 h-5 text-lakes-blue" />
+              <span class="text-ink-secondary"><strong>Game Discussion</strong> - Mini-game related posts</span>
+            </div>
+            <div class="flex items-center space-x-2 p-3 bg-parchment-light border-2 border-ink-primary rounded">
+              <Store className="w-5 h-5 text-copper-orange" />
+              <span class="text-ink-secondary"><strong>Business Spotlight</strong> - Featuring local businesses</span>
+            </div>
+            <div class="flex items-center space-x-2 p-3 bg-parchment-light border-2 border-ink-primary rounded">
+              <Target className="w-5 h-5 text-forest-green" />
+              <span class="text-ink-secondary"><strong>Location Discovery</strong> - Sharing new Michigan spots</span>
+            </div>
+            <div class="flex items-center space-x-2 p-3 bg-parchment-light border-2 border-ink-primary rounded">
+              <Users className="w-5 h-5 text-sunset-red" />
+              <span class="text-ink-secondary"><strong>Community Event</strong> - Meetups and group activities</span>
+            </div>
+            <div class="flex items-center space-x-2 p-3 bg-parchment-light border-2 border-ink-primary rounded">
+              <MessageSquare className="w-5 h-5 text-ink-primary" />
+              <span class="text-ink-secondary"><strong>Help/Question</strong> - Seeking assistance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-parchment-light border-2 border-lakes-blue p-6 rounded">
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">Post Title Format:</h3>
+          <code class="block bg-white p-4 rounded border-2 border-ink-primary text-sm text-ink-secondary">
+            [FLAIR] Brief Description - Location (City, MI)
+          </code>
+          <div class="mt-4 space-y-1 text-sm text-ink-secondary">
+            <p><strong>Examples:</strong></p>
+            <p>• [Challenge Complete] Downtown Coffee Hunt - Grand Rapids, MI</p>
+            <p>• [Location Discovery] Hidden Waterfall - Pictured Rocks, MI</p>
+            <p>• [Game Discussion] New High Score in Michigan Trivia!</p>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Point System & Rewards -->
+      <Card className="mb-12 bg-gold-treasure/10 border-gold-treasure">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <Trophy className="w-10 h-10 text-gold-treasure" />
+          <span>Point System & Rewards</span>
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Earning Points:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li><strong>Challenge Completion:</strong> 10-50 points (based on difficulty)</li>
+              <li><strong>Mini-Game High Scores:</strong> 5-20 points</li>
+              <li><strong>Quality Posts:</strong> 5-15 points</li>
+              <li><strong>Helping Others:</strong> 5-10 points</li>
+              <li><strong>Business Reviews:</strong> 5 points each</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Leaderboard Categories:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li class="flex items-center space-x-2">
+                <span class="text-2xl">🥇</span>
+                <span><strong>Monthly Champions</strong> - Top point earners</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-2xl">🎯</span>
+                <span><strong>Challenge Masters</strong> - Most challenges completed</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-2xl">🎮</span>
+                <span><strong>Game Legends</strong> - Highest mini-game scores</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-2xl">🤝</span>
+                <span><strong>Community Heroes</strong> - Most helpful members</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t-2 border-gold-treasure">
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Rewards & Recognition:</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="flex items-center space-x-3 p-3 bg-parchment-light rounded">
+              <Sparkles className="w-6 h-6 text-gold-treasure" />
+              <span class="text-ink-secondary">Custom user flairs for achievements</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-parchment-light rounded">
+              <Trophy className="w-6 h-6 text-gold-treasure" />
+              <span class="text-ink-secondary">Featured posts for exceptional content</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-parchment-light rounded">
+              <CheckCircle className="w-6 h-6 text-gold-treasure" />
+              <span class="text-ink-secondary">Special badges for milestone completions</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-parchment-light rounded">
+              <Calendar className="w-6 h-6 text-gold-treasure" />
+              <span class="text-ink-secondary">Priority access to exclusive events</span>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Reporting & Moderation -->
+      <Card className="mb-12 bg-sunset-red/10 border-sunset-red">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <AlertTriangle className="w-10 h-10 text-sunset-red" />
+          <span>Reporting & Moderation</span>
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Report Issues For:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li>• Spam or off-topic content</li>
+              <li>• Harassment or inappropriate behavior</li>
+              <li>• Fake submissions or cheating</li>
+              <li>• Safety concerns or dangerous activities</li>
+              <li>• Business-related complaints</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Moderation Actions:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li><strong>Warning:</strong> First-time minor violations</li>
+              <li><strong>Temporary Ban:</strong> Repeated violations or serious misconduct</li>
+              <li><strong>Permanent Ban:</strong> Severe violations, harassment, or safety threats</li>
+              <li><strong>Point Deduction:</strong> For fraudulent submissions</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Community Partnerships -->
+      <Card className="mb-12 bg-forest-green/10 border-forest-green">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <Handshake className="w-10 h-10 text-forest-green" />
+          <span>Community Partnerships</span>
+        </h2>
+
+        <p class="text-ink-secondary mb-6 leading-relaxed">
+          We work with Michigan businesses to create authentic treasure hunt experiences. Partners provide exclusive challenges, special discounts, unique experiences, and support for community events.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="p-4 bg-parchment-light border-2 border-forest-green rounded">
+            <Store className="w-8 h-8 text-forest-green mb-3" />
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">For Businesses</h3>
+            <p class="text-sm text-ink-secondary">Increased foot traffic, authentic reviews, and community engagement</p>
+          </div>
+          <div class="p-4 bg-parchment-light border-2 border-forest-green rounded">
+            <Users className="w-8 h-8 text-forest-green mb-3" />
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">For Community</h3>
+            <p class="text-sm text-ink-secondary">Exclusive challenges, special discounts, and unique experiences</p>
+          </div>
+          <div class="p-4 bg-parchment-light border-2 border-forest-green rounded">
+            <Target className="w-8 h-8 text-forest-green mb-3" />
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">Become a Partner</h3>
+            <p class="text-sm text-ink-secondary">
+              <a href="/partnerships" class="text-lakes-blue hover:underline font-semibold">Learn more about partnerships</a>
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Using the App -->
+      <Card className="mb-12 bg-lakes-blue/10 border-lakes-blue">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <Smartphone className="w-10 h-10 text-lakes-blue" />
+          <span>Using the Michigan Spots App</span>
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">App Features:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li class="flex items-center space-x-2">
+                <Trophy className="w-5 h-5 text-lakes-blue" />
+                <span>Interactive treasure hunt challenges</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <Gamepad2 className="w-5 h-5 text-lakes-blue" />
+                <span>Mini-games (Trivia, Word Search, Drawing, etc.)</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <Target className="w-5 h-5 text-lakes-blue" />
+                <span>GPS verification for challenge completion</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <Trophy className="w-5 h-5 text-lakes-blue" />
+                <span>Leaderboards and achievement tracking</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <Sparkles className="w-5 h-5 text-lakes-blue" />
+                <span>AI-powered personalized experiences</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">App Guidelines:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li>• Keep your app updated for the best experience</li>
+              <li>• Enable location services for GPS challenges</li>
+              <li>• Report bugs or issues to help improve the platform</li>
+              <li>• Participate in beta testing when available</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Contact & Support -->
+      <Card className="mb-12">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6 flex items-center space-x-3">
+          <Phone className="w-10 h-10 text-copper-orange" />
+          <span>Contact & Support</span>
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Moderator Team:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li>• <strong>u/MichiganSpotsMod</strong> - Head Moderator</li>
+              <li>• <strong>u/TreasureHuntMI</strong> - Challenge Coordinator</li>
+              <li>• <strong>u/GameMasterMI</strong> - Mini-Game Specialist</li>
+              <li>• <strong>u/BusinessLiaisonMI</strong> - Partner Relations</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-heading text-xl font-bold text-ink-primary mb-4">Community Resources:</h3>
+            <ul class="space-y-2 text-ink-secondary">
+              <li class="flex items-center space-x-2">
+                <Globe className="w-5 h-5 text-lakes-blue" />
+                <a href="https://michiganspots.com" class="text-lakes-blue hover:underline">michiganspots.com</a>
+              </li>
+              <li class="flex items-center space-x-2">
+                <MessageSquare className="w-5 h-5 text-lakes-blue" />
+                <span>Post with [Help/Question] flair for assistance</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <Store className="w-5 h-5 text-lakes-blue" />
+                <span>Contact u/BusinessLiaisonMI for business inquiries</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <!-- Welcome CTA -->
+      <Card className="text-center bg-gradient-to-br from-copper-orange/20 to-lakes-blue/20 border-copper-orange">
+        <PartyPopper className="w-16 h-16 text-copper-orange mx-auto mb-4" />
+        <h2 class="font-heading text-4xl font-bold text-ink-primary mb-4">Welcome to the Adventure!</h2>
+        <p class="text-lg text-ink-secondary mb-6 max-w-3xl mx-auto">
+          Thank you for joining r/MichiganSpots! We're excited to have you as part of our treasure hunting community. Whether you're a lifelong Michigander or just visiting, there's always something new to discover in the Great Lakes State.
+        </p>
+
+        <div class="grid md:grid-cols-5 gap-4 mb-8 max-w-4xl mx-auto">
+          <div class="p-4 bg-parchment-light border-2 border-ink-primary rounded">
+            <Smartphone className="w-8 h-8 text-copper-orange mx-auto mb-2" />
+            <p class="text-sm font-semibold text-ink-primary">Download the App</p>
+          </div>
+          <div class="p-4 bg-parchment-light border-2 border-ink-primary rounded">
+            <Trophy className="w-8 h-8 text-gold-treasure mx-auto mb-2" />
+            <p class="text-sm font-semibold text-ink-primary">Check Challenges</p>
+          </div>
+          <div class="p-4 bg-parchment-light border-2 border-ink-primary rounded">
+            <Target className="w-8 h-8 text-forest-green mx-auto mb-2" />
+            <p class="text-sm font-semibold text-ink-primary">Find Locations</p>
+          </div>
+          <div class="p-4 bg-parchment-light border-2 border-ink-primary rounded">
+            <Gamepad2 className="w-8 h-8 text-lakes-blue mx-auto mb-2" />
+            <p class="text-sm font-semibold text-ink-primary">Try Mini-Games</p>
+          </div>
+          <div class="p-4 bg-parchment-light border-2 border-ink-primary rounded">
+            <Users className="w-8 h-8 text-sunset-red mx-auto mb-2" />
+            <p class="text-sm font-semibold text-ink-primary">Connect with Hunters</p>
+          </div>
+        </div>
+
+        <p class="text-2xl font-heading font-bold text-ink-primary mb-2">
+          The real treasure is the Michigan communities we discover along the way! 🏴‍☠️
+        </p>
+        <p class="text-sm text-ink-faded">
+          Last Updated: October 2024 • Guidelines subject to change
+        </p>
+      </Card>
+
+      <!-- Print Version Link -->
+      <div class="text-center mt-8">
+        <a
+          href="/r-michiganspots-community-guidelines.html"
+          target="_blank"
+          class="inline-flex items-center space-x-2 px-6 py-3 bg-lakes-blue text-parchment-light font-heading font-bold border-2 border-ink-primary hover:bg-lakes-light transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>Download Printable PDF Version</span>
+        </a>
+        <p class="text-xs text-ink-faded mt-2">Opens in new tab • Print via browser (Cmd/Ctrl + P)</p>
+      </div>
+    </div>
+  </div>
+</Layout>

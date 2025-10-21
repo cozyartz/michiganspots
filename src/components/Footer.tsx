@@ -58,6 +58,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <a href="/community-guidelines" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  Community Guidelines
+                </a>
+              </li>
+              <li>
                 <a href="/partnerships" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
                   Chamber Partnerships
                 </a>
