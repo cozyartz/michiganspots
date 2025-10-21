@@ -14,9 +14,8 @@ database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
 binding = "R2"
 bucket_name = "michigan-spots-legal-documents"
 
-# Cron Triggers
-[triggers]
-crons = ["0 3 * * *"]  # Daily at 3 AM UTC for auto-refund check
+# NOTE: Cron triggers are configured via Cloudflare Dashboard for Pages Functions
+# Schedule: 0 3 * * * (daily at 3 AM UTC for auto-refund check)
 
 [vars]
 SITE_URL = "http://localhost:4321"
