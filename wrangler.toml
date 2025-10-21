@@ -9,6 +9,15 @@ binding = "DB"
 database_name = "michiganspot-db"
 database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
 
+# R2 Bucket for Legal Documents (PDFs)
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "michigan-spots-legal-documents"
+
+# Cron Triggers
+[triggers]
+crons = ["0 3 * * *"]  # Daily at 3 AM UTC for auto-refund check
+
 [vars]
 SITE_URL = "http://localhost:4321"
 
@@ -46,3 +55,7 @@ STRIPE_PRICE_COMMUNITY_MODEST = "price_1SIZGZDvXMGG1Ehc8KoEW1Jh"
 binding = "DB"
 database_name = "michiganspot-db"
 database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
+
+[[env.production.r2_buckets]]
+binding = "R2"
+bucket_name = "michigan-spots-legal-documents"
