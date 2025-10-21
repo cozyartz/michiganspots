@@ -7,6 +7,17 @@ description: Learn about the rules and expectations for the Michigan Spots commu
 
 The Michigan Spots community thrives on mutual respect, shared passion for exploration, and collaborative discovery. These guidelines help ensure everyone has a positive, safe, and enjoyable experience while treasure hunting across Michigan.
 
+:::note[Official r/MichiganSpots Community Guidelines]
+Looking for the official Reddit community rules? Visit the complete **[r/MichiganSpots Community Guidelines](https://michiganspots.com/community-guidelines)** on our main site, which includes:
+- Post flairs and formatting requirements
+- Point system and rewards
+- Reporting and moderation policies
+- Partnership guidelines
+- App usage policies
+
+[View Full Guidelines →](https://michiganspots.com/community-guidelines)
+:::
+
 ## Core Community Values
 
 ### Respect and Inclusivity

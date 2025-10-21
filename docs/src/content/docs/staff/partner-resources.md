@@ -7,6 +7,16 @@ description: Resources and tools for Michigan Spots business partners and sponso
 
 This comprehensive guide provides business partners with all the resources, tools, and information needed to maximize their Michigan Spots partnership and achieve their marketing and engagement goals.
 
+:::tip[Ready to Become a Partner?]
+Visit our **[Business Partnerships Page](https://michiganspots.com/partnerships)** to:
+- Explore partnership tiers and pricing
+- Sign up for a partnership
+- View partnership benefits
+- Contact our partnership team
+
+[Become a Partner →](https://michiganspots.com/partnerships)
+:::
+
 ## Partnership Overview
 
 ### What is a Michigan Spots Partnership?

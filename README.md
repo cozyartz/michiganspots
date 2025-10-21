@@ -73,7 +73,7 @@ Built by **[Cozyartz Media Group](https://cozyartzmedia.com)** • Battle Creek,
 
 **⚠️ This is proprietary software developed for commercial deployment. All code, designs, and systems are protected intellectual property.**
 
-[💼 View Partnership Opportunities](#-partnership-opportunities) • [🏗️ Explore Tech Stack](#️-tech-stack) • [🏆 Competition Entry](#-reddit-community-games-2025)
+[📚 Documentation](#-documentation) • [💼 View Partnership Opportunities](#-partnership-opportunities) • [🏗️ Explore Tech Stack](#️-tech-stack) • [🏆 Competition Entry](#-reddit-community-games-2025)
 
 </div>
 
@@ -163,6 +163,55 @@ Michigan Spots represents a **groundbreaking integration of three cutting-edge p
 - Multi-layer fraud detection with GPS anti-spoofing and pattern recognition
 
 This tri-platform architecture (Reddit + Cloudflare + AI) enables a **massively multiplayer geolocation game** at a fraction of traditional development and hosting costs while delivering enterprise-grade security, scalability, and user experience.
+
+---
+
+## 📚 Documentation
+
+<div align="center">
+
+[![Player Guide](https://img.shields.io/badge/📖_Player_Guide-docs.michiganspots.com-2E5077?style=for-the-badge&labelColor=2C1810)](https://docs.michiganspots.com)
+
+**Comprehensive player documentation, gameplay guides, and partner resources**
+
+</div>
+
+### Available Documentation
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+**🎮 For Players**
+
+[Getting Started](https://docs.michiganspots.com/getting-started/how-to-play/)
+[Gameplay Guide](https://docs.michiganspots.com/gameplay/finding-spots/)
+[Point System](https://docs.michiganspots.com/gameplay/points-system/)
+[AI Assistant](https://docs.michiganspots.com/ai-help/overview/)
+
+</td>
+<td width="33%" align="center">
+
+**🤝 For Partners**
+
+[Partner Resources](https://docs.michiganspots.com/staff/partner-resources/)
+[Partnership Tiers](https://michiganspots.com/partnerships)
+[Business Guidelines](https://michiganspots.com/partnerships)
+[Analytics Dashboard](https://docs.michiganspots.com/staff/analytics/)
+
+</td>
+<td width="33%" align="center">
+
+**🌐 Community**
+
+[Community Guidelines](https://michiganspots.com/community-guidelines)
+[Reddit Integration](https://docs.michiganspots.com/community/reddit/)
+[FAQ](https://docs.michiganspots.com/support/faq/)
+[Support](https://docs.michiganspots.com/support/contact/)
+
+</td>
+</tr>
+</table>
 
 ---
 
