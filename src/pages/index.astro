@@ -13,6 +13,141 @@ import { SignUpForm } from '../components/SignUpForm';
   <Hero client:load />
   <Features client:visible />
 
+  <!-- How to Play on Reddit Section -->
+  <section class="py-20 px-4 bg-gradient-to-b from-parchment-light to-parchment-mid">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-16">
+        <h2 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-6">
+          Play Directly on Reddit
+        </h2>
+        <p class="text-lg md:text-xl text-ink-secondary max-w-3xl mx-auto">
+          Michigan Spots is built natively into Reddit using Devvit. No app downloads, no external sites – just open Reddit and start playing!
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+        <div class="space-y-6">
+          <div class="parchment-card p-6">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-lakes-blue/20 treasure-border rounded-full flex items-center justify-center">
+                <span class="font-display text-2xl font-bold text-lakes-blue">1</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">Join r/MichiganSpots</h3>
+                <p class="text-ink-secondary">
+                  Visit <a href="https://reddit.com/r/michiganspots" target="_blank" rel="noopener" class="text-lakes-blue hover:underline font-semibold">reddit.com/r/michiganspots</a> and join our community. The game lives right inside Reddit – no separate app needed!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="parchment-card p-6">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-copper-orange/20 treasure-border rounded-full flex items-center justify-center">
+                <span class="font-display text-2xl font-bold text-copper-orange">2</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">Browse Active Challenges</h3>
+                <p class="text-ink-secondary">
+                  Look for posts with the "Treasure Hunt" or "Games Hub" custom post types. These interactive posts let you browse challenges, view leaderboards, and play mini-games.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="parchment-card p-6">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-forest-green/20 treasure-border rounded-full flex items-center justify-center">
+                <span class="font-display text-2xl font-bold text-forest-green">3</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-heading text-xl font-bold text-ink-primary mb-2">Complete & Submit</h3>
+                <p class="text-ink-secondary">
+                  Visit real Michigan locations, take photos, and submit directly through Reddit. GPS verification confirms your visit, and you earn points instantly!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="parchment-card p-8">
+          <h3 class="font-heading text-2xl font-bold text-ink-primary mb-6 text-center">What You Can Do on Reddit</h3>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-3">
+              <svg class="w-6 h-6 text-cyan-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <strong class="text-ink-primary">Browse & Filter Challenges</strong>
+                <p class="text-sm text-ink-secondary">Find challenges by difficulty, location, or partner business</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <svg class="w-6 h-6 text-cyan-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <strong class="text-ink-primary">Play 5 Interactive Mini-Games</strong>
+                <p class="text-sm text-ink-secondary">Trivia, word search, spot the difference, virtual treasure hunt, and drawing challenges</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <svg class="w-6 h-6 text-cyan-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <strong class="text-ink-primary">View Leaderboards</strong>
+                <p class="text-sm text-ink-secondary">Check global rankings, city-specific boards, and your personal stats</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <svg class="w-6 h-6 text-cyan-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <strong class="text-ink-primary">Submit Photos with GPS</strong>
+                <p class="text-sm text-ink-secondary">AI validates your photos and GPS confirms you were really there</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <svg class="w-6 h-6 text-cyan-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <strong class="text-ink-primary">Earn Badges & Points</strong>
+                <p class="text-sm text-ink-secondary">Track achievements and compete with other Michigan explorers</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <svg class="w-6 h-6 text-cyan-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <div>
+                <strong class="text-ink-primary">Join Discussions</strong>
+                <p class="text-sm text-ink-secondary">Share tips, ask for hints, and connect with fellow treasure hunters</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t-2 border-ink-primary/20">
+            <div class="text-center">
+              <p class="text-sm text-ink-secondary mb-4">
+                <strong class="text-ink-primary">Read the Community Guidelines</strong>
+              </p>
+              <a
+                href="/community-guidelines"
+                target="_blank"
+                class="inline-block px-6 py-3 bg-lakes-blue text-parchment-light font-heading font-bold treasure-border hover:bg-lakes-light transition-colors"
+              >
+                View Full Guidelines
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="py-20 px-4 bg-parchment-mid">
     <div class="container mx-auto max-w-4xl text-center">
       <h2 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-6">

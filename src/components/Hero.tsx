@@ -1,8 +1,53 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Trophy, Users, Sparkles } from 'lucide-react';
 import { Button } from './Button';
+import { useState, useEffect } from 'react';
+
+const logoVariants = {
+  hidden: { scale: 0, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 500,
+      damping: 30,
+      duration: 0.8
+    }
+  },
+  poppedOut: {
+    scale: 0,
+    opacity: 0,
+    transition: { duration: 0.5 }
+  }
+};
+
+const badgeVariants = {
+  hidden: { scale: 0, opacity: 0, rotate: -180 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    rotate: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 400,
+      damping: 25,
+      delay: 0.2
+    }
+  }
+};
 
 export function Hero() {
+  const [isLogoVisible, setIsLogoVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsLogoVisible(false);
+      setTimeout(() => setIsLogoVisible(true), 2000); // 2 second delay before popping back in
+    }, 8000); // 8 seconds between pops
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 px-4">
       <div className="absolute inset-0 opacity-10">
@@ -25,9 +70,9 @@ export function Hero() {
             transition={{ duration: 0.8 }}
           >
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              initial="hidden"
+              animate="visible"
+              variants={badgeVariants}
               className="inline-flex items-center space-x-2 px-4 py-2 bg-cyan-light/30 treasure-border mb-6"
             >
               <Sparkles className="w-4 h-4 text-cyan-primary" />
@@ -98,28 +143,38 @@ export function Hero() {
               <div className="parchment-card p-8">
                 <div className="aspect-square bg-gradient-to-br from-cyan-primary via-cyan-glow to-amber-primary rounded-lg opacity-20"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    className="w-full h-full p-8"
-                  >
-                    <img
-                      src="/MiSpot_logo.png"
-                      alt="Michigan Spots Logo"
-                      className="w-full h-full object-contain"
-                    />
-                  </motion.div>
+                  <AnimatePresence mode="wait">
+                    {isLogoVisible && (
+                      <motion.div
+                        key="logo"
+                        initial="hidden"
+                        animate="visible"
+                        exit="poppedOut"
+                        variants={logoVariants}
+                        className="w-full h-full p-8"
+                      >
+                        <img
+                          src="/MiSpot_logo.png"
+                          alt="Michigan Spots Logo"
+                          className="w-full h-full object-contain"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-amber-primary/20 cyber-glow treasure-border rounded-full"></div>
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-coral-primary/20 cyber-glow treasure-border rounded-full"></div>
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 300, damping: 20 }}
+                className="absolute -top-4 -right-4 w-24 h-24 bg-amber-primary/20 cyber-glow treasure-border rounded-full"
+              ></motion.div>
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.7, type: 'spring', stiffness: 300, damping: 20 }}
+                className="absolute -bottom-4 -left-4 w-16 h-16 bg-coral-primary/20 cyber-glow treasure-border rounded-full"
+              ></motion.div>
             </div>
           </motion.div>
         </div>
