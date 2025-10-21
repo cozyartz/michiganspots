@@ -1,8 +1,11 @@
 <div align="center">
 
-![Michigan Spots Banner](https://img.shields.io/badge/MICHIGAN_SPOTS-A_Cozyartz_Production-2E5077?style=for-the-badge&labelColor=2C1810)
+![Michigan Spots Logo](./public/MiSpot_logo.png)
 
-# 🗺️ Michigan Spots
+<br/>
+<br/>
+
+# Michigan Spots
 
 ### *Transforming the Great Lakes State into a Living Treasure Map*
 
@@ -10,6 +13,36 @@
 
 [![Live Platform](https://img.shields.io/badge/🌐_LIVE_PLATFORM-michiganspots.com-FF5D01?style=for-the-badge&labelColor=2C1810)](https://michiganspots.com)
 [![Reddit Community Games](https://img.shields.io/badge/REDDIT_GAMES_2025-$45K_Prize_Pool-FF4500?style=for-the-badge&logo=reddit&logoColor=white&labelColor=2C1810)](https://communitygames2025.devpost.com/)
+
+<br/>
+
+### Powered By
+
+<table>
+<tr>
+<td width="33%" align="center">
+<img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white" alt="Cloudflare"/>
+<br/>
+<strong>Edge Platform</strong>
+<br/>
+Workers • Pages • D1 • R2
+</td>
+<td width="33%" align="center">
+<img src="https://img.shields.io/badge/Astro-FF5D01?style=for-the-badge&logo=astro&logoColor=white" alt="Astro"/>
+<br/>
+<strong>Frontend Framework</strong>
+<br/>
+Static + React Islands
+</td>
+<td width="33%" align="center">
+<img src="https://img.shields.io/badge/Stripe-008CDD?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe"/>
+<br/>
+<strong>Payment Platform</strong>
+<br/>
+Subscriptions • Webhooks
+</td>
+</tr>
+</table>
 
 <br/>
 
