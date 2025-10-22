@@ -1,0 +1,28 @@
+name = "michiganspots-partner-system"
+main = "src/index.ts"
+compatibility_date = "2024-10-21"
+
+# Cloudflare AI binding
+ai = { binding = "AI" }
+
+# KV storage for partner data
+[[kv_namespaces]]
+binding = "PARTNERS"
+id = "a8149b2cf8c943b0b0e28d379a8732ac"
+
+# D1 database for partner management
+[[d1_databases]]
+binding = "DB"
+database_name = "michiganspots-partners"
+database_id = "b65b412e-74e8-48db-838d-6aff14e759a2"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+BASE_URL = "https://michiganspots.com"
+
+# Secrets (set via wrangler secret put)
+# OPENAI_API_KEY - OpenAI API key for AI page generation
+# CLOUDFLARE_API_TOKEN - Cloudflare API token for worker deployment
+# PARTNER_WEBHOOK_SECRET - Secret for validating partner webhooks
+# QR_API_KEY - API key for QR code generation service
