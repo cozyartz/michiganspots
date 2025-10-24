@@ -151,3 +151,40 @@ export function generateMagicLinkToken(): string {
   crypto.getRandomValues(bytes);
   return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
 }
+
+// Simple email sending function for general use
+interface EmailParams {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+}
+
+interface Env {
+  SMTP_USER?: string;
+  SMTP_PASSWORD: string;
+}
+
+export async function sendEmail(params: EmailParams, env: Env): Promise<boolean> {
+  const { to, subject, text, html } = params;
+
+  try {
+    const transporter = createEmailTransporter(
+      env.SMTP_USER || 'hello@michiganspots.com',
+      env.SMTP_PASSWORD
+    );
+
+    await transporter.sendMail({
+      from: '"Michigan Spots" <hello@michiganspots.com>',
+      to,
+      subject,
+      text,
+      html,
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Email sending error:', error);
+    return false;
+  }
+}

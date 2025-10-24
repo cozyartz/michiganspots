@@ -105,7 +105,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
     const magicLink = `https://michiganspots.com/api/auth/magic-link/verify?token=${token}`;
 
     // Import email utility
-    const { sendEmail } = await import('../../../../functions/utils/email');
+    const { sendEmail } = await import('../../../../lib/email');
 
     const html = `
 <!DOCTYPE html>
