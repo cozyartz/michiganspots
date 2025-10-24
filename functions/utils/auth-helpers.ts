@@ -81,7 +81,7 @@ export function parseSessionCookie(cookie: string | null): string | null {
   const cookies = cookie.split(';');
   for (const c of cookies) {
     const [name, value] = c.trim().split('=');
-    if (name === 'session_id') {
+    if (name === 'session') {
       return value;
     }
   }
@@ -94,7 +94,7 @@ export function createSessionCookie(sessionId: string, expiresAt: number): strin
   const maxAge = Math.floor((expiresAt - Date.now()) / 1000);
 
   return [
-    `session_id=${sessionId}`,
+    `session=${sessionId}`,
     `Max-Age=${maxAge}`,
     'Path=/',
     'HttpOnly',
@@ -106,7 +106,7 @@ export function createSessionCookie(sessionId: string, expiresAt: number): strin
 // Create logout cookie
 export function createLogoutCookie(): string {
   return [
-    'session_id=',
+    'session=',
     'Max-Age=0',
     'Path=/',
     'HttpOnly',
