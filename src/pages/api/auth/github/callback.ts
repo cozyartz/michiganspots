@@ -205,8 +205,9 @@ export const GET: APIRoute = async ({ locals, request }) => {
     // Clear OAuth state cookie
     const clearStateCookie = 'github_oauth_state=; Path=/; Max-Age=0';
 
-    // Redirect based on role
-    const redirectUrl = role === 'super_admin' ? '/admin/dashboard' : '/';
+    // Redirect to admin dashboard (GitHub is super admin only)
+    const redirectUrl = '/admin/dashboard';
+    console.log('Redirecting super admin to:', redirectUrl);
 
     return new Response(null, {
       status: 302,
