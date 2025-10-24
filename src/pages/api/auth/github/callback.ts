@@ -6,7 +6,7 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-const SUPER_ADMIN_GITHUB_USERNAME = 'cozart-lundin';
+const SUPER_ADMIN_GITHUB_USERNAME = 'cozyartz';
 
 function getCookie(cookieHeader: string | null, name: string): string | null {
   if (!cookieHeader) return null;
@@ -67,8 +67,13 @@ export const GET: APIRoute = async ({ locals, request }) => {
     const clientSecret = env.GITHUB_CLIENT_SECRET as string;
 
     if (!clientId || !clientSecret) {
+      console.error('GitHub OAuth not configured - missing credentials');
       return new Response('GitHub OAuth not configured', { status: 500 });
     }
+
+    // Get redirect URI (must match what was sent during authorization)
+    const siteUrl = (env.PUBLIC_SITE_URL as string) || `${url.protocol}//${url.host}`;
+    const redirectUri = `${siteUrl}/api/auth/github/callback`;
 
     // Exchange code for access token
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
@@ -81,36 +86,44 @@ export const GET: APIRoute = async ({ locals, request }) => {
         client_id: clientId,
         client_secret: clientSecret,
         code: code,
+        redirect_uri: redirectUri,
       }),
     });
 
     if (!tokenResponse.ok) {
+      console.error('Failed to exchange code for token:', tokenResponse.status, tokenResponse.statusText);
       return new Response('Failed to exchange code for token', { status: 500 });
     }
 
     const tokenData: any = await tokenResponse.json();
+    console.log('GitHub token response:', tokenData);
     const accessToken = tokenData.access_token;
 
     if (!accessToken) {
-      return new Response('No access token received', { status: 500 });
+      console.error('No access token received. Full response:', JSON.stringify(tokenData));
+      return new Response(`No access token received. GitHub error: ${tokenData.error || 'unknown'} - ${tokenData.error_description || 'No description'}`, { status: 500 });
     }
 
     // Fetch user data from GitHub
     const githubUserResponse = await fetch('https://api.github.com/user', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        'User-Agent': 'Michigan-Spots-App',
       },
     });
 
     if (!githubUserResponse.ok) {
-      return new Response('Failed to fetch GitHub user', { status: 500 });
+      const errorText = await githubUserResponse.text();
+      console.error('Failed to fetch GitHub user:', githubUserResponse.status, errorText);
+      return new Response(`Failed to fetch GitHub user: ${githubUserResponse.status} - ${errorText}`, { status: 500 });
     }
 
     const githubUser: any = await githubUserResponse.json();
+    console.log('GitHub user fetched:', githubUser.login);
 
     // ONLY allow super admin to use GitHub OAuth
     if (githubUser.login !== SUPER_ADMIN_GITHUB_USERNAME) {
-      return new Response('GitHub authentication is reserved for administrators only. Please use Google sign-in or magic link.', {
+      return new Response(`GitHub authentication is reserved for administrators only. Your GitHub username is: ${githubUser.login}. Expected: ${SUPER_ADMIN_GITHUB_USERNAME}. Please use Google sign-in or magic link.`, {
         status: 403,
         headers: { 'Content-Type': 'text/plain' }
       });
@@ -204,6 +217,10 @@ export const GET: APIRoute = async ({ locals, request }) => {
     });
   } catch (error) {
     console.error('OAuth callback error:', error);
-    return new Response('Authentication failed', { status: 500 });
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    return new Response(`Authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`, { status: 500 });
   }
 };
