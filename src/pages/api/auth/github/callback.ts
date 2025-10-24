@@ -3,9 +3,10 @@
  * Endpoint: GET /api/auth/github/callback
  */
 import type { APIRoute } from 'astro';
-import { createGitHubClient, createSession, createSessionCookie, SUPER_ADMIN_GITHUB_USERNAME } from '../../../../../functions/utils/auth-helpers';
 
 export const prerender = false;
+
+const SUPER_ADMIN_GITHUB_USERNAME = 'cozart-lundin';
 
 function getCookie(cookieHeader: string | null, name: string): string | null {
   if (!cookieHeader) return null;
@@ -15,6 +16,33 @@ function getCookie(cookieHeader: string | null, name: string): string | null {
     if (cookieName === name) return cookieValue;
   }
   return null;
+}
+
+// Generate session ID
+function generateSessionId(): string {
+  const bytes = new Uint8Array(20);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+// Create session (30 days)
+function createSession(userId: number): { id: string; expiresAt: number } {
+  const sessionId = generateSessionId();
+  const expiresAt = Date.now() + (1000 * 60 * 60 * 24 * 30); // 30 days
+  return { id: sessionId, expiresAt };
+}
+
+// Create session cookie
+function createSessionCookie(sessionId: string, expiresAt: number): string {
+  const maxAge = Math.floor((expiresAt - Date.now()) / 1000);
+  return [
+    `session=${sessionId}`,
+    `Max-Age=${maxAge}`,
+    'Path=/',
+    'HttpOnly',
+    'Secure',
+    'SameSite=Lax'
+  ].join('; ');
 }
 
 export const GET: APIRoute = async ({ locals, request }) => {
@@ -38,19 +66,34 @@ export const GET: APIRoute = async ({ locals, request }) => {
     const clientId = env.GITHUB_CLIENT_ID as string;
     const clientSecret = env.GITHUB_CLIENT_SECRET as string;
 
-    // Auto-detect site URL from request origin
-    const siteUrl = (env.PUBLIC_SITE_URL as string) || `${url.protocol}//${url.host}`;
-    const redirectUri = `${siteUrl}/api/auth/github/callback`;
-
     if (!clientId || !clientSecret) {
       return new Response('GitHub OAuth not configured', { status: 500 });
     }
 
-    const github = createGitHubClient(clientId, clientSecret, redirectUri);
-
     // Exchange code for access token
-    const tokens = await github.validateAuthorizationCode(code);
-    const accessToken = tokens.accessToken();
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code: code,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      return new Response('Failed to exchange code for token', { status: 500 });
+    }
+
+    const tokenData: any = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    if (!accessToken) {
+      return new Response('No access token received', { status: 500 });
+    }
 
     // Fetch user data from GitHub
     const githubUserResponse = await fetch('https://api.github.com/user', {
@@ -65,27 +108,17 @@ export const GET: APIRoute = async ({ locals, request }) => {
 
     const githubUser: any = await githubUserResponse.json();
 
-    // Fetch user email if not public
-    let email = githubUser.email;
-    if (!email) {
-      const emailResponse = await fetch('https://api.github.com/user/emails', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    // ONLY allow super admin to use GitHub OAuth
+    if (githubUser.login !== SUPER_ADMIN_GITHUB_USERNAME) {
+      return new Response('GitHub authentication is reserved for administrators only. Please use Google sign-in or magic link.', {
+        status: 403,
+        headers: { 'Content-Type': 'text/plain' }
       });
-
-      if (emailResponse.ok) {
-        const emails: any[] = await emailResponse.json();
-        const primaryEmail = emails.find(e => e.primary);
-        email = primaryEmail?.email || emails[0]?.email;
-      }
     }
 
-    // Determine user role
-    let role: 'user' | 'partner' | 'super_admin' = 'user';
-    if (githubUser.login === SUPER_ADMIN_GITHUB_USERNAME) {
-      role = 'super_admin';
-    }
+    // Force super admin email and role
+    const email = 'cozycoding@proton.me';
+    const role: 'super_admin' = 'super_admin';
 
     const db = env.DB as D1Database;
 
@@ -112,7 +145,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
         `)
         .bind(
           githubUser.login,
-          email || existingUser.email,
+          email,
           githubUser.name || existingUser.name,
           githubUser.avatar_url,
           role,
@@ -132,7 +165,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
         .bind(
           githubUser.id,
           githubUser.login,
-          email || '',
+          email,
           githubUser.name || githubUser.login,
           'Unknown',
           githubUser.avatar_url,
@@ -143,27 +176,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
       userId = result.meta.last_row_id as number;
     }
 
-    // Check if user is a partner (not super admin) and verify they're not overdue
-    if (role !== 'super_admin') {
-      const partnerCheck = await db.prepare(`
-        SELECT ends_at, is_active
-        FROM partnership_activations
-        WHERE email = ?
-        AND is_active = 1
-      `).bind(email || '').first();
-
-      if (partnerCheck && partnerCheck.ends_at) {
-        const endsAt = new Date(partnerCheck.ends_at as string);
-        const gracePeriodEnd = new Date(endsAt);
-        gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 10);
-
-        if (new Date() > gracePeriodEnd) {
-          return new Response('Your partnership payment is overdue. Please contact us to renew your partnership before accessing your dashboard.', {
-            status: 403
-          });
-        }
-      }
-    }
+    // GitHub OAuth is super admin only - no payment checks needed
 
     // Create session
     const { id: sessionId, expiresAt } = createSession(userId);

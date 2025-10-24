@@ -22,7 +22,22 @@ export function createGitHubClient(clientId: string, clientSecret: string, redir
 
 // Initialize Google OAuth client
 export function createGoogleClient(clientId: string, clientSecret: string, redirectUri: string) {
-  return new Google(clientId, clientSecret, redirectUri);
+  // Validate parameters before passing to Arctic
+  if (!clientId || typeof clientId !== 'string' || clientId.length === 0) {
+    throw new Error(`Invalid clientId: ${typeof clientId}, length: ${clientId?.length}`);
+  }
+  if (!clientSecret || typeof clientSecret !== 'string' || clientSecret.length === 0) {
+    throw new Error(`Invalid clientSecret: ${typeof clientSecret}, length: ${clientSecret?.length}`);
+  }
+  if (!redirectUri || typeof redirectUri !== 'string' || redirectUri.length === 0) {
+    throw new Error(`Invalid redirectUri: ${typeof redirectUri}, value: ${redirectUri}`);
+  }
+
+  try {
+    return new Google(clientId, clientSecret, redirectUri);
+  } catch (error) {
+    throw new Error(`Failed to create Google client: ${error instanceof Error ? error.message : String(error)}`);
+  }
 }
 
 // User roles

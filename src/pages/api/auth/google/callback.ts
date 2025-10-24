@@ -3,7 +3,6 @@
  * Endpoint: GET /api/auth/google/callback
  */
 import type { APIRoute } from 'astro';
-import { createGoogleClient, createSession, createSessionCookie } from '../../../../../functions/utils/auth-helpers';
 
 export const prerender = false;
 
@@ -23,6 +22,33 @@ function getCookie(cookieHeader: string | null, name: string): string | null {
     if (cookieName === name) return cookieValue;
   }
   return null;
+}
+
+// Generate session ID
+function generateSessionId(): string {
+  const bytes = new Uint8Array(20);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+// Create session (30 days)
+function createSession(userId: number): { id: string; expiresAt: number } {
+  const sessionId = generateSessionId();
+  const expiresAt = Date.now() + (1000 * 60 * 60 * 24 * 30); // 30 days
+  return { id: sessionId, expiresAt };
+}
+
+// Create session cookie
+function createSessionCookie(sessionId: string, expiresAt: number): string {
+  const maxAge = Math.floor((expiresAt - Date.now()) / 1000);
+  return [
+    `session=${sessionId}`,
+    `Max-Age=${maxAge}`,
+    'Path=/',
+    'HttpOnly',
+    'Secure',
+    'SameSite=Lax'
+  ].join('; ');
 }
 
 export const GET: APIRoute = async ({ locals, request }) => {
@@ -53,9 +79,31 @@ export const GET: APIRoute = async ({ locals, request }) => {
   const redirectUri = `${siteUrl}/api/auth/google/callback`;
 
   try {
-    const google = createGoogleClient(clientId, clientSecret, redirectUri);
-    const tokens = await google.validateAuthorizationCode(code);
-    const accessToken = tokens.accessToken();
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        code: code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      throw new Error('Failed to exchange code for token');
+    }
+
+    const tokenData: any = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    if (!accessToken) {
+      throw new Error('No access token received');
+    }
 
     // Fetch user data from Google
     const googleUserResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {

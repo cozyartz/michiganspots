@@ -3,9 +3,15 @@
  * Endpoint: GET /api/auth/github
  */
 import type { APIRoute } from 'astro';
-import { createGitHubClient, generateState } from '../../../../functions/utils/auth-helpers';
 
 export const prerender = false;
+
+// Generate random state for CSRF protection
+function generateState(): string {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
 
 export const GET: APIRoute = async ({ locals, request }) => {
   const env = locals.runtime?.env;
@@ -15,29 +21,34 @@ export const GET: APIRoute = async ({ locals, request }) => {
   }
 
   const clientId = env.GITHUB_CLIENT_ID as string;
-  const clientSecret = env.GITHUB_CLIENT_SECRET as string;
 
-  // Auto-detect site URL from request origin
+  if (!clientId) {
+    return new Response('GitHub OAuth not configured', { status: 500 });
+  }
+
+  // Auto-detect site URL
   const requestUrl = new URL(request.url);
   const siteUrl = (env.PUBLIC_SITE_URL as string) || `${requestUrl.protocol}//${requestUrl.host}`;
   const redirectUri = `${siteUrl}/api/auth/github/callback`;
 
-  if (!clientId || !clientSecret) {
-    return new Response('GitHub OAuth not configured. Please add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET to Cloudflare environment variables.', { status: 500 });
-  }
-
-  const github = createGitHubClient(clientId, clientSecret, redirectUri);
+  // Generate state for CSRF protection
   const state = generateState();
 
-  // Store state in cookie for CSRF protection
-  const stateCookie = `github_oauth_state=${state}; Path=/; HttpOnly; Max-Age=600; SameSite=Lax${siteUrl.startsWith('https') ? '; Secure' : ''}`;
+  // Build GitHub authorization URL
+  const authUrl = new URL('https://github.com/login/oauth/authorize');
+  authUrl.searchParams.set('client_id', clientId);
+  authUrl.searchParams.set('redirect_uri', redirectUri);
+  authUrl.searchParams.set('scope', 'user:email');
+  authUrl.searchParams.set('state', state);
 
-  const url = github.createAuthorizationURL(state, ['user:email']);
+  // Store state in cookie
+  const isSecure = siteUrl.startsWith('https');
+  const stateCookie = `github_oauth_state=${state}; Path=/; HttpOnly; Max-Age=600; SameSite=Lax${isSecure ? '; Secure' : ''}`;
 
   return new Response(null, {
     status: 302,
     headers: {
-      'Location': url.toString(),
+      'Location': authUrl.toString(),
       'Set-Cookie': stateCookie,
     },
   });

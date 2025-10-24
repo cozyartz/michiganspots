@@ -24,13 +24,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       });
     }
 
-    // Find partner by email
+    // Find partner by email with payment status
     const partner = await db.prepare(`
       SELECT
         pa.id,
         pa.organization_name,
         pa.email,
-        pa.is_active
+        pa.is_active,
+        pa.ends_at,
+        pa.payment_status
       FROM partnership_activations pa
       WHERE pa.email = ?
       AND pa.is_active = 1
@@ -47,6 +49,24 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
+    }
+
+    // Check if partnership payment is overdue (more than 10 days past end date)
+    if (partner.ends_at) {
+      const endsAt = new Date(partner.ends_at as string);
+      const gracePeriodEnd = new Date(endsAt);
+      gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 10); // 10 day grace period
+
+      if (new Date() > gracePeriodEnd) {
+        // Don't reveal payment status for security, but don't send the link
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'If this email is associated with an active partnership, you will receive a login link shortly.'
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     // Generate secure token (valid for 24 hours)
