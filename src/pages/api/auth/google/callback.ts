@@ -228,10 +228,10 @@ export const GET: APIRoute = async ({ locals, request }) => {
     // Redirect to home page
     return new Response(null, {
       status: 302,
-      headers: {
+      headers: new Headers({
         'Location': '/',
-        'Set-Cookie': [sessionCookie, clearStateCookie].join(', '),
-      },
+        'Set-Cookie': sessionCookie,
+      }),
     });
   } catch (error) {
     console.error('Google OAuth error:', error);

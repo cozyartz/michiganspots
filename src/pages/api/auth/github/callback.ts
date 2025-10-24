@@ -211,10 +211,10 @@ export const GET: APIRoute = async ({ locals, request }) => {
 
     return new Response(null, {
       status: 302,
-      headers: {
+      headers: new Headers({
         'Location': redirectUrl,
-        'Set-Cookie': [sessionCookie, clearStateCookie].join(', '),
-      },
+        'Set-Cookie': sessionCookie,
+      }),
     });
   } catch (error) {
     console.error('OAuth callback error:', error);
