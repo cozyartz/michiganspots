@@ -3,17 +3,12 @@
  * Generates and manages QR codes for Michigan Spots partners
  */
 
-// QR Code generation using Web APIs instead of Node.js qrcode library
 import { Env } from '../index';
 
 export interface QRCodeRequest {
   partnerId: string;
   businessName: string;
-  location: {
-    address: string;
-    city: string;
-    state: string;
-  };
+  targetUrl: string;
 }
 
 export interface QRCodeData {
@@ -32,13 +27,12 @@ export interface QRCodeData {
 export class QRCodeService {
   constructor(private env: Env) {}
 
-  async generatePartnerQRCode(request: QRCodeRequest): Promise<QRCodeData> {
+  async generateQRCode(request: QRCodeRequest): Promise<QRCodeData> {
     try {
       console.log(`📱 Generating QR code for partner: ${request.businessName}`);
 
-      // Create the target URL for the QR code
-      const targetUrl = `${this.env.BASE_URL}/partners/${request.partnerId}?source=qr`;
-      
+      const targetUrl = request.targetUrl;
+
       // QR code options
       const qrOptions = {
         errorCorrectionLevel: 'M' as const,
@@ -54,11 +48,11 @@ export class QRCodeService {
 
       // Generate QR code using external API (since Node.js qrcode doesn't work in Workers)
       const qrApiResponse = await fetch(`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(targetUrl)}&format=png&bgcolor=ffffff&color=1f2937&margin=10`);
-      
+
       if (!qrApiResponse.ok) {
         throw new Error('Failed to generate QR code via API');
       }
-      
+
       const pngBuffer = await qrApiResponse.arrayBuffer();
       const pngBase64 = `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(pngBuffer)))}`;
 
@@ -71,7 +65,7 @@ export class QRCodeService {
         url: targetUrl,
         svg: svgString,
         png: pngBase64,
-        downloadUrl: `${this.env.BASE_URL}/api/partners/${request.partnerId}/qr`,
+        downloadUrl: `/qr/download`,
         metadata: {
           size: '400x400',
           errorCorrectionLevel: 'M',
@@ -80,7 +74,7 @@ export class QRCodeService {
       };
 
       // Store in KV for quick retrieval
-      await this.env.PARTNERS.put(
+      await this.env.PARTNERS_PLATFORM.put(
         `qr:${request.partnerId}`,
         JSON.stringify(qrCodeData),
         { expirationTtl: 86400 * 365 } // 1 year
@@ -98,8 +92,8 @@ export class QRCodeService {
   async getQRCode(partnerId: string, format: 'png' | 'svg' = 'png'): Promise<string> {
     try {
       // Try to get from KV first
-      const cachedData = await this.env.PARTNERS.get(`qr:${partnerId}`);
-      
+      const cachedData = await this.env.PARTNERS_PLATFORM.get(`qr:${partnerId}`);
+
       if (cachedData) {
         const qrData: QRCodeData = JSON.parse(cachedData);
         return format === 'svg' ? qrData.svg : qrData.png;
@@ -117,16 +111,16 @@ export class QRCodeService {
   async updateQRCode(partnerId: string, updates: Partial<QRCodeRequest>): Promise<QRCodeData> {
     try {
       // Get existing QR code data
-      const existingData = await this.env.PARTNERS.get(`qr:${partnerId}`);
-      
+      const existingData = await this.env.PARTNERS_PLATFORM.get(`qr:${partnerId}`);
+
       if (!existingData) {
         throw new Error('QR code not found for partner');
       }
 
       const currentData: QRCodeData = JSON.parse(existingData);
-      
+
       // If no updates needed, return current data
-      if (!updates.businessName && !updates.location) {
+      if (!updates.businessName && !updates.targetUrl) {
         return currentData;
       }
 
@@ -134,14 +128,10 @@ export class QRCodeService {
       const updatedRequest: QRCodeRequest = {
         partnerId,
         businessName: updates.businessName || 'Updated Business',
-        location: updates.location || {
-          address: 'Updated Address',
-          city: 'Updated City',
-          state: 'MI'
-        }
+        targetUrl: updates.targetUrl || currentData.url
       };
 
-      return await this.generatePartnerQRCode(updatedRequest);
+      return await this.generateQRCode(updatedRequest);
 
     } catch (error) {
       console.error('QR code update error:', error);
@@ -151,15 +141,15 @@ export class QRCodeService {
 
   async generateBulkQRCodes(requests: QRCodeRequest[]): Promise<QRCodeData[]> {
     console.log(`📱 Generating ${requests.length} QR codes in bulk...`);
-    
+
     const results: QRCodeData[] = [];
     const batchSize = 5; // Process in batches to avoid overwhelming the system
 
     for (let i = 0; i < requests.length; i += batchSize) {
       const batch = requests.slice(i, i + batchSize);
-      
-      const batchPromises = batch.map(request => 
-        this.generatePartnerQRCode(request).catch(error => {
+
+      const batchPromises = batch.map(request =>
+        this.generateQRCode(request).catch(error => {
           console.error(`Failed to generate QR code for ${request.businessName}:`, error);
           return null;
         })
@@ -177,21 +167,21 @@ export class QRCodeService {
     try {
       // Generate basic SVG QR code using external API
       const svgApiResponse = await fetch(`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&format=svg&bgcolor=ffffff&color=1f2937&margin=10`);
-      
+
       if (!svgApiResponse.ok) {
         throw new Error('Failed to generate SVG QR code via API');
       }
-      
+
       const basicSvg = await svgApiResponse.text();
 
       // Enhance SVG with Michigan Spots branding
       const brandedSvg = this.addBrandingToSVG(basicSvg, request);
-      
+
       return brandedSvg;
 
     } catch (error) {
       console.error('Branded SVG generation error:', error);
-      
+
       // Fallback to basic SVG via API
       try {
         const fallbackResponse = await fetch(`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&format=svg`);
@@ -219,16 +209,16 @@ export class QRCodeService {
           <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
         </filter>
       </defs>
-      
+
       <!-- Background circle -->
       <circle cx="200" cy="200" r="190" fill="url(#michiganGradient)" opacity="0.1"/>
-      
+
       <!-- Michigan Spots logo/text at bottom -->
       <rect x="50" y="350" width="300" height="40" rx="20" fill="url(#michiganGradient)" filter="url(#shadow)"/>
       <text x="200" y="375" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
         🗺️ Michigan Spots Partner
       </text>
-      
+
       <!-- Business name at top -->
       <rect x="50" y="10" width="300" height="30" rx="15" fill="white" filter="url(#shadow)" opacity="0.9"/>
       <text x="200" y="30" text-anchor="middle" fill="#1f2937" font-family="Arial, sans-serif" font-size="14" font-weight="bold">
@@ -238,7 +228,7 @@ export class QRCodeService {
 
     // Insert branding elements before the closing </svg> tag
     const brandedSvg = svgString.replace('</svg>', `${brandingElements}</svg>`);
-    
+
     // Update viewBox to accommodate branding elements
     return brandedSvg.replace(
       /viewBox="[^"]*"/,
@@ -250,8 +240,8 @@ export class QRCodeService {
     try {
       // Get QR code scan analytics from KV or database
       const analyticsKey = `qr_analytics:${partnerId}:${timeframe}`;
-      const analytics = await this.env.PARTNERS.get(analyticsKey);
-      
+      const analytics = await this.env.PARTNERS_PLATFORM.get(analyticsKey);
+
       if (analytics) {
         return JSON.parse(analytics);
       }
@@ -292,7 +282,7 @@ export class QRCodeService {
       };
 
       // Store individual scan event
-      await this.env.PARTNERS.put(
+      await this.env.PARTNERS_PLATFORM.put(
         `scan:${partnerId}:${scanEvent.scanId}`,
         JSON.stringify(scanEvent),
         { expirationTtl: 86400 * 90 } // 90 days
@@ -301,11 +291,11 @@ export class QRCodeService {
       // Update daily scan count
       const today = new Date().toISOString().split('T')[0];
       const dailyKey = `daily_scans:${partnerId}:${today}`;
-      
-      const currentCount = await this.env.PARTNERS.get(dailyKey);
+
+      const currentCount = await this.env.PARTNERS_PLATFORM.get(dailyKey);
       const newCount = currentCount ? parseInt(currentCount) + 1 : 1;
-      
-      await this.env.PARTNERS.put(
+
+      await this.env.PARTNERS_PLATFORM.put(
         dailyKey,
         newCount.toString(),
         { expirationTtl: 86400 * 365 } // 1 year

@@ -4,6 +4,7 @@
  */
 
 import { sendPartnershipConfirmationEmail } from '../utils/partnershipEmail';
+import { onboardPartnerToWorker, formatPartnerDataForWorker } from '../utils/partnerWorker';
 
 interface Env {
   DB: D1Database;
@@ -225,6 +226,67 @@ async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) 
           .prepare('UPDATE stripe_customers SET has_active_subscription = 1, subscription_ends_at = ?, updated_at = ? WHERE stripe_customer_id = ?')
           .bind(endsAt ? endsAt.toISOString() : null, new Date().toISOString(), customerId)
           .run();
+      }
+
+      // Onboard partner to Cloudflare Worker system
+      try {
+        console.log('🚀 Onboarding partner to worker system:', email);
+
+        // Get full partner signup data
+        const signupData = await db
+          .prepare('SELECT * FROM partner_signups WHERE email = ?')
+          .bind(email)
+          .first();
+
+        if (signupData) {
+          // Format data for worker API
+          const workerData = formatPartnerDataForWorker({
+            ...signupData,
+            tier: partnershipTier,
+            organization_name: organizationName
+          });
+
+          // Call worker to generate AI page, QR code, and setup
+          const workerResult = await onboardPartnerToWorker(workerData);
+
+          if (workerResult.success) {
+            // Update database with worker response
+            await db
+              .prepare(`
+                UPDATE partner_signups
+                SET worker_partner_id = ?,
+                    worker_page_url = ?,
+                    worker_qr_code_url = ?,
+                    worker_qr_download_url = ?,
+                    worker_analytics_url = ?,
+                    worker_onboarded_at = ?,
+                    worker_status = 'active'
+                WHERE email = ?
+              `)
+              .bind(
+                workerResult.partnerId,
+                workerResult.urls.partnerPage,
+                workerResult.urls.qrCode,
+                workerResult.qrCode.downloadUrl,
+                workerResult.urls.analytics,
+                new Date().toISOString(),
+                email
+              )
+              .run();
+
+            console.log('✅ Partner successfully onboarded to worker:', workerResult.partnerId);
+          }
+        } else {
+          console.warn('⚠️ No signup data found for email:', email);
+        }
+      } catch (workerError) {
+        console.error('❌ Worker onboarding failed (non-fatal):', workerError);
+        // Don't fail the webhook - partner is still activated, just log the error
+        await db
+          .prepare('UPDATE partner_signups SET worker_status = ?, updated_at = ? WHERE email = ?')
+          .bind('failed', new Date().toISOString(), email)
+          .run()
+          .catch(() => {}); // Silent fail if column doesn't exist yet
       }
 
       // Send partnership confirmation email

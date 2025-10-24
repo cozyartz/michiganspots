@@ -27,14 +27,22 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
     // TODO: Add partner authentication - verify the partner can only see their own data
 
-    // Get partner info
+    // Get partner info with worker integration fields
     const partner = await db.prepare(`
       SELECT
         pa.*,
         sc.organization_name,
-        sc.email
+        sc.email,
+        ps.worker_partner_id,
+        ps.worker_page_url,
+        ps.worker_qr_code_url,
+        ps.worker_qr_download_url,
+        ps.worker_analytics_url,
+        ps.worker_onboarded_at,
+        ps.worker_status
       FROM partnership_activations pa
       LEFT JOIN stripe_customers sc ON pa.stripe_customer_id = sc.stripe_customer_id
+      LEFT JOIN partner_signups ps ON pa.email = ps.email
       WHERE pa.id = ?
     `).bind(partnerId).first();
 

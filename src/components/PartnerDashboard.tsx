@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, Users, MessageSquare, ThumbsUp, Share2, Award, MapPin, DollarSign, Calendar, Download } from 'lucide-react';
+import { TrendingUp, Users, MessageSquare, ThumbsUp, Share2, Award, MapPin, DollarSign, Calendar, Download, QrCode, ExternalLink, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface PartnerData {
@@ -13,6 +13,12 @@ interface PartnerData {
     ends_at: string;
     challenges_remaining: number;
     challenges_used: number;
+    worker_partner_id?: string;
+    worker_page_url?: string;
+    worker_qr_code_url?: string;
+    worker_qr_download_url?: string;
+    worker_analytics_url?: string;
+    worker_status?: string;
   };
   totalMetrics: {
     total_views: number;
@@ -172,6 +178,83 @@ export function PartnerDashboard() {
             delay={0.4}
           />
         </div>
+
+        {/* AI-Generated Partner Page & QR Code */}
+        {data.partner.worker_status === 'active' && data.partner.worker_page_url && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="parchment-card mb-8"
+          >
+            <h2 className="font-heading text-2xl font-bold text-ink-primary mb-6">Your Digital Presence</h2>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Partner Page Info */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Globe className="w-5 h-5 text-cyan-primary" />
+                  <h3 className="font-heading text-lg font-bold text-ink-primary">AI-Powered Partner Page</h3>
+                </div>
+                <p className="text-ink-secondary mb-4 text-sm">
+                  Your custom partner page has been automatically generated with AI, featuring your business information, location details, and Michigan Spots branding.
+                </p>
+                <a
+                  href={data.partner.worker_page_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors text-sm mb-3"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View Partner Page
+                </a>
+                {data.partner.worker_analytics_url && (
+                  <a
+                    href={data.partner.worker_analytics_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-amber-primary text-white font-heading font-bold treasure-border hover:bg-amber-dark transition-colors text-sm ml-2"
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    Page Analytics
+                  </a>
+                )}
+              </div>
+
+              {/* QR Code Display */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <QrCode className="w-5 h-5 text-cyan-primary" />
+                  <h3 className="font-heading text-lg font-bold text-ink-primary">Branded QR Code</h3>
+                </div>
+                <div className="bg-white p-4 treasure-border mb-4 inline-block">
+                  {data.partner.worker_qr_code_url && (
+                    <img
+                      src={data.partner.worker_qr_code_url}
+                      alt="Partner QR Code"
+                      className="w-48 h-48"
+                    />
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  {data.partner.worker_qr_download_url && (
+                    <a
+                      href={data.partner.worker_qr_download_url}
+                      download
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-coral-primary text-white font-heading font-bold treasure-border hover:bg-coral-dark transition-colors text-sm"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download QR Code
+                    </a>
+                  )}
+                  <p className="text-xs text-ink-secondary">
+                    Print this QR code to display at your location. Customers can scan it to view your partner page and complete challenges!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Engagement & ROI */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">

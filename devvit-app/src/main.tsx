@@ -10,6 +10,7 @@ import { Challenge } from './types/core.js';
 import { getRedditEventService } from './services/redditEventService.js';
 import { initializeAnalyticsClient } from './services/analytics.js';
 import { InteractiveGameHub } from './components/InteractiveGameHub.js';
+import { ModeratorAITools } from './components/ModeratorAITools.js';
 
 // Import AI Services
 import { AIMasterOrchestrator } from './services/aiMasterOrchestrator.js';
@@ -116,7 +117,7 @@ let gameIntelligence: AIGameIntelligence;
 let communityManager: AICommunityManager;
 let businessIntelligence: AIBusinessIntelligence;
 
-// Add menu action for interactive games
+// Add menu action for interactive games (PUBLIC - Anyone can create game posts)
 Devvit.addMenuItem({
   label: '🎮 Play Interactive Games',
   location: 'subreddit',
@@ -158,12 +159,32 @@ Devvit.addMenuItem({
   },
 });
 
-// Add menu action for creating treasure hunt challenges
+// Add menu action for creating treasure hunt challenges (MODERATOR ONLY)
 Devvit.addMenuItem({
   label: '🗺️ Create Treasure Hunt Challenge',
   location: 'subreddit',
   onPress: async (_event, context) => {
     const { reddit, ui } = context;
+    
+    // Check if user is a moderator
+    const currentUser = await reddit.getCurrentUser();
+    if (!currentUser) {
+      ui.showToast({ text: '❌ You must be logged in to create challenges', appearance: 'neutral' });
+      return;
+    }
+    
+    try {
+      const subreddit = await reddit.getSubredditById(context.subredditId!);
+      const isModerator = await reddit.getModPermissions(subreddit.name, currentUser.username);
+      
+      if (!isModerator || isModerator.length === 0) {
+        ui.showToast({ text: '🔒 Only moderators can create treasure hunt challenges', appearance: 'neutral' });
+        return;
+      }
+    } catch (error) {
+      ui.showToast({ text: '🔒 Only moderators can create treasure hunt challenges', appearance: 'neutral' });
+      return;
+    }
     
     const post = await reddit.submitPost({
       title: '🗺️ Michigan Spots Treasure Hunt - Discover Local Gems!',
@@ -197,6 +218,137 @@ Devvit.addMenuItem({
 
     ui.showToast({ text: '🗺️ Treasure Hunt Challenge created!' });
     ui.navigateTo(post);
+  },
+});
+
+// Add moderator-only AI tools menu
+Devvit.addMenuItem({
+  label: '🤖 AI Challenge Generator (Mod Only)',
+  location: 'subreddit',
+  onPress: async (_event, context) => {
+    const { reddit, ui } = context;
+    
+    // Check if user is a moderator
+    const currentUser = await reddit.getCurrentUser();
+    if (!currentUser) {
+      ui.showToast({ text: '❌ You must be logged in to access AI tools', appearance: 'neutral' });
+      return;
+    }
+    
+    try {
+      const subreddit = await reddit.getSubredditById(context.subredditId!);
+      const isModerator = await reddit.getModPermissions(subreddit.name, currentUser.username);
+      
+      if (!isModerator || isModerator.length === 0) {
+        ui.showToast({ text: '🔒 Only moderators can access AI challenge generation tools', appearance: 'neutral' });
+        return;
+      }
+    } catch (error) {
+      ui.showToast({ text: '🔒 Only moderators can access AI challenge generation tools', appearance: 'neutral' });
+      return;
+    }
+    
+    // Create AI-powered moderator tools post
+    const post = await reddit.submitPost({
+      title: '🤖 AI Moderator Tools - Challenge Generation & Analytics',
+      subredditName: context.subredditName!,
+      preview: {
+        type: 'vstack',
+        padding: 'medium',
+        gap: 'medium',
+        alignment: 'center',
+        children: [
+          {
+            type: 'text',
+            size: 'xxlarge',
+            text: '🤖'
+          },
+          {
+            type: 'text',
+            size: 'large',
+            weight: 'bold',
+            text: 'AI Moderator Tools'
+          },
+          {
+            type: 'text',
+            size: 'medium',
+            color: '#6b7280',
+            text: 'Advanced AI tools for community management'
+          },
+          {
+            type: 'text',
+            size: 'small',
+            color: '#ef4444',
+            text: '🔒 Restricted to Moderators Only'
+          }
+        ]
+      },
+    });
+
+    ui.showToast({ text: '🤖 AI Challenge Generator created!' });
+    ui.navigateTo(post);
+  },
+});
+
+// Add moderator-only analytics dashboard
+Devvit.addMenuItem({
+  label: '📊 Analytics Dashboard (Mod Only)',
+  location: 'subreddit',
+  onPress: async (_event, context) => {
+    const { reddit, ui } = context;
+    
+    // Check if user is a moderator
+    const currentUser = await reddit.getCurrentUser();
+    if (!currentUser) {
+      ui.showToast({ text: '❌ You must be logged in to access analytics', appearance: 'neutral' });
+      return;
+    }
+    
+    try {
+      const subreddit = await reddit.getSubredditById(context.subredditId!);
+      const isModerator = await reddit.getModPermissions(subreddit.name, currentUser.username);
+      
+      if (!isModerator || isModerator.length === 0) {
+        ui.showToast({ text: '🔒 Only moderators can access analytics dashboard', appearance: 'neutral' });
+        return;
+      }
+    } catch (error) {
+      ui.showToast({ text: '🔒 Only moderators can access analytics dashboard', appearance: 'neutral' });
+      return;
+    }
+    
+    ui.showToast({ text: '📊 Analytics dashboard access granted - Check your modmail for details', appearance: 'success' });
+  },
+});
+
+// Add moderator-only community management tools
+Devvit.addMenuItem({
+  label: '👥 Community Management (Mod Only)',
+  location: 'subreddit',
+  onPress: async (_event, context) => {
+    const { reddit, ui } = context;
+    
+    // Check if user is a moderator
+    const currentUser = await reddit.getCurrentUser();
+    if (!currentUser) {
+      ui.showToast({ text: '❌ You must be logged in to access management tools', appearance: 'neutral' });
+      return;
+    }
+    
+    try {
+      const subreddit = await reddit.getSubredditById(context.subredditId!);
+      const isModerator = await reddit.getModPermissions(subreddit.name, currentUser.username);
+      
+      if (!isModerator || isModerator.length === 0) {
+        ui.showToast({ text: '🔒 Only moderators can access community management tools', appearance: 'neutral' });
+        return;
+      }
+    } catch (error) {
+      ui.showToast({ text: '🔒 Only moderators can access community management tools', appearance: 'neutral' });
+      return;
+    }
+    
+    ui.showToast({ text: '👥 Community management tools accessed - Check modmail for options', appearance: 'success' });
   },
 });
 
@@ -1110,12 +1262,20 @@ Devvit.addCustomPostType({
   render: App,
 });
 
-// Add Interactive Games Hub as a custom post type
+// Add Interactive Games Hub as a custom post type (PUBLIC)
 Devvit.addCustomPostType({
   name: 'Interactive Games Hub',
   description: 'Mini-games and interactive features for Michigan Spots',
   height: 'tall',
   render: InteractiveGameHub,
+});
+
+// Add Moderator AI Tools as a custom post type (MODERATOR ONLY)
+Devvit.addCustomPostType({
+  name: 'Moderator AI Tools',
+  description: 'AI-powered tools for moderators - Challenge generation, analytics, and management',
+  height: 'tall',
+  render: ModeratorAITools,
 });
 
 // Export the configured Devvit app

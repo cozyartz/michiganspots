@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Users, TrendingUp, DollarSign, CheckCircle, MapPin, MessageSquare, Award, AlertCircle, Download, Search } from 'lucide-react';
+import { Users, TrendingUp, DollarSign, CheckCircle, MapPin, MessageSquare, Award, AlertCircle, Download, Search, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { PartnerManagement } from './PartnerManagement';
 
 interface DashboardData {
   stats: {
@@ -50,6 +51,7 @@ export function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'waitlist' | 'partner'>('all');
+  const [activeTab, setActiveTab] = useState<'overview' | 'partners'>('overview');
 
   useEffect(() => {
     loadDashboard();
@@ -130,16 +132,53 @@ export function SuperAdminDashboard() {
               Michigan Spots Platform Analytics
             </p>
           </div>
-          <button
-            onClick={loadDashboard}
-            className="px-4 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors text-sm"
-          >
-            Refresh Data
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={loadDashboard}
+              className="px-4 py-2 bg-cyan-primary text-white font-heading font-bold treasure-border hover:bg-cyan-dark transition-colors text-sm"
+            >
+              Refresh Data
+            </button>
+          </div>
         </motion.div>
 
-        {/* Key Platform Metrics */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Tab Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <div className="flex gap-2 bg-parchment-light p-1 rounded-lg border-2 border-cyan-primary/30 w-fit">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-6 py-2 font-heading font-bold rounded-md transition-colors ${
+                activeTab === 'overview'
+                  ? 'bg-cyan-primary text-white'
+                  : 'text-ink-secondary hover:text-ink-primary'
+              }`}
+            >
+              Platform Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('partners')}
+              className={`px-6 py-2 font-heading font-bold rounded-md transition-colors flex items-center gap-2 ${
+                activeTab === 'partners'
+                  ? 'bg-cyan-primary text-white'
+                  : 'text-ink-secondary hover:text-ink-primary'
+              }`}
+            >
+              <Settings className="w-4 h-4" />
+              Partner Management
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Key Platform Metrics */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <AdminMetricCard
             icon={<Users />}
             value={data.stats.waitlist_count.toLocaleString()}
@@ -386,6 +425,13 @@ export function SuperAdminDashboard() {
             Showing {filteredSignups.length} of {data.signups.length} total signups
           </div>
         </motion.div>
+          </>
+        )}
+
+        {/* Partner Management Tab */}
+        {activeTab === 'partners' && (
+          <PartnerManagement />
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { PartnerManagement } from '../../components/PartnerManagement';
+---
+
+<Layout
+  title="Partner Management | Michigan Spots Admin"
+  description="Manage business partners, custom domains, and analytics for Michigan Spots"
+  keywords="Michigan Spots admin, partner management, custom domains, analytics"
+>
+  <div id="auth-check" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <p>Verifying authentication...</p>
+  </div>
+  <div id="partner-management" style="display: none;">
+    <div class="min-h-screen bg-parchment-light py-8 px-4">
+      <div class="container mx-auto max-w-7xl">
+        <div class="mb-8">
+          <h1 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-2">
+            Partner Management
+          </h1>
+          <p class="text-ink-secondary text-lg">
+            Manage business partners and their custom domains
+          </p>
+        </div>
+        <PartnerManagement client:load />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Client-side authentication check
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/user');
+        const data = await response.json();
+
+        if (!data.user || data.user.role !== 'super_admin') {
+          window.location.href = '/?error=unauthorized';
+          return;
+        }
+
+        // User is authenticated as super admin
+        document.getElementById('auth-check')!.style.display = 'none';
+        document.getElementById('partner-management')!.style.display = 'block';
+      } catch (error) {
+        window.location.href = '/login?redirect=/admin/partners';
+      }
+    }
+
+    checkAuth();
+  </script>
+</Layout>

@@ -441,9 +441,9 @@ async function trackVisit(request, env) {
   }
 
   private async getAccountId(): Promise<string> {
-    // Get Cloudflare account ID from environment or API
-    // For now, return a placeholder - this would be configured
-    return 'your-cloudflare-account-id';
+    // Get Cloudflare account ID from environment
+    // This should be set as an environment variable
+    return this.env.CLOUDFLARE_ACCOUNT_ID || 'placeholder-account-id';
   }
 
   private async storeWorkerInfo(partnerId: string, workerInfo: WorkerInfo): Promise<void> {

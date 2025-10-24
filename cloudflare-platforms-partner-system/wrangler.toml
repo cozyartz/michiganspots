@@ -1,4 +1,4 @@
-name = "michiganspots-partner-system"
+name = "michiganspots-platform"
 main = "src/index.ts"
 compatibility_date = "2024-10-21"
 
@@ -7,7 +7,7 @@ ai = { binding = "AI" }
 
 # KV storage for partner data
 [[kv_namespaces]]
-binding = "PARTNERS"
+binding = "PARTNERS_PLATFORM"
 id = "a8149b2cf8c943b0b0e28d379a8732ac"
 
 # D1 database for partner management
@@ -19,11 +19,12 @@ database_id = "b65b412e-74e8-48db-838d-6aff14e759a2"
 # Environment variables
 [vars]
 ENVIRONMENT = "production"
-BASE_URL = "https://michiganspots.com"
+BASE_DOMAIN = "michiganspots.com"
+PLATFORM_NAME = "Michigan Spots Partners"
 
 # Secrets (set via wrangler secret put)
-# OPENAI_API_KEY - OpenAI API key for AI page generation (optional - uses Cloudflare AI by default)
-# CLOUDFLARE_API_TOKEN - Cloudflare API token for worker deployment  
 # CLOUDFLARE_ACCOUNT_ID - Your Cloudflare account ID
-# PARTNER_WEBHOOK_SECRET - Secret for validating partner webhooks
-# QR_API_KEY - API key for QR code generation service (optional - uses free API by default)
+# CLOUDFLARE_ZONE_ID - Zone ID for michiganspots.com
+# CLOUDFLARE_API_TOKEN - API token with custom hostname permissions
+# PARTNER_WEBHOOK_SECRET - Secret for validating webhooks
+# OPENAI_API_KEY - Optional: OpenAI API key (uses Cloudflare AI by default)

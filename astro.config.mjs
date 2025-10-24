@@ -2,9 +2,19 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
+import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  output: 'static',
+  output: 'server', // Server-side rendering mode
+  adapter: cloudflare({
+    mode: 'directory',
+    imageService: 'compile', // Use compile-time image optimization (sharp not available on Cloudflare)
+  }),
+  vite: {
+    ssr: {
+      external: ['node:async_hooks']
+    }
+  },
   integrations: [
     react(),
     tailwind(),

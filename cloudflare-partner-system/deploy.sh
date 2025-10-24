@@ -62,13 +62,24 @@ fi
 # Set up secrets (if not already set)
 echo "🔐 Setting up secrets..."
 
-# Check if secrets exist, if not prompt user to set them
-SECRETS=("OPENAI_API_KEY" "CLOUDFLARE_API_TOKEN" "PARTNER_WEBHOOK_SECRET" "QR_API_KEY")
+# Check if required secrets exist, if not prompt user to set them
+REQUIRED_SECRETS=("CLOUDFLARE_API_TOKEN" "CLOUDFLARE_ACCOUNT_ID" "PARTNER_WEBHOOK_SECRET")
+OPTIONAL_SECRETS=("OPENAI_API_KEY" "QR_API_KEY")
 
-for secret in "${SECRETS[@]}"; do
-    if ! wrangler secret list --env production | grep -q "$secret"; then
-        echo "⚠️  Secret $secret not found. Please set it:"
-        echo "   wrangler secret put $secret --env production"
+echo "Checking required secrets..."
+for secret in "${REQUIRED_SECRETS[@]}"; do
+    if ! wrangler secret list | grep -q "$secret"; then
+        echo "❌ Required secret $secret not found. Please set it:"
+        echo "   wrangler secret put $secret"
+        echo ""
+    fi
+done
+
+echo "Checking optional secrets..."
+for secret in "${OPTIONAL_SECRETS[@]}"; do
+    if ! wrangler secret list | grep -q "$secret"; then
+        echo "⚠️  Optional secret $secret not found. You can set it for enhanced features:"
+        echo "   wrangler secret put $secret"
     fi
 done
 

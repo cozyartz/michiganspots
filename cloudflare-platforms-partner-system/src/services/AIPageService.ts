@@ -1,15 +1,14 @@
 /**
- * AI Page Generator Service
- * Uses Cloudflare AI to generate branded partner pages that match Michigan Spots branding
+ * AI Page Service - AI-powered page generation for partners
+ * Uses Cloudflare AI to generate branded partner pages
  */
 
 import { Env } from '../index';
 
-export interface PartnerPageRequest {
+export interface GeneratePageRequest {
   partnerId: string;
   businessInfo: BusinessInfo;
-  brandingGuidelines: BrandingGuidelines;
-  regenerationReason?: string;
+  customHostname: string;
 }
 
 export interface BusinessInfo {
@@ -46,20 +45,10 @@ export interface SocialMediaLinks {
   tiktok?: string;
 }
 
-export interface BrandingGuidelines {
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  fontFamily: string;
-  logoUrl: string;
-  brandVoice: string;
-  designPrinciples: string[];
-}
-
-export class AIPageGeneratorService {
+export class AIPageService {
   constructor(private env: Env) {}
 
-  async generatePartnerPage(request: PartnerPageRequest): Promise<string> {
+  async generatePartnerPage(request: GeneratePageRequest): Promise<string> {
     try {
       console.log(`🤖 Generating AI page for partner: ${request.businessInfo.businessName}`);
 
@@ -67,7 +56,7 @@ export class AIPageGeneratorService {
       const prompt = this.buildPageGenerationPrompt(request);
 
       // Use Cloudflare AI to generate the page content
-      const aiResponse = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      const aiResponse = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct' as any, {
         messages: [
           {
             role: 'system',
@@ -83,10 +72,10 @@ export class AIPageGeneratorService {
 
       // Extract and enhance the generated HTML
       let generatedHTML = this.extractHTMLFromResponse(aiResponse);
-      
+
       // Apply Michigan Spots branding and enhancements
       generatedHTML = await this.enhanceWithBranding(generatedHTML, request);
-      
+
       // Add interactive elements and QR code integration
       generatedHTML = this.addInteractiveElements(generatedHTML, request);
 
@@ -95,52 +84,15 @@ export class AIPageGeneratorService {
 
     } catch (error) {
       console.error('AI page generation error:', error);
-      
+
       // Fallback to template-based generation
       return this.generateFallbackPage(request);
     }
   }
 
-  async generatePartnerDashboard(request: { partnerId: string; businessInfo: BusinessInfo }): Promise<string> {
-    const dashboardUrl = `${this.env.BASE_URL}/partners/${request.partnerId}/dashboard`;
-    
-    // Generate AI-powered dashboard
-    const prompt = `Create a business analytics dashboard for ${request.businessInfo.businessName} that shows:
-    - Treasure hunt challenge completions
-    - Customer visits and engagement
-    - QR code scan analytics
-    - Revenue impact from Michigan Spots partnership
-    - Customer reviews and feedback
-    - Performance compared to other partners
-    
-    Make it professional, easy to understand, and actionable for business owners.`;
-
-    try {
-      const aiResponse = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a business analytics expert creating dashboard interfaces for Michigan Spots business partners.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 2048
-      });
-
-      // For now, return the dashboard URL - full implementation would generate the dashboard HTML
-      return dashboardUrl;
-
-    } catch (error) {
-      console.error('Dashboard generation error:', error);
-      return dashboardUrl;
-    }
-  }
-
-  private buildPageGenerationPrompt(request: PartnerPageRequest): string {
-    const { businessInfo, brandingGuidelines } = request;
+  private buildPageGenerationPrompt(request: GeneratePageRequest): string {
+    const { businessInfo } = request;
+    const brandingGuidelines = this.getMichiganSpotsBranding();
 
     return `
 Create a complete, responsive HTML page for "${businessInfo.businessName}", a Michigan Spots treasure hunt partner.
@@ -193,23 +145,24 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
   private extractHTMLFromResponse(aiResponse: any): string {
     // Extract HTML from AI response
     const content = aiResponse.response || aiResponse.result || '';
-    
+
     // Look for HTML content between markers or extract full response
-    const htmlMatch = content.match(/```html\n([\s\S]*?)\n```/) || 
+    const htmlMatch = content.match(/```html\n([\s\S]*?)\n```/) ||
                      content.match(/<html[\s\S]*<\/html>/) ||
                      content.match(/<!DOCTYPE html[\s\S]*<\/html>/);
-    
+
     if (htmlMatch) {
       return htmlMatch[1] || htmlMatch[0];
     }
-    
+
     // If no HTML markers found, assume the entire response is HTML
     return content;
   }
 
-  private async enhanceWithBranding(html: string, request: PartnerPageRequest): Promise<string> {
-    const { brandingGuidelines, businessInfo } = request;
-    
+  private async enhanceWithBranding(html: string, request: GeneratePageRequest): Promise<string> {
+    const brandingGuidelines = this.getMichiganSpotsBranding();
+    const { businessInfo } = request;
+
     // Add Michigan Spots branding elements
     const brandingCSS = `
       <style>
@@ -219,7 +172,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
           --michigan-accent: ${brandingGuidelines.accentColor};
           --michigan-font: ${brandingGuidelines.fontFamily};
         }
-        
+
         .michigan-spots-badge {
           background: linear-gradient(135deg, var(--michigan-primary), var(--michigan-secondary));
           color: white;
@@ -230,7 +183,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
           margin: 10px 0;
           box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        
+
         .treasure-hunt-section {
           background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
           border: 2px solid var(--michigan-accent);
@@ -238,7 +191,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
           padding: 20px;
           margin: 20px 0;
         }
-        
+
         .qr-code-container {
           text-align: center;
           background: white;
@@ -247,7 +200,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
           box-shadow: 0 4px 15px rgba(0,0,0,0.1);
           margin: 20px 0;
         }
-        
+
         .cta-button {
           background: linear-gradient(135deg, var(--michigan-primary), var(--michigan-accent));
           color: white;
@@ -261,18 +214,18 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
           text-decoration: none;
           display: inline-block;
         }
-        
+
         .cta-button:hover {
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba(0,0,0,0.2);
         }
-        
+
         @media (max-width: 768px) {
           .michigan-spots-badge {
             font-size: 14px;
             padding: 8px 16px;
           }
-          
+
           .cta-button {
             font-size: 16px;
             padding: 12px 24px;
@@ -287,7 +240,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
         <div class="michigan-spots-badge">
           🗺️ Official Michigan Spots Partner
         </div>
-        
+
         <div class="treasure-hunt-section">
           <h3>🎯 Treasure Hunt Challenge</h3>
           <p>Visit ${businessInfo.businessName} and complete our exclusive treasure hunt challenge!</p>
@@ -301,7 +254,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             🚀 Start Challenge
           </a>
         </div>
-        
+
         <div class="qr-code-container">
           <h4>📱 Quick Access QR Code</h4>
           <div id="qr-code-placeholder" style="width: 200px; height: 200px; margin: 0 auto; background: #f0f0f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666;">
@@ -312,7 +265,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
           </p>
         </div>
       </div>
-      
+
       <script>
         function startChallenge() {
           // Integration with Michigan Spots app
@@ -323,10 +276,10 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             window.location.href = 'https://michiganspots.com/challenges/${request.partnerId}';
           }
         }
-        
+
         // Load QR code
         document.addEventListener('DOMContentLoaded', function() {
-          fetch('/api/partners/${request.partnerId}/qr?format=svg')
+          fetch('/qr?format=svg')
             .then(response => response.text())
             .then(svg => {
               document.getElementById('qr-code-placeholder').innerHTML = svg;
@@ -342,7 +295,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
     if (html.includes('</head>')) {
       html = html.replace('</head>', `${brandingCSS}</head>`);
     }
-    
+
     if (html.includes('</body>')) {
       html = html.replace('</body>', `${michiganSpotsContent}</body>`);
     }
@@ -350,54 +303,10 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
     return html;
   }
 
-  private addInteractiveElements(html: string, request: PartnerPageRequest): string {
+  private addInteractiveElements(html: string, request: GeneratePageRequest): string {
     // Add interactive elements like maps, social sharing, etc.
     const interactiveElements = `
       <script>
-        // Google Maps integration
-        function initMap() {
-          const location = {
-            lat: 42.3601, // Default to Michigan coordinates
-            lng: -84.9553
-          };
-          
-          const map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
-            center: location
-          });
-          
-          new google.maps.Marker({
-            position: location,
-            map: map,
-            title: '${request.businessInfo.businessName}'
-          });
-        }
-        
-        // Social sharing
-        function shareOnSocial(platform) {
-          const url = encodeURIComponent(window.location.href);
-          const text = encodeURIComponent('Check out ${request.businessInfo.businessName} on Michigan Spots!');
-          
-          let shareUrl = '';
-          switch(platform) {
-            case 'facebook':
-              shareUrl = \`https://www.facebook.com/sharer/sharer.php?u=\${url}\`;
-              break;
-            case 'twitter':
-              shareUrl = \`https://twitter.com/intent/tweet?url=\${url}&text=\${text}\`;
-              break;
-            case 'instagram':
-              // Instagram doesn't support direct URL sharing
-              navigator.clipboard.writeText(window.location.href);
-              alert('Link copied to clipboard! Share it on Instagram.');
-              return;
-          }
-          
-          if (shareUrl) {
-            window.open(shareUrl, '_blank', 'width=600,height=400');
-          }
-        }
-        
         // Analytics tracking
         function trackEvent(eventName, data = {}) {
           if (window.gtag) {
@@ -407,9 +316,9 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
               ...data
             });
           }
-          
+
           // Send to Michigan Spots analytics
-          fetch('/api/analytics/track', {
+          fetch('/api/visit', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -422,7 +331,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             })
           }).catch(console.error);
         }
-        
+
         // Track page view
         document.addEventListener('DOMContentLoaded', function() {
           trackEvent('partner_page_view');
@@ -433,9 +342,10 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
     return html.replace('</body>', `${interactiveElements}</body>`);
   }
 
-  private generateFallbackPage(request: PartnerPageRequest): string {
-    const { businessInfo, brandingGuidelines } = request;
-    
+  private generateFallbackPage(request: GeneratePageRequest): string {
+    const { businessInfo } = request;
+    const brandingGuidelines = this.getMichiganSpotsBranding();
+
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -449,20 +359,20 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: ${brandingGuidelines.fontFamily}, Arial, sans-serif;
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .header {
             text-align: center;
             background: white;
@@ -471,7 +381,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
+
         .michigan-spots-badge {
             background: linear-gradient(135deg, ${brandingGuidelines.primaryColor}, ${brandingGuidelines.secondaryColor});
             color: white;
@@ -481,33 +391,33 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             display: inline-block;
             margin-bottom: 20px;
         }
-        
+
         .business-name {
             font-size: 2.5em;
             color: ${brandingGuidelines.primaryColor};
             margin-bottom: 10px;
         }
-        
+
         .business-description {
             font-size: 1.2em;
             color: #666;
             margin-bottom: 20px;
         }
-        
+
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
-        
+
         .info-card {
             background: white;
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
+
         .treasure-hunt-section {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
             border: 2px solid ${brandingGuidelines.accentColor};
@@ -516,7 +426,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             text-align: center;
             margin: 30px 0;
         }
-        
+
         .cta-button {
             background: linear-gradient(135deg, ${brandingGuidelines.primaryColor}, ${brandingGuidelines.accentColor});
             color: white;
@@ -530,12 +440,12 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             display: inline-block;
             transition: transform 0.3s ease;
         }
-        
+
         .cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.2);
         }
-        
+
         .qr-code-container {
             text-align: center;
             background: white;
@@ -543,12 +453,12 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             padding: 25px;
             margin: 30px 0;
         }
-        
+
         @media (max-width: 768px) {
             .content-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .business-name {
                 font-size: 2em;
             }
@@ -564,7 +474,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             <h1 class="business-name">${businessInfo.businessName}</h1>
             <p class="business-description">${businessInfo.description}</p>
         </div>
-        
+
         <div class="content-grid">
             <div class="info-card">
                 <h3>📍 Location & Contact</h3>
@@ -575,15 +485,15 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
                 <p><strong>Email:</strong> ${businessInfo.email}</p>
                 ${businessInfo.website ? `<p><strong>Website:</strong> <a href="${businessInfo.website}" target="_blank">${businessInfo.website}</a></p>` : ''}
             </div>
-            
+
             <div class="info-card">
                 <h3>🕒 Business Hours</h3>
-                ${Object.entries(businessInfo.hours).map(([day, hours]) => 
+                ${Object.entries(businessInfo.hours).map(([day, hours]) =>
                   `<p><strong>${day.charAt(0).toUpperCase() + day.slice(1)}:</strong> ${hours}</p>`
                 ).join('')}
             </div>
         </div>
-        
+
         <div class="treasure-hunt-section">
             <h2>🎯 Treasure Hunt Challenge</h2>
             <p>Visit ${businessInfo.businessName} and complete our exclusive Michigan Spots challenge!</p>
@@ -598,7 +508,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
                 🚀 Start Challenge
             </a>
         </div>
-        
+
         <div class="qr-code-container">
             <h3>📱 Quick Access QR Code</h3>
             <div id="qr-code-placeholder" style="width: 200px; height: 200px; margin: 20px auto; background: #f0f0f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666;">
@@ -606,7 +516,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             </div>
             <p>Scan to access challenges and earn rewards!</p>
         </div>
-        
+
         ${businessInfo.amenities.length > 0 ? `
         <div class="info-card">
             <h3>✨ Amenities & Features</h3>
@@ -615,7 +525,7 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
             </ul>
         </div>
         ` : ''}
-        
+
         ${businessInfo.specialOffers ? `
         <div class="info-card" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); border: 2px solid #22c55e;">
             <h3>🎁 Special Offers</h3>
@@ -623,18 +533,18 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
         </div>
         ` : ''}
     </div>
-    
+
     <script>
         // Load QR code
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('/api/partners/${request.partnerId}/qr?format=svg')
+            fetch('/qr?format=svg')
                 .then(response => response.text())
                 .then(svg => {
                     document.getElementById('qr-code-placeholder').innerHTML = svg;
                 })
                 .catch(error => {
                     console.error('Failed to load QR code:', error);
-                    document.getElementById('qr-code-placeholder').innerHTML = 
+                    document.getElementById('qr-code-placeholder').innerHTML =
                         '<p style="color: #666;">QR Code Unavailable</p>';
                 });
         });
@@ -642,5 +552,23 @@ Generate the complete HTML page with inline CSS. Make it visually appealing and 
 </body>
 </html>
     `;
+  }
+
+  private getMichiganSpotsBranding() {
+    return {
+      primaryColor: '#059669',   // Michigan green
+      secondaryColor: '#0ea5e9', // Michigan blue (Great Lakes)
+      accentColor: '#f59e0b',    // Accent gold
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      brandVoice: 'Friendly, adventurous, and locally-focused',
+      logoUrl: 'https://michiganspots.com/logo.png',
+      designPrinciples: [
+        'Clean and modern',
+        'Mobile-first',
+        'Michigan-themed',
+        'Easy to navigate',
+        'Engaging and interactive'
+      ]
+    };
   }
 }

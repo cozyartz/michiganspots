@@ -1,14 +1,15 @@
 {
-  "name": "michiganspots-partner-system",
+  "name": "michiganspots-platform",
   "version": "1.0.0",
-  "description": "AI-powered partner onboarding and page generation system for Michigan Spots",
+  "description": "Michigan Spots Partner Platform using Cloudflare for Platforms",
   "main": "src/index.ts",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --env production",
-    "deploy:staging": "wrangler deploy --env staging",
+    "deploy": "wrangler deploy",
     "test": "vitest",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "setup": "./scripts/setup.sh",
+    "create-partner": "node scripts/create-test-partner.js"
   },
   "dependencies": {
     "hono": "^3.12.0",
@@ -18,13 +19,12 @@
     "@cloudflare/workers-types": "^4.20241022.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0",
-    "wrangler": "^3.78.0"
+    "wrangler": "^4.44.0"
   },
   "keywords": [
-    "cloudflare-workers",
-    "ai",
-    "partner-onboarding",
-    "qr-codes",
+    "cloudflare-for-platforms",
+    "multi-tenant",
+    "partner-platform",
     "michigan-spots"
   ],
   "author": "Michigan Spots Team",

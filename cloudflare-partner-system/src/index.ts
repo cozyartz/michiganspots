@@ -18,6 +18,7 @@ export interface Env {
   DB: D1Database;
   OPENAI_API_KEY: string;
   CLOUDFLARE_API_TOKEN: string;
+  CLOUDFLARE_ACCOUNT_ID: string;
   PARTNER_WEBHOOK_SECRET: string;
   QR_API_KEY: string;
   BASE_URL: string;
