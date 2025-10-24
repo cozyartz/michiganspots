@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { InPersonPartnerSignup } from '../components/InPersonPartnerSignup';
+
+// Server-side rendering for this page
+export const prerender = false;
+---
+
+<Layout
+  title="In-Person Partner Signup | Michigan Spots"
+  description="Sign up as a Michigan Spots partner in person with digital signature"
+>
+  <main class="min-h-screen bg-parchment-base py-8">
+    <InPersonPartnerSignup client:load />
+  </main>
+</Layout>
+
+<style is:global>
+  /* iPad-optimized styles */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    html {
+      font-size: 18px;
+    }
+  }
+
+  /* Improve touch targets on mobile/tablet */
+  @media (max-width: 1024px) {
+    button, input, select, textarea, label {
+      min-height: 44px;
+    }
+  }
+
+  /* Prevent zoom on input focus (iOS) */
+  @media (max-width: 1024px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Smooth scrolling for contract view */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+</style>

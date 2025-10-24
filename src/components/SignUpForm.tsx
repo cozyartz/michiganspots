@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Mail, User, MapPin, CheckCircle, AlertCircle, Users } from 'lucide-react';
+import { Mail, User, MapPin, CheckCircle, AlertCircle, Users, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from './Button';
+
+interface EmailValidation {
+  isValid: boolean;
+  severity: 'valid' | 'warning' | 'invalid';
+  score: number;
+  recommendations: string[];
+}
 
 export function SignUpForm() {
   const [email, setEmail] = useState('');
@@ -11,6 +18,8 @@ export function SignUpForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const [emailValidation, setEmailValidation] = useState<EmailValidation | null>(null);
+  const [isValidatingEmail, setIsValidatingEmail] = useState(false);
 
   // Auto-dismiss success message after 8 seconds
   useEffect(() => {
@@ -23,10 +32,54 @@ export function SignUpForm() {
     }
   }, [status]);
 
+  // Validate email when field loses focus
+  const validateEmailField = async () => {
+    if (!email || email.trim() === '') {
+      setEmailValidation(null);
+      return;
+    }
+
+    setIsValidatingEmail(true);
+    try {
+      const response = await fetch('/api/validate-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setEmailValidation({
+          isValid: result.isValid,
+          severity: result.severity,
+          score: result.score,
+          recommendations: result.recommendations,
+        });
+      } else {
+        // If validation service is unavailable, allow submission (fallback)
+        setEmailValidation(null);
+      }
+    } catch (error) {
+      // Network error - allow submission (fallback to browser validation)
+      console.error('Email validation error:', error);
+      setEmailValidation(null);
+    } finally {
+      setIsValidatingEmail(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus('idle');
+
+    // Check email validation before submitting
+    if (emailValidation && !emailValidation.isValid) {
+      setStatus('error');
+      setMessage(emailValidation.recommendations[0] || 'Please provide a valid email address.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/signup', {
@@ -100,12 +153,54 @@ export function SignUpForm() {
                 type="email"
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailValidation(null); // Clear validation when user types
+                }}
+                onBlur={validateEmailField}
                 required
-                className="w-full pl-10 pr-4 py-3 border-2 border-ink-primary rounded-sm bg-parchment-light text-ink-primary focus:outline-none focus:border-copper-orange transition-colors"
+                className={`w-full pl-10 pr-10 py-3 border-2 rounded-sm bg-parchment-light text-ink-primary focus:outline-none transition-colors ${
+                  emailValidation
+                    ? emailValidation.isValid
+                      ? 'border-forest-green focus:border-forest-green'
+                      : 'border-sunset-red focus:border-sunset-red'
+                    : 'border-ink-primary focus:border-copper-orange'
+                }`}
                 placeholder="your@email.com"
               />
+              {isValidatingEmail && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="w-5 h-5 border-2 border-copper-orange border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
+              {emailValidation && !isValidatingEmail && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  {emailValidation.isValid ? (
+                    <CheckCircle className="w-5 h-5 text-forest-green" />
+                  ) : (
+                    <XCircle className="w-5 h-5 text-sunset-red" />
+                  )}
+                </div>
+              )}
             </div>
+            {emailValidation && !emailValidation.isValid && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs text-sunset-red mt-1 font-heading"
+              >
+                {emailValidation.recommendations[0]}
+              </motion.p>
+            )}
+            {emailValidation && emailValidation.isValid && emailValidation.severity === 'warning' && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs text-copper-orange mt-1 font-heading"
+              >
+                {emailValidation.recommendations[0]}
+              </motion.p>
+            )}
           </div>
 
           <div>

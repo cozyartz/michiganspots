@@ -45,6 +45,14 @@ STRIPE_PRICE_CHAMBER_YEARLY = "price_1SKholDvXMGG1Ehc7uc4P4zN"
 # NOTE: Add these as secrets via Cloudflare Dashboard or wrangler:
 # npx wrangler secret put STRIPE_SECRET_KEY --env production
 # npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
+# npx wrangler secret put EVALIDATE_API_KEY --env production
+#
+# For Cloudflare Pages deployment, add these secrets in the Cloudflare Dashboard:
+# 1. Go to Workers & Pages > michiganspot > Settings > Environment Variables
+# 2. Add production secrets:
+#    - STRIPE_SECRET_KEY (from Stripe Dashboard)
+#    - STRIPE_WEBHOOK_SECRET (from Stripe Dashboard)
+#    - EVALIDATE_API_KEY (from https://evalidate.andrea-b56.workers.dev)
 
 [env.production]
 [env.production.vars]
