@@ -141,8 +141,11 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
           payment_method,
           payment_status,
           status,
+          coupon_code,
+          coupon_discount,
+          original_amount,
           created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         confirmationId,
         data.email,
@@ -164,8 +167,55 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
         data.paymentMethod || 'in_person_paypal',
         data.paymentStatus || 'pending',
         'pending_payment',
+        data.couponCode || null,
+        data.couponDiscount || 0,
+        data.originalAmount || data.totalPaid,
         now
       ).run();
+
+      // If coupon was used, track usage and increment coupon uses_count
+      if (data.couponCode && data.couponDiscount > 0) {
+        try {
+          // Get coupon ID
+          const coupon = await DB.prepare(`
+            SELECT id FROM coupons WHERE code = ? COLLATE NOCASE
+          `).bind(data.couponCode.toUpperCase()).first();
+
+          if (coupon) {
+            // Record coupon usage
+            await DB.prepare(`
+              INSERT INTO coupon_usage (
+                coupon_id,
+                original_amount,
+                discount_amount,
+                final_amount,
+                customer_email,
+                customer_name,
+                used_at
+              ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            `).bind(
+              coupon.id,
+              data.originalAmount || data.totalPaid,
+              data.couponDiscount,
+              data.totalPaid,
+              data.email,
+              data.organizationName,
+              now
+            ).run();
+
+            // Increment coupon uses_count
+            await DB.prepare(`
+              UPDATE coupons
+              SET uses_count = uses_count + 1,
+                  updated_at = ?
+              WHERE id = ?
+            `).bind(now, coupon.id).run();
+          }
+        } catch (couponError) {
+          console.error('Error tracking coupon usage:', couponError);
+          // Don't fail the signup if coupon tracking fails
+        }
+      }
 
       // Return success with confirmation ID
       return new Response(

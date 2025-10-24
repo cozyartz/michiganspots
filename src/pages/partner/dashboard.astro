@@ -19,6 +19,30 @@ import { PartnerDashboard } from '../../components/PartnerDashboard';
     // Client-side authentication check
     async function checkAuth() {
       try {
+        // Check if there's a magic link token in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+          // Verify magic link token
+          const verifyResponse = await fetch('/api/partner-auth/verify-magic-link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          });
+
+          const verifyData = await verifyResponse.json();
+
+          if (!verifyData.success) {
+            window.location.href = `/?error=${encodeURIComponent(verifyData.error || 'Invalid magic link')}`;
+            return;
+          }
+
+          // Remove token from URL and reload
+          window.history.replaceState({}, document.title, '/partner/dashboard');
+        }
+
+        // Check if user is authenticated
         const response = await fetch('/api/auth/user');
         const data = await response.json();
 

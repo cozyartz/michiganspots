@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Mail, User, Building2, MapPin, Phone, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { Mail, User, Building2, MapPin, Phone, CheckCircle, AlertCircle, FileText, Tag, Loader2, X, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from './Button';
 import { SignaturePad } from './SignaturePad';
@@ -8,6 +8,58 @@ import { getAllTiers, getAvailableDurations } from '../lib/stripe-prices';
 interface InPersonPartnerSignupProps {
   partnershipType?: 'chamber' | 'business' | 'community';
 }
+
+interface WebDevService {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+}
+
+interface CouponValidation {
+  valid: boolean;
+  error?: string;
+  coupon?: {
+    code: string;
+    description: string;
+    discountType: string;
+    discountValue: number;
+  };
+  calculation?: {
+    originalAmount: number;
+    discountAmount: number;
+    finalAmount: number;
+    savings: number;
+    savingsPercent: number;
+  };
+}
+
+const WEB_DEV_SERVICES: WebDevService[] = [
+  {
+    id: 'landing_page',
+    name: 'Landing Page',
+    description: 'Single page website • Mobile responsive • Contact form • Basic SEO',
+    price: 499
+  },
+  {
+    id: 'ecommerce',
+    name: 'E-Commerce Integration',
+    description: 'Online store • Product catalog • Payment processing • Inventory management',
+    price: 999
+  },
+  {
+    id: 'custom_dashboard',
+    name: 'Custom Dashboard',
+    description: 'Analytics dashboard • Custom metrics • Real-time data • Export tools',
+    price: 799
+  },
+  {
+    id: 'api_integration',
+    name: 'API Integration',
+    description: 'Third-party services • Custom integrations • Webhook setup • Documentation',
+    price: 1299
+  }
+];
 
 export function InPersonPartnerSignup({ partnershipType = 'business' }: InPersonPartnerSignupProps) {
   // Basic Info
@@ -23,6 +75,14 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
   const [selectedTier, setSelectedTier] = useState('spot_partner');
   const [selectedDuration, setSelectedDuration] = useState('monthly');
 
+  // Web/Dev Services
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+
+  // Coupon
+  const [couponCode, setCouponCode] = useState('');
+  const [couponValidation, setCouponValidation] = useState<CouponValidation | null>(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
   // Agreement
   const [hasReadAgreement, setHasReadAgreement] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
@@ -37,11 +97,74 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
   const tiers = getAllTiers();
   const availableDurations = getAvailableDurations(selectedTier);
 
-  // Calculate price
+  // Calculate prices
   const tierPrice = availableDurations.find(d => d.id === selectedDuration)?.amount || 0;
+  const servicesTotal = selectedServices.reduce((sum, serviceId) => {
+    const service = WEB_DEV_SERVICES.find(s => s.id === serviceId);
+    return sum + (service?.price || 0);
+  }, 0);
+  const subtotal = tierPrice + servicesTotal;
+  const discountAmount = couponValidation?.calculation?.discountAmount || 0;
+  const finalTotal = couponValidation?.calculation?.finalAmount || subtotal;
 
   const handleSignature = (signatureData: string) => {
     setSignature(signatureData);
+  };
+
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    );
+    // Reset coupon when services change
+    if (couponValidation) {
+      validateCoupon(couponCode);
+    }
+  };
+
+  const validateCoupon = async (code: string) => {
+    if (!code.trim()) {
+      setCouponValidation(null);
+      return;
+    }
+
+    setIsValidatingCoupon(true);
+
+    try {
+      // Determine purchase type
+      let purchaseType = 'monthly';
+      if (selectedDuration === 'yearly') {
+        purchaseType = 'yearly';
+      } else if (selectedServices.length > 0 && tierPrice === 0) {
+        purchaseType = 'services';
+      }
+
+      const response = await fetch('/api/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: code.trim().toUpperCase(),
+          purchaseType,
+          amount: subtotal
+        })
+      });
+
+      const data: CouponValidation = await response.json();
+      setCouponValidation(data);
+    } catch (error) {
+      setCouponValidation({
+        valid: false,
+        error: 'Failed to validate coupon. Please try again.'
+      });
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponCode('');
+    setCouponValidation(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,12 +207,28 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
           duration: selectedDuration,
           tierAmount: tierPrice,
 
+          // Services
+          selectedServices: selectedServices.map(serviceId => {
+            const service = WEB_DEV_SERVICES.find(s => s.id === serviceId);
+            return {
+              id: serviceId,
+              name: service?.name,
+              price: service?.price
+            };
+          }),
+          servicesTotal,
+
+          // Coupon
+          couponCode: couponValidation?.valid ? couponCode.toUpperCase() : null,
+          couponDiscount: discountAmount,
+          originalAmount: subtotal,
+
           // Agreement
           signature,
           hasReadAgreement,
 
           // Total
-          totalPaid: tierPrice,
+          totalPaid: finalTotal,
 
           // Mark as pending payment (to be collected via PayPal reader)
           paymentMethod: 'in_person_paypal',
@@ -101,7 +240,8 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
 
       if (response.ok) {
         setStatus('success');
-        setStatusMessage(`Agreement signed successfully! Confirmation ID: ${data.confirmationId || 'N/A'}\n\nAmount to collect: $${tierPrice}\n\nPlease process payment via PayPal reader.`);
+        const savingsText = discountAmount > 0 ? `\n\nDiscount Applied: -$${discountAmount}` : '';
+        setStatusMessage(`Agreement signed successfully! Confirmation ID: ${data.confirmationId || 'N/A'}\n\nOriginal Amount: $${subtotal}${savingsText}\n\nAmount to Collect: $${finalTotal}\n\nPlease process payment via PayPal reader.`);
 
         // Clear form after 30 seconds
         setTimeout(() => {
@@ -129,6 +269,9 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
     setTitle('');
     setSelectedTier('spot_partner');
     setSelectedDuration('monthly');
+    setSelectedServices([]);
+    setCouponCode('');
+    setCouponValidation(null);
     setHasReadAgreement(false);
     setSignature(null);
     setShowContract(false);
@@ -340,11 +483,66 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
             </div>
           </div>
 
+          {/* SECTION 2.5: Optional Web/Dev Services */}
+          <div className="border-2 border-ink-primary p-6 rounded-sm bg-parchment-light/50">
+            <h3 className="font-heading text-2xl font-bold text-ink-primary mb-4 flex items-center">
+              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-copper-orange text-parchment-base mr-3 text-lg">+</span>
+              Add Web & Development Services (Optional)
+            </h3>
+            <p className="text-ink-secondary mb-6">
+              Enhance your partnership with professional web and development services. Select all that apply.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {WEB_DEV_SERVICES.map(service => (
+                <label
+                  key={service.id}
+                  className={`flex items-start gap-4 p-5 border-2 rounded-sm cursor-pointer touch-manipulation transition-all ${
+                    selectedServices.includes(service.id)
+                      ? 'border-copper-orange bg-copper-orange/10'
+                      : 'border-ink-primary hover:border-copper-orange/50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedServices.includes(service.id)}
+                    onChange={() => toggleService(service.id)}
+                    className="mt-1 w-6 h-6 flex-shrink-0"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-heading font-bold text-lg text-ink-primary">{service.name}</span>
+                      <span className="font-heading font-bold text-xl text-copper-orange">${service.price}</span>
+                    </div>
+                    <p className="text-sm text-ink-secondary">{service.description}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            {selectedServices.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-4 bg-forest-green/10 border-2 border-forest-green rounded-sm"
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-heading text-lg font-semibold text-ink-primary">
+                    Services Subtotal:
+                  </span>
+                  <span className="font-heading text-2xl font-bold text-forest-green">
+                    ${servicesTotal}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
           {/* SECTION 3: Agreement Review & Signature */}
           <div className="border-2 border-copper-orange p-6 rounded-sm bg-copper-orange/5">
             <h3 className="font-heading text-2xl font-bold text-ink-primary mb-6 flex items-center">
               <span className="flex items-center justify-center w-10 h-10 rounded-full bg-copper-orange text-parchment-base mr-3 text-lg">3</span>
-              Partnership Agreement
+              Partnership Agreement & Payment
             </h3>
 
             <div className="mb-6">
@@ -394,13 +592,41 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
                     <h5 className="font-bold text-base mt-6">1. PARTNERSHIP PACKAGE</h5>
                     <p>Selected Tier: <strong>{tiers.find(t => t.id === selectedTier)?.name}</strong></p>
                     <p>Duration: <strong>{availableDurations.find(d => d.id === selectedDuration)?.name}</strong></p>
-                    <p>Amount: <strong>${tierPrice}</strong></p>
+                    <p>Partnership Amount: <strong>${tierPrice}</strong></p>
+
+                    {selectedServices.length > 0 && (
+                      <>
+                        <p className="mt-4"><strong>Additional Services:</strong></p>
+                        <ul className="list-disc list-inside ml-2 space-y-1">
+                          {selectedServices.map(serviceId => {
+                            const service = WEB_DEV_SERVICES.find(s => s.id === serviceId);
+                            return service ? (
+                              <li key={serviceId}>{service.name} - ${service.price}</li>
+                            ) : null;
+                          })}
+                        </ul>
+                        <p>Services Subtotal: <strong>${servicesTotal}</strong></p>
+                      </>
+                    )}
+
+                    {couponValidation?.valid && (
+                      <p className="text-forest-green">
+                        <strong>Discount Applied:</strong> {couponValidation.coupon?.code} ({couponValidation.calculation?.savingsPercent}% off) - Save ${discountAmount}
+                      </p>
+                    )}
+
+                    <p className="font-bold mt-2">
+                      <strong>TOTAL AMOUNT: ${finalTotal}</strong>
+                    </p>
 
                     <h5 className="font-bold text-base mt-6">2. SERVICES PROVIDED</h5>
                     <p>Michigan Spots will provide partnership services as outlined in the selected tier package, including challenge creation, business profile, analytics, and promotional features.</p>
+                    {selectedServices.length > 0 && (
+                      <p className="mt-2">Additionally, the following web and development services will be provided as selected above.</p>
+                    )}
 
                     <h5 className="font-bold text-base mt-6">3. PAYMENT TERMS</h5>
-                    <p>Full payment of ${tierPrice} is due at time of agreement signing. Payment will be collected via PayPal.</p>
+                    <p>Full payment of ${finalTotal} is due at time of agreement signing. Payment will be collected via PayPal.</p>
 
                     <h5 className="font-bold text-base mt-6">4. REFUND POLICY</h5>
                     <p>14-day money-back guarantee from challenge go-live date. After 14 days, all sales are final.</p>
@@ -448,13 +674,130 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
               />
             </div>
 
-            {/* Amount Due */}
-            <div className="bg-copper-orange/10 border-2 border-copper-orange rounded-sm p-6">
-              <div className="flex justify-between items-center">
-                <span className="font-heading text-2xl font-bold text-ink-primary">Amount to Collect:</span>
-                <span className="font-heading text-4xl font-bold text-copper-orange">${tierPrice}</span>
+            {/* Discount Coupon */}
+            <div className="mb-6">
+              <label className="block text-lg font-heading font-semibold text-ink-primary mb-3">
+                Discount Code (Optional)
+              </label>
+
+              {!couponValidation?.valid ? (
+                <div className="flex gap-3">
+                  <div className="relative flex-1">
+                    <Tag className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-ink-faded" />
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          validateCoupon(couponCode);
+                        }
+                      }}
+                      placeholder="FOUNDERS50"
+                      className="w-full pl-14 pr-4 py-4 text-lg border-2 border-ink-primary rounded-sm bg-parchment-light text-ink-primary focus:outline-none focus:border-copper-orange transition-colors touch-manipulation uppercase"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="lg"
+                    onClick={() => validateCoupon(couponCode)}
+                    disabled={!couponCode.trim() || isValidatingCoupon}
+                    className="px-8 touch-manipulation"
+                  >
+                    {isValidatingCoupon ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                        Validating...
+                      </>
+                    ) : (
+                      'Apply'
+                    )}
+                  </Button>
+                </div>
+              ) : (
+                <div className="bg-forest-green/10 border-2 border-forest-green rounded-sm p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Check className="w-6 h-6 text-forest-green" />
+                      <div>
+                        <div className="font-heading font-bold text-lg text-ink-primary">
+                          {couponValidation.coupon?.code}
+                        </div>
+                        <div className="text-sm text-ink-secondary">
+                          {couponValidation.coupon?.description}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeCoupon}
+                      className="p-2 hover:bg-ink-primary/10 rounded-full transition-colors touch-manipulation"
+                    >
+                      <X className="w-6 h-6 text-ink-primary" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {couponValidation && !couponValidation.valid && (
+                <p className="mt-2 text-sm text-sunset-red flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  {couponValidation.error}
+                </p>
+              )}
+            </div>
+
+            {/* Pricing Breakdown */}
+            <div className="bg-copper-orange/10 border-2 border-copper-orange rounded-sm p-6 space-y-3">
+              <div className="flex justify-between items-center text-lg">
+                <span className="text-ink-primary">Partnership ({availableDurations.find(d => d.id === selectedDuration)?.name}):</span>
+                <span className="font-heading font-bold text-ink-primary">${tierPrice}</span>
               </div>
-              <p className="text-sm text-ink-secondary mt-2">
+
+              {selectedServices.length > 0 && (
+                <div className="border-t-2 border-ink-primary/20 pt-3">
+                  {selectedServices.map(serviceId => {
+                    const service = WEB_DEV_SERVICES.find(s => s.id === serviceId);
+                    return service ? (
+                      <div key={serviceId} className="flex justify-between items-center text-base mb-2">
+                        <span className="text-ink-secondary">{service.name}:</span>
+                        <span className="font-heading font-semibold text-ink-primary">${service.price}</span>
+                      </div>
+                    ) : null;
+                  })}
+                </div>
+              )}
+
+              {(tierPrice + servicesTotal > 0) && (
+                <div className="flex justify-between items-center text-lg border-t-2 border-ink-primary/20 pt-3">
+                  <span className="text-ink-primary">Subtotal:</span>
+                  <span className="font-heading font-bold text-ink-primary">${subtotal}</span>
+                </div>
+              )}
+
+              {couponValidation?.valid && discountAmount > 0 && (
+                <div className="flex justify-between items-center text-lg">
+                  <span className="text-forest-green font-semibold">
+                    Discount ({couponValidation.calculation?.savingsPercent}% off):
+                  </span>
+                  <span className="font-heading font-bold text-forest-green">-${discountAmount}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center border-t-2 border-copper-orange pt-3">
+                <span className="font-heading text-2xl font-bold text-ink-primary">Amount to Collect:</span>
+                <span className="font-heading text-4xl font-bold text-copper-orange">${finalTotal}</span>
+              </div>
+
+              {couponValidation?.valid && discountAmount > 0 && (
+                <p className="text-sm text-forest-green font-semibold text-center">
+                  You saved ${discountAmount}!
+                </p>
+              )}
+
+              <p className="text-sm text-ink-secondary mt-2 text-center">
                 To be processed via PayPal reader after signature
               </p>
             </div>

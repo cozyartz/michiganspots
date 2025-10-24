@@ -113,7 +113,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const { confirmationId, action, paymentTransactionId, collectedBy } = await request.json();
+    const { confirmationId, action, paymentTransactionId, collectedBy, partialPayment } = await request.json();
 
     if (!confirmationId || !action) {
       return new Response(
@@ -126,6 +126,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const DB = locals.runtime?.env?.DB;
+    const STRIPE_SECRET_KEY = locals.runtime?.env?.STRIPE_SECRET_KEY;
 
     if (!DB) {
       return new Response(
@@ -138,6 +139,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     if (action === 'mark_paid') {
+      // Get the signup record
+      const signup = await DB.prepare(`
+        SELECT * FROM in_person_signups WHERE confirmation_id = ?
+      `).bind(confirmationId).first();
+
+      if (!signup) {
+        return new Response(
+          JSON.stringify({ error: 'Signup not found' }),
+          { status: 404, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
       // Mark payment as collected
       await DB.prepare(`
         UPDATE in_person_signups
@@ -157,10 +170,162 @@ export const POST: APIRoute = async ({ request, locals }) => {
         confirmationId
       ).run();
 
+      // Create partnership activation so partner can log in
+      const startsAt = new Date();
+      let endsAt: Date | null = null;
+      const isPartialPayment = partialPayment === true;
+
+      // Calculate end date based on duration and payment type
+      if (signup.duration === 'yearly' && !isPartialPayment) {
+        // Full year paid upfront
+        endsAt = new Date(startsAt);
+        endsAt.setFullYear(endsAt.getFullYear() + 1);
+      } else if (signup.duration === 'quarterly' && !isPartialPayment) {
+        // Full quarter paid upfront
+        endsAt = new Date(startsAt);
+        endsAt.setMonth(endsAt.getMonth() + 3);
+      } else if (signup.duration === 'monthly' || isPartialPayment) {
+        // Monthly or partial payment - only covers this period
+        endsAt = new Date(startsAt);
+        endsAt.setMonth(endsAt.getMonth() + 1);
+      }
+
+      // Check if partnership activation already exists
+      const existingActivation = await DB.prepare(`
+        SELECT id FROM partnership_activations
+        WHERE email = ? AND partnership_type = ?
+      `).bind(signup.email, signup.partnership_type || 'business').first();
+
+      if (!existingActivation) {
+        // Create new partnership activation
+        await DB.prepare(`
+          INSERT INTO partnership_activations (
+            email,
+            organization_name,
+            partnership_type,
+            partnership_tier,
+            starts_at,
+            ends_at,
+            is_active,
+            created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, 1, ?)
+        `).bind(
+          signup.email,
+          signup.organization_name,
+          signup.partnership_type || 'business',
+          signup.tier,
+          startsAt.toISOString(),
+          endsAt ? endsAt.toISOString() : null,
+          new Date().toISOString()
+        ).run();
+      } else {
+        // Update existing activation
+        await DB.prepare(`
+          UPDATE partnership_activations
+          SET
+            organization_name = ?,
+            partnership_tier = ?,
+            starts_at = ?,
+            ends_at = ?,
+            is_active = 1,
+            updated_at = ?
+          WHERE id = ?
+        `).bind(
+          signup.organization_name,
+          signup.tier,
+          startsAt.toISOString(),
+          endsAt ? endsAt.toISOString() : null,
+          new Date().toISOString(),
+          existingActivation.id
+        ).run();
+      }
+
+      // If monthly or partial payment, create Stripe customer and send payment link
+      if ((signup.duration === 'monthly' || isPartialPayment) && STRIPE_SECRET_KEY) {
+        try {
+          // Create or get Stripe customer
+          const stripeCustomerResponse = await fetch('https://api.stripe.com/v1/customers', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              email: signup.email as string,
+              name: signup.organization_name as string,
+              metadata: JSON.stringify({
+                partnership_id: existingActivation?.id || 'new',
+                tier: signup.tier,
+                confirmation_id: confirmationId
+              })
+            })
+          });
+
+          if (stripeCustomerResponse.ok) {
+            const stripeCustomer = await stripeCustomerResponse.json();
+
+            // Get the correct Stripe price ID based on tier
+            const priceIdMap: Record<string, string> = {
+              'spot_partner': locals.runtime?.env?.STRIPE_PRICE_SPOT_MONTHLY || '',
+              'featured_partner': locals.runtime?.env?.STRIPE_PRICE_FEATURED_QUARTERLY || '',
+              'premium_sponsor': locals.runtime?.env?.STRIPE_PRICE_PREMIUM_QUARTERLY || '',
+              'title_sponsor': locals.runtime?.env?.STRIPE_PRICE_TITLE_QUARTERLY || '',
+              'chamber_partner': locals.runtime?.env?.STRIPE_PRICE_CHAMBER_QUARTERLY || '',
+            };
+
+            const priceId = priceIdMap[signup.tier as string];
+
+            if (priceId) {
+              // Create Stripe subscription (will send invoice to customer email)
+              const subscriptionResponse = await fetch('https://api.stripe.com/v1/subscriptions', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                  customer: stripeCustomer.id,
+                  items: JSON.stringify([{ price: priceId }]),
+                  collection_method: 'send_invoice',
+                  days_until_due: '10',
+                  metadata: JSON.stringify({
+                    partnership_id: existingActivation?.id || 'new',
+                    confirmation_id: confirmationId,
+                    source: 'in_person_signup'
+                  })
+                })
+              });
+
+              if (subscriptionResponse.ok) {
+                const subscription = await subscriptionResponse.json();
+
+                // Update partnership activation with Stripe info
+                await DB.prepare(`
+                  UPDATE partnership_activations
+                  SET stripe_customer_id = ?,
+                      stripe_subscription_id = ?,
+                      updated_at = ?
+                  WHERE id = ?
+                `).bind(
+                  stripeCustomer.id,
+                  subscription.id,
+                  new Date().toISOString(),
+                  existingActivation?.id
+                ).run();
+              }
+            }
+          }
+        } catch (stripeError) {
+          console.error('Stripe subscription creation failed:', stripeError);
+          // Don't fail the whole operation, just log the error
+        }
+      }
+
       return new Response(
         JSON.stringify({
           success: true,
-          message: 'Payment marked as collected'
+          message: 'Payment marked as collected and partnership activated',
+          stripe_subscription_created: (signup.duration === 'monthly' || isPartialPayment)
         }),
         {
           status: 200,

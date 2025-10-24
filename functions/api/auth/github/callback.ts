@@ -140,6 +140,28 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       userId = result.meta.last_row_id as number;
     }
 
+    // Check if user is a partner (not super admin) and verify they're not overdue
+    if (role !== 'super_admin') {
+      const partnerCheck = await db.prepare(`
+        SELECT ends_at, is_active
+        FROM partnership_activations
+        WHERE email = ?
+        AND is_active = 1
+      `).bind(email || '').first();
+
+      if (partnerCheck && partnerCheck.ends_at) {
+        const endsAt = new Date(partnerCheck.ends_at as string);
+        const gracePeriodEnd = new Date(endsAt);
+        gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 10); // 10 day grace period
+
+        if (new Date() > gracePeriodEnd) {
+          return new Response('Your partnership payment is overdue. Please contact us to renew your partnership before accessing your dashboard.', {
+            status: 403
+          });
+        }
+      }
+    }
+
     // Create session
     const { id: sessionId, expiresAt } = createSession(userId);
 

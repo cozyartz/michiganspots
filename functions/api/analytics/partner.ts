@@ -56,6 +56,26 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       });
     }
 
+    // Check if partnership is past due (more than 10 days after end date)
+    if (partner.ends_at) {
+      const endsAt = new Date(partner.ends_at as string);
+      const gracePeriodEnd = new Date(endsAt);
+      gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 10); // 10 day grace period
+
+      const now = new Date();
+
+      if (now > gracePeriodEnd) {
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'Your partnership payment is overdue. Please contact us to renew your partnership.',
+          past_due: true
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // Get partner's challenges
     const challenges = await db.prepare(`
       SELECT * FROM challenges
