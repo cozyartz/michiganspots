@@ -47,9 +47,9 @@ export const GET: APIRoute = async ({ locals, request }) => {
 
     const db = env.DB as D1Database;
 
-    // Get session from database
+    // Get session from database (expires_at is stored as Unix timestamp)
     const session = await db.prepare(
-      'SELECT * FROM sessions WHERE id = ? AND expires_at > datetime("now")'
+      'SELECT * FROM sessions WHERE id = ? AND expires_at > unixepoch()'
     ).bind(sessionId).first();
 
     if (!session) {
