@@ -163,6 +163,38 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
       const result = await response.json();
       setRating(result.rating);
 
+      // Check for matching challenges if landmark detected
+      let matchedChallengesInfo: any[] = [];
+      if (result.rating.landmarkName) {
+        try {
+          const challengesRes = await fetch('/api/challenges/match', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              landmarkName: result.rating.landmarkName,
+              username,
+            }),
+          });
+
+          if (challengesRes.ok) {
+            const challengesData = await challengesRes.json();
+            if (challengesData.matchedChallenges && challengesData.matchedChallenges.length > 0) {
+              matchedChallengesInfo = challengesData.matchedChallenges;
+
+              // Update rating to include challenge info
+              setRating({
+                ...result.rating,
+                matchedChallenges: matchedChallengesInfo,
+              });
+            }
+          }
+        } catch (challengeErr) {
+          console.error('Failed to check challenges:', challengeErr);
+        }
+      }
+
       // Track analytics
       await fetch('/api/analytics/game-complete', {
         method: 'POST',
@@ -178,6 +210,7 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
           michiganRelevance: result.rating.michiganRelevance,
           landmarkBonus: result.rating.landmarkBonus,
           creativity: result.rating.creativity,
+          matchedChallenges: matchedChallengesInfo.length,
         }),
       });
     } catch (err) {
@@ -662,6 +695,78 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
                     {rating.feedback}
                   </p>
                 </div>
+
+                {/* Matched Challenges */}
+                {rating.matchedChallenges && rating.matchedChallenges.length > 0 && (
+                  <div
+                    style={{
+                      padding: '20px',
+                      borderRadius: '16px',
+                      background: `linear-gradient(135deg, ${theme.colors.amber.primary}10 0%, ${theme.colors.copper}10 100%)`,
+                      border: `2px solid ${theme.colors.amber.primary}40`,
+                      boxShadow: theme.shadows.md,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                      <span style={{ fontSize: '32px' }}>🏆</span>
+                      <h3 style={{ fontSize: '18px', fontWeight: '800', color: theme.colors.ink.primary, margin: 0 }}>
+                        Challenge Progress!
+                      </h3>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {rating.matchedChallenges.map((challenge: any) => (
+                        <div
+                          key={challenge.challengeId}
+                          style={{
+                            padding: '16px',
+                            borderRadius: '12px',
+                            background: challenge.completed ? `${theme.colors.cyan.primary}20` : theme.colors.card,
+                            border: challenge.completed
+                              ? `2px solid ${theme.colors.cyan.primary}`
+                              : `1px solid ${theme.colors.border}`,
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '24px' }}>{challenge.challengeIcon}</span>
+                              <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.ink.primary }}>
+                                {challenge.challengeName}
+                              </span>
+                            </div>
+                            {challenge.completed && (
+                              <span style={{ fontSize: '24px' }}>✅</span>
+                            )}
+                          </div>
+                          <div style={{ marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
+                              <span style={{ color: theme.colors.ink.secondary }}>Progress:</span>
+                              <span style={{ fontWeight: '700', color: theme.colors.amber.dark }}>
+                                {challenge.progress}/{challenge.required}
+                              </span>
+                            </div>
+                            <div style={{ width: '100%', height: '8px', borderRadius: '4px', background: `${theme.colors.border}`, overflow: 'hidden' }}>
+                              <div
+                                style={{
+                                  width: `${(challenge.progress / challenge.required) * 100}%`,
+                                  height: '100%',
+                                  background: challenge.completed
+                                    ? `linear-gradient(90deg, ${theme.colors.cyan.primary}, ${theme.colors.cyan.dark})`
+                                    : `linear-gradient(90deg, ${theme.colors.amber.primary}, ${theme.colors.amber.dark})`,
+                                  transition: 'width 0.3s ease',
+                                }}
+                              />
+                            </div>
+                          </div>
+                          {challenge.completed && (
+                            <p style={{ fontSize: '12px', fontWeight: '700', color: theme.colors.cyan.dark, margin: 0 }}>
+                              🎉 Challenge Complete! +{challenge.bonusPoints} bonus points
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Action buttons */}
                 <div style={{ display: 'flex', gap: '12px' }}>

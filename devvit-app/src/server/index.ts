@@ -1258,6 +1258,96 @@ router.get('/api/challenges/leaderboard', async (_req, res): Promise<void> => {
   }
 });
 
+// Challenge Matching endpoint - finds which challenges a landmark contributes to
+router.post('/api/challenges/match', async (req, res): Promise<void> => {
+  try {
+    const { landmarkName, username } = req.body;
+
+    if (!landmarkName || !username) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Landmark name and username are required',
+      });
+      return;
+    }
+
+    // Find matching challenges (imported from challenges.ts)
+    const { findChallengesForLandmark, MICHIGAN_CHALLENGES } = await import('../shared/types/challenges.js');
+    const matchedChallenges = findChallengesForLandmark(landmarkName);
+
+    if (matchedChallenges.length === 0) {
+      res.json({
+        status: 'success',
+        matchedChallenges: [],
+      });
+      return;
+    }
+
+    // Get user's current progress
+    const progressKey = `challenge:progress:${username}`;
+    const progressData = await redis.get(progressKey);
+    let userProgress: any[] = [];
+
+    if (progressData) {
+      try {
+        userProgress = JSON.parse(progressData as string);
+      } catch {
+        userProgress = [];
+      }
+    }
+
+    // Update progress for each matched challenge
+    const challengeResults = matchedChallenges.map((challenge) => {
+      // Find existing progress or create new
+      let progress = userProgress.find((p) => p.challengeId === challenge.id);
+
+      if (!progress) {
+        progress = {
+          challengeId: challenge.id,
+          completedLandmarks: [],
+          totalScore: 0,
+        };
+        userProgress.push(progress);
+      }
+
+      // Add landmark if not already completed
+      if (!progress.completedLandmarks.includes(landmarkName)) {
+        progress.completedLandmarks.push(landmarkName);
+
+        // Check if challenge is now complete
+        if (progress.completedLandmarks.length >= challenge.requiredCount && !progress.completedAt) {
+          progress.completedAt = Date.now();
+          progress.totalScore += challenge.bonusPoints;
+        }
+      }
+
+      return {
+        challengeId: challenge.id,
+        challengeName: challenge.name,
+        challengeIcon: challenge.icon,
+        progress: progress.completedLandmarks.length,
+        required: challenge.requiredCount,
+        completed: !!progress.completedAt,
+        bonusPoints: challenge.bonusPoints,
+      };
+    });
+
+    // Save updated progress
+    await redis.set(progressKey, JSON.stringify(userProgress));
+
+    res.json({
+      status: 'success',
+      matchedChallenges: challengeResults,
+    });
+  } catch (error) {
+    console.error('Failed to match challenges:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to match challenges',
+    });
+  }
+});
+
 // User Profile endpoint
 router.get('/api/profile/:username', async (req, res): Promise<void> => {
   try {

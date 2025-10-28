@@ -3,6 +3,7 @@ import { MemoryMatch } from './MemoryMatch';
 import { Trivia } from './Trivia';
 import { PhotoHunt } from './PhotoHunt';
 import { UserProfile } from './UserProfile';
+import { ChallengeBrowser } from './ChallengeBrowser';
 import { getTheme, lightTheme, darkTheme } from './theme';
 
 interface InteractiveGameHubProps {
@@ -11,7 +12,7 @@ interface InteractiveGameHubProps {
   isDark: boolean;
 }
 
-type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile';
+type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile' | 'challenges';
 
 export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGameHubProps) => {
   const [gameMode, setGameMode] = useState<GameMode>('splash');
@@ -67,6 +68,10 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
 
   if (gameMode === 'profile') {
     return <UserProfile username={username} onBack={() => setGameMode('splash')} />;
+  }
+
+  if (gameMode === 'challenges') {
+    return <ChallengeBrowser username={username} onBack={() => setGameMode('splash')} />;
   }
 
   // Modern Responsive Splash Screen
@@ -193,41 +198,78 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
           </div>
         </div>
 
-        {/* View Profile Button */}
-        <button
-          onClick={() => setGameMode('profile')}
-          style={{
-            width: '100%',
-            background: theme.colors.card,
-            borderRadius: '16px',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            border: `2px solid ${theme.colors.cyan.primary}40`,
-            boxShadow: theme.shadows.md,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = theme.shadows.xl;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = theme.shadows.md;
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={theme.colors.cyan.primary} strokeWidth="2">
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          <span style={{ fontSize: '16px', fontWeight: '700', color: theme.colors.cyan.dark }}>
-            View Profile & Stats
-          </span>
-        </button>
+        {/* Quick Action Buttons */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+          <button
+            onClick={() => setGameMode('profile')}
+            style={{
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '16px',
+              border: `2px solid ${theme.colors.cyan.primary}40`,
+              boxShadow: theme.shadows.md,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = theme.shadows.xl;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = theme.shadows.md;
+            }}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.cyan.primary} strokeWidth="2">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.cyan.dark, textAlign: 'center' }}>
+              Profile & Stats
+            </span>
+          </button>
+
+          <button
+            onClick={() => setGameMode('challenges')}
+            style={{
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '16px',
+              border: `2px solid ${theme.colors.amber.primary}40`,
+              boxShadow: theme.shadows.md,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = theme.shadows.xl;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = theme.shadows.md;
+            }}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.amber.primary} strokeWidth="2">
+              <path d="M3 3v18h18" />
+              <path d="M18 17V9" />
+              <path d="M13 17V5" />
+              <path d="M8 17v-3" />
+            </svg>
+            <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.amber.dark, textAlign: 'center' }}>
+              Challenges
+            </span>
+          </button>
+        </div>
 
         {/* Game Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
