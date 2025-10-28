@@ -1,390 +1,157 @@
-/**
- * Leaderboard Component
- * Displays leaderboards with tabbed interface, user rank highlighting, and pagination
- */
+import { useState, useEffect } from 'react';
+import type { GameScore } from '../shared/types/api';
 
-import { Devvit } from '@devvit/public-api';
-import { 
-  LeaderboardData, 
-  LeaderboardEntry, 
-  LeaderboardConfig,
-  RankingCriteria 
-} from '../types/core.js';
-import { 
-  LeaderboardService, 
-  DEFAULT_LEADERBOARD_CONFIGS,
-  RANKING_PRESETS 
-} from '../services/leaderboardService.js';
-
-export interface LeaderboardProps {
-  currentUser?: string;
-  initialConfig?: LeaderboardConfig;
-  showUserRank?: boolean;
-  maxDisplayEntries?: number;
+interface LeaderboardProps {
+  username: string;
+  postId: string;
 }
 
-export interface LeaderboardState {
-  activeTab: string;
-  currentPage: number;
-  searchQuery: string;
-  leaderboardData: Record<string, LeaderboardData>;
-  userRank: { rank: number; entry: LeaderboardEntry | null } | null;
-  loading: boolean;
-  error: string | null;
-}
-
-export const LeaderboardComponent: Devvit.CustomPostComponent = (context) => {
-  const { useState, useAsync } = context;
-  const leaderboardService = new LeaderboardService(context);
-
-  // Component state
-  const [activeTab, setActiveTab] = useState('weekly');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [leaderboardData, setLeaderboardData] = useState<Record<string, LeaderboardData>>({});
-  const [userRank, setUserRank] = useState<{ rank: number; entry: LeaderboardEntry | null } | null>(null);
+export const Leaderboard = ({ username, postId }: LeaderboardProps) => {
+  const [topScores, setTopScores] = useState<GameScore[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'all' | 'word-search' | 'trivia'>('all');
 
-  const ENTRIES_PER_PAGE = 20;
+  useEffect(() => {
+    loadLeaderboard();
+  }, [filter]);
 
-  // Load leaderboard data
-  const loadLeaderboards = useAsync(async () => {
+  const loadLeaderboard = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError(null);
+      // Fetch leaderboard from server
+      const res = await fetch(`/api/leaderboard/${filter}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTopScores(data.topScores || []);
+      } else {
+        // Fallback to mock data if API fails
+        const mockScores: GameScore[] = [
+          { username: 'Player1', score: 850, game: 'word-search', timestamp: Date.now() - 3600000 },
+          { username: 'Player2', score: 720, game: 'trivia', timestamp: Date.now() - 7200000 },
+          { username: 'Player3', score: 650, game: 'word-search', timestamp: Date.now() - 10800000 },
+          { username: 'Player4', score: 580, game: 'trivia', timestamp: Date.now() - 14400000 },
+          { username: 'Player5', score: 520, game: 'word-search', timestamp: Date.now() - 18000000 },
+        ];
 
-      const configs = DEFAULT_LEADERBOARD_CONFIGS.filter(config => config.type === 'individual');
-      const leaderboards: Record<string, LeaderboardData> = {};
+        const filtered =
+          filter === 'all' ? mockScores : mockScores.filter((s) => s.game === filter);
 
-      // Load all leaderboard types
-      for (const config of configs) {
-        const data = await leaderboardService.getLeaderboard(config);
-        leaderboards[config.timeframe] = data;
+        setTopScores(filtered.sort((a, b) => b.score - a.score).slice(0, 10));
       }
-
-      setLeaderboardData(leaderboards);
-
-      // Load current user's rank if available
-      const currentUser = await context.reddit.getCurrentUser();
-      if (currentUser) {
-        const activeConfig = configs.find(c => c.timeframe === activeTab);
-        if (activeConfig) {
-          const rank = await leaderboardService.getUserRank(currentUser.username, activeConfig);
-          setUserRank(rank);
-        }
-      }
-
-      setLoading(false);
     } catch (err) {
-      console.error('Error loading leaderboards:', err);
-      setError('Failed to load leaderboards');
+      console.error('Failed to load leaderboard:', err);
+    } finally {
       setLoading(false);
     }
-  });
-
-  // Handle tab change
-  const handleTabChange = async (newTab: string) => {
-    setActiveTab(newTab);
-    setCurrentPage(1);
-    setSearchQuery('');
-
-    // Load user rank for new tab
-    const currentUser = await context.reddit.getCurrentUser();
-    if (currentUser) {
-      const config = DEFAULT_LEADERBOARD_CONFIGS.find(
-        c => c.timeframe === newTab && c.type === 'individual'
-      );
-      if (config) {
-        try {
-          const rank = await leaderboardService.getUserRank(currentUser.username, config);
-          setUserRank(rank);
-        } catch (err) {
-          console.error('Error loading user rank:', err);
-        }
-      }
-    }
   };
 
-  // Filter entries based on search
-  const getFilteredEntries = (entries: LeaderboardEntry[]): LeaderboardEntry[] => {
-    if (!searchQuery.trim()) return entries;
-    
-    return entries.filter(entry => 
-      entry.username.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const getRankEmoji = (rank: number) => {
+    if (rank === 0) return '🥇';
+    if (rank === 1) return '🥈';
+    if (rank === 2) return '🥉';
+    return `#${rank + 1}`;
   };
 
-  // Get paginated entries
-  const getPaginatedEntries = (entries: LeaderboardEntry[]): LeaderboardEntry[] => {
-    const startIndex = (currentPage - 1) * ENTRIES_PER_PAGE;
-    const endIndex = startIndex + ENTRIES_PER_PAGE;
-    return entries.slice(startIndex, endIndex);
+  const getTimeAgo = (timestamp: number) => {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
   };
-
-  // Render loading state
-  if (loading) {
-    return (
-      <vstack alignment="center middle" padding="large">
-        <text size="large">Loading leaderboards...</text>
-        <spacer size="medium" />
-        <text size="medium" color="secondary">
-          Calculating rankings and user positions
-        </text>
-      </vstack>
-    );
-  }
-
-  // Render error state
-  if (error) {
-    return (
-      <vstack alignment="center middle" padding="large">
-        <text size="large" color="red">⚠️ Error</text>
-        <spacer size="small" />
-        <text size="medium">{error}</text>
-        <spacer size="medium" />
-        <button onPress={() => loadLeaderboards()}>
-          Retry
-        </button>
-      </vstack>
-    );
-  }
-
-  const currentLeaderboard = leaderboardData[activeTab];
-  if (!currentLeaderboard) {
-    return (
-      <vstack alignment="center middle" padding="large">
-        <text size="large">No leaderboard data available</text>
-      </vstack>
-    );
-  }
-
-  const filteredEntries = getFilteredEntries(currentLeaderboard.entries);
-  const paginatedEntries = getPaginatedEntries(filteredEntries);
-  const totalPages = Math.ceil(filteredEntries.length / ENTRIES_PER_PAGE);
 
   return (
-    <vstack padding="medium" gap="medium">
-      {/* Header */}
-      <vstack gap="small">
-        <text size="xxlarge" weight="bold" alignment="center">
-          🏆 Leaderboard
-        </text>
-        <text size="medium" color="secondary" alignment="center">
-          Compete with fellow treasure hunters!
-        </text>
-      </vstack>
+    <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500">
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-6 space-y-4">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-orange-900 mb-2">🏆 Leaderboard</h1>
+          <p className="text-gray-600">Top players in Michigan Arcade</p>
+        </div>
 
-      {/* Tab Navigation */}
-      <hstack gap="small" alignment="center">
-        {['weekly', 'monthly', 'alltime'].map(tab => (
+        <div className="flex gap-2 justify-center">
           <button
-            key={tab}
-            appearance={activeTab === tab ? 'primary' : 'secondary'}
-            size="small"
-            onPress={() => handleTabChange(tab)}
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              filter === 'all'
+                ? 'bg-orange-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            All Games
           </button>
-        ))}
-      </hstack>
+          <button
+            onClick={() => setFilter('word-search')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              filter === 'word-search'
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Word Search
+          </button>
+          <button
+            onClick={() => setFilter('trivia')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              filter === 'trivia'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Trivia
+          </button>
+        </div>
 
-      {/* Search Bar */}
-      <hstack gap="small" alignment="center">
-        <text size="medium">🔍</text>
-        <textField
-          placeholder="Search users..."
-          value={searchQuery}
-          onTextChange={(value) => {
-            setSearchQuery(value);
-            setCurrentPage(1);
-          }}
-        />
-      </hstack>
-
-      {/* User's Current Rank (if not in top entries) */}
-      {userRank && userRank.rank > ENTRIES_PER_PAGE && (
-        <vstack 
-          backgroundColor="secondary" 
-          cornerRadius="medium" 
-          padding="medium"
-          gap="small"
-        >
-          <text size="medium" weight="bold" alignment="center">
-            Your Current Position
-          </text>
-          <LeaderboardEntryRow 
-            entry={userRank.entry!} 
-            isCurrentUser={true}
-            showFullRank={true}
-          />
-        </vstack>
-      )}
-
-      {/* Leaderboard Stats */}
-      <hstack gap="large" alignment="center">
-        <vstack alignment="center" gap="xsmall">
-          <text size="small" color="secondary">Total Players</text>
-          <text size="medium" weight="bold">{currentLeaderboard.totalParticipants}</text>
-        </vstack>
-        <vstack alignment="center" gap="xsmall">
-          <text size="small" color="secondary">Top Score</text>
-          <text size="medium" weight="bold">
-            {currentLeaderboard.entries[0]?.points || 0} pts
-          </text>
-        </vstack>
-        <vstack alignment="center" gap="xsmall">
-          <text size="small" color="secondary">Last Updated</text>
-          <text size="small" color="secondary">
-            {new Date(currentLeaderboard.lastUpdated).toLocaleTimeString()}
-          </text>
-        </vstack>
-      </hstack>
-
-      {/* Leaderboard Entries */}
-      <vstack gap="small">
-        {paginatedEntries.length === 0 ? (
-          <vstack alignment="center middle" padding="large">
-            <text size="medium" color="secondary">
-              {searchQuery ? 'No users found matching your search' : 'No entries available'}
-            </text>
-          </vstack>
+        {loading ? (
+          <div className="text-center py-8">
+            <p className="text-gray-600">Loading leaderboard...</p>
+          </div>
         ) : (
-          paginatedEntries.map((entry, index) => (
-            <LeaderboardEntryRow
-              key={entry.username}
-              entry={entry}
-              isCurrentUser={userRank?.entry?.username === entry.username}
-              showFullRank={false}
-            />
-          ))
+          <div className="space-y-2">
+            {topScores.map((score, index) => (
+              <div
+                key={index}
+                className={`flex items-center justify-between p-4 rounded-xl transition-all ${
+                  score.username === username
+                    ? 'bg-blue-100 border-2 border-blue-500'
+                    : 'bg-gray-50 hover:bg-gray-100'
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl font-bold w-12">{getRankEmoji(index)}</span>
+                  <div>
+                    <p className="font-bold text-gray-900">
+                      {score.username}
+                      {score.username === username && (
+                        <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded">
+                          You
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {score.game === 'word-search' ? '🔍 Word Search' : '❓ Trivia'} •{' '}
+                      {getTimeAgo(score.timestamp)}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-orange-600">{score.score}</p>
+                  <p className="text-xs text-gray-500">points</p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
-      </vstack>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <hstack gap="small" alignment="center">
-          <button
-            size="small"
-            disabled={currentPage === 1}
-            onPress={() => setCurrentPage(currentPage - 1)}
-          >
-            ← Previous
-          </button>
-          
-          <text size="small" color="secondary">
-            Page {currentPage} of {totalPages}
-          </text>
-          
-          <button
-            size="small"
-            disabled={currentPage === totalPages}
-            onPress={() => setCurrentPage(currentPage + 1)}
-          >
-            Next →
-          </button>
-        </hstack>
-      )}
-
-      {/* Refresh Button */}
-      <hstack alignment="center">
-        <button
-          size="small"
-          appearance="secondary"
-          onPress={() => loadLeaderboards()}
-        >
-          🔄 Refresh Rankings
-        </button>
-      </hstack>
-    </vstack>
-  );
-};
-
-// Individual leaderboard entry component
-interface LeaderboardEntryRowProps {
-  entry: LeaderboardEntry;
-  isCurrentUser: boolean;
-  showFullRank: boolean;
-}
-
-const LeaderboardEntryRow: Devvit.BlockComponent<LeaderboardEntryRowProps> = (
-  { entry, isCurrentUser, showFullRank },
-  context
-) => {
-  const getRankDisplay = (rank: number): string => {
-    if (rank === 1) return '🥇';
-    if (rank === 2) return '🥈';
-    if (rank === 3) return '🥉';
-    return `#${rank}`;
-  };
-
-  const getRankColor = (rank: number): string => {
-    if (rank <= 3) return 'gold';
-    if (rank <= 10) return 'primary';
-    return 'secondary';
-  };
-
-  return (
-    <hstack
-      backgroundColor={isCurrentUser ? 'primary-background' : 'secondary-background'}
-      cornerRadius="small"
-      padding="medium"
-      gap="medium"
-      alignment="center middle"
-    >
-      {/* Rank */}
-      <vstack alignment="center" minWidth="60px">
-        <text 
-          size="large" 
-          weight="bold" 
-          color={getRankColor(entry.rank)}
-        >
-          {getRankDisplay(entry.rank)}
-        </text>
-        {showFullRank && entry.rank > 3 && (
-          <text size="small" color="secondary">
-            Rank {entry.rank}
-          </text>
+        {topScores.length === 0 && !loading && (
+          <div className="text-center py-8">
+            <p className="text-gray-600">No scores yet. Be the first to play!</p>
+          </div>
         )}
-      </vstack>
 
-      {/* User Info */}
-      <vstack grow>
-        <hstack gap="small" alignment="center">
-          <text size="medium" weight="bold">
-            u/{entry.username}
-          </text>
-          {isCurrentUser && (
-            <text size="small" color="primary">(You)</text>
-          )}
-        </hstack>
-        
-        <hstack gap="large">
-          <text size="small" color="secondary">
-            {entry.points} points
-          </text>
-          <text size="small" color="secondary">
-            {entry.completedChallenges} challenges
-          </text>
-          <text size="small" color="secondary">
-            {entry.badgeCount} badges
-          </text>
-        </hstack>
-      </vstack>
-
-      {/* Achievement Indicator */}
-      {entry.rank <= 3 && (
-        <vstack alignment="center">
-          <text size="small" color="gold">
-            Top 3
-          </text>
-        </vstack>
-      )}
-    </hstack>
+        <div className="text-center text-sm text-gray-500 pt-4 border-t">
+          Powered by Michigan Spots
+        </div>
+      </div>
+    </div>
   );
-};
-
-// Export the main component and utilities
-export const renderLeaderboard = (props: LeaderboardProps = {}) => {
-  return <LeaderboardComponent {...props} />;
 };

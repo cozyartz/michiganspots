@@ -1,676 +1,407 @@
-/**
- * Interactive Game Hub Component
- * Provides various mini-games and interactive features for users
- */
+import { useState } from 'react';
+import { MemoryMatch } from './MemoryMatch';
+import { Trivia } from './Trivia';
+import { PhotoHunt } from './PhotoHunt';
+import { getTheme, lightTheme, darkTheme } from './theme';
 
-import { Devvit } from '@devvit/public-api';
-import { Challenge } from '../types/core.js';
-import { SpotTheDifferenceGame } from './games/SpotTheDifferenceGame.js';
-import { WordSearchGame } from './games/WordSearchGame.js';
-import { TriviaGame } from './games/TriviaGame.js';
-import { VirtualTreasureHunt } from './games/VirtualTreasureHunt.js';
-import { DrawingChallenge } from './games/DrawingChallenge.js';
-
-export interface InteractiveGameHubProps {
-  challenge?: Challenge;
-  onGameComplete?: (gameType: string, score: number) => void;
-  onClose?: () => void;
+interface InteractiveGameHubProps {
+  username: string;
+  postId: string;
+  isDark: boolean;
 }
 
-export interface GameState {
-  currentGame: string | null;
-  score: number;
-  timeRemaining: number;
-  gameData: any;
-  isPlaying: boolean;
-  completed: boolean;
-}
+type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt';
 
-/**
- * Interactive Game Hub Component
- */
-export const InteractiveGameHub: Devvit.CustomPostComponent = (context) => {
-  const { useState, useInterval } = context;
-  
-  const [currentGame, setCurrentGame] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(60);
-  const [gameData, setGameData] = useState<any>({});
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [completed, setCompleted] = useState(false);
+export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGameHubProps) => {
+  const [gameMode, setGameMode] = useState<GameMode>('splash');
+  const [totalScore, setTotalScore] = useState(0);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
-  // Game timer
-  const gameTimer = useInterval(() => {
-    if (isPlaying && timeRemaining > 0) {
-      setTimeRemaining(timeRemaining - 1);
-    } else if (timeRemaining === 0 && isPlaying) {
-      endGame();
-    }
-  }, 1000);
+  const theme = getTheme(isDark);
 
-  const startGame = (gameType: string) => {
-    setCurrentGame(gameType);
-    setScore(0);
-    setTimeRemaining(gameType === 'treasure_hunt' ? 300 : 60); // 5 min for treasure hunt, 1 min for others
-    setIsPlaying(true);
-    setCompleted(false);
-    initializeGameData(gameType);
-    gameTimer.start();
-  };
-
-  const endGame = () => {
-    setIsPlaying(false);
-    setCompleted(true);
-    gameTimer.stop();
-  };
-
-  const initializeGameData = (gameType: string) => {
-    switch (gameType) {
-      case 'spot_the_difference':
-        setGameData({
-          differences: generateSpotTheDifferenceGame(),
-          found: []
-        });
-        break;
-      case 'word_search':
-        setGameData({
-          grid: generateWordSearchGrid(),
-          words: ['MICHIGAN', 'SPOTS', 'TREASURE', 'HUNT', 'LOCAL'],
-          found: []
-        });
-        break;
-      case 'trivia':
-        setGameData({
-          questions: generateMichiganTrivia(),
-          currentQuestion: 0,
-          answers: []
-        });
-        break;
-      case 'treasure_hunt':
-        setGameData({
-          clues: generateTreasureHuntClues(),
-          currentClue: 0,
-          foundItems: []
-        });
-        break;
-      case 'drawing_challenge':
-        setGameData({
-          prompt: getRandomDrawingPrompt(),
-          strokes: []
-        });
-        break;
-    }
-  };
-
-  // Game selection screen
-  if (!currentGame) {
-    return {
-      type: 'vstack',
-      padding: 'medium',
-      gap: 'medium',
-      children: [
-        {
-          type: 'text',
-          size: 'xxlarge',
-          weight: 'bold',
-          alignment: 'center',
-          text: '🎮 Interactive Games'
-        },
-        {
-          type: 'text',
-          size: 'medium',
-          color: '#6b7280',
-          alignment: 'center',
-          text: 'Play mini-games while exploring Michigan!'
-        },
-        {
-          type: 'vstack',
-          gap: 'small',
-          children: [
-            // Spot the Difference
-            {
-              type: 'vstack',
-              padding: 'medium',
-              backgroundColor: 'white',
-              cornerRadius: 'medium',
-              border: 'thin',
-              borderColor: '#e5e7eb',
-              gap: 'small',
-              children: [
-                {
-                  type: 'text',
-                  size: 'large',
-                  weight: 'bold',
-                  text: '🔍 Spot the Difference'
-                },
-                {
-                  type: 'text',
-                  size: 'medium',
-                  color: '#6b7280',
-                  text: 'Find differences between two Michigan landmark photos'
-                },
-                {
-                  type: 'hstack',
-                  gap: 'medium',
-                  children: [
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#10b981',
-                          text: '●'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: 'Easy'
-                        }
-                      ]
-                    },
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          text: '⏱️'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: '1 min'
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  type: 'button',
-                  appearance: 'primary',
-                  text: 'Play Now',
-                  onPress: () => startGame('spot_the_difference')
-                }
-              ]
-            },
-            // Word Search
-            {
-              type: 'vstack',
-              padding: 'medium',
-              backgroundColor: 'white',
-              cornerRadius: 'medium',
-              border: 'thin',
-              borderColor: '#e5e7eb',
-              gap: 'small',
-              children: [
-                {
-                  type: 'text',
-                  size: 'large',
-                  weight: 'bold',
-                  text: '🔤 Michigan Word Search'
-                },
-                {
-                  type: 'text',
-                  size: 'medium',
-                  color: '#6b7280',
-                  text: 'Find hidden words related to Michigan attractions'
-                },
-                {
-                  type: 'hstack',
-                  gap: 'medium',
-                  children: [
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#f59e0b',
-                          text: '●'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: 'Medium'
-                        }
-                      ]
-                    },
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          text: '⏱️'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: '1 min'
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  type: 'button',
-                  appearance: 'primary',
-                  text: 'Play Now',
-                  onPress: () => startGame('word_search')
-                }
-              ]
-            },
-            // Trivia
-            {
-              type: 'vstack',
-              padding: 'medium',
-              backgroundColor: 'white',
-              cornerRadius: 'medium',
-              border: 'thin',
-              borderColor: '#e5e7eb',
-              gap: 'small',
-              children: [
-                {
-                  type: 'text',
-                  size: 'large',
-                  weight: 'bold',
-                  text: '🧠 Michigan Trivia'
-                },
-                {
-                  type: 'text',
-                  size: 'medium',
-                  color: '#6b7280',
-                  text: 'Test your knowledge of Michigan history and culture'
-                },
-                {
-                  type: 'hstack',
-                  gap: 'medium',
-                  children: [
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#f59e0b',
-                          text: '●'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: 'Medium'
-                        }
-                      ]
-                    },
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          text: '⏱️'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: '2 min'
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  type: 'button',
-                  appearance: 'primary',
-                  text: 'Play Now',
-                  onPress: () => startGame('trivia')
-                }
-              ]
-            },
-            // Virtual Treasure Hunt
-            {
-              type: 'vstack',
-              padding: 'medium',
-              backgroundColor: 'white',
-              cornerRadius: 'medium',
-              border: 'thin',
-              borderColor: '#e5e7eb',
-              gap: 'small',
-              children: [
-                {
-                  type: 'text',
-                  size: 'large',
-                  weight: 'bold',
-                  text: '🗺️ Virtual Treasure Hunt'
-                },
-                {
-                  type: 'text',
-                  size: 'medium',
-                  color: '#6b7280',
-                  text: 'Follow clues to find hidden treasures around Michigan'
-                },
-                {
-                  type: 'hstack',
-                  gap: 'medium',
-                  children: [
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#ef4444',
-                          text: '●'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: 'Hard'
-                        }
-                      ]
-                    },
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          text: '⏱️'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: '5 min'
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  type: 'button',
-                  appearance: 'primary',
-                  text: 'Play Now',
-                  onPress: () => startGame('treasure_hunt')
-                }
-              ]
-            },
-            // Drawing Challenge
-            {
-              type: 'vstack',
-              padding: 'medium',
-              backgroundColor: 'white',
-              cornerRadius: 'medium',
-              border: 'thin',
-              borderColor: '#e5e7eb',
-              gap: 'small',
-              children: [
-                {
-                  type: 'text',
-                  size: 'large',
-                  weight: 'bold',
-                  text: '🎨 Drawing Challenge'
-                },
-                {
-                  type: 'text',
-                  size: 'medium',
-                  color: '#6b7280',
-                  text: 'Draw Michigan landmarks and share with the community'
-                },
-                {
-                  type: 'hstack',
-                  gap: 'medium',
-                  children: [
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#8b5cf6',
-                          text: '●'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: 'Creative'
-                        }
-                      ]
-                    },
-                    {
-                      type: 'hstack',
-                      gap: 'small',
-                      children: [
-                        {
-                          type: 'text',
-                          size: 'small',
-                          text: '⏱️'
-                        },
-                        {
-                          type: 'text',
-                          size: 'small',
-                          color: '#6b7280',
-                          text: '3 min'
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  type: 'button',
-                  appearance: 'primary',
-                  text: 'Play Now',
-                  onPress: () => startGame('drawing_challenge')
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    };
+  if (gameMode === 'memory-match') {
+    return (
+      <MemoryMatch
+        username={username}
+        postId={postId}
+        isDark={isDark}
+        onComplete={(score) => {
+          setTotalScore((prev) => prev + score);
+          setGameMode('splash');
+        }}
+        onBack={() => setGameMode('splash')}
+      />
+    );
   }
 
-  // Game completion screen
-  if (completed) {
-    return {
-      type: 'vstack',
-      padding: 'medium',
-      gap: 'medium',
-      alignment: 'center',
-      children: [
-        {
-          type: 'text',
-          size: 'xxlarge',
-          text: '🎉'
-        },
-        {
-          type: 'text',
-          size: 'large',
-          weight: 'bold',
-          text: 'Game Complete!'
-        },
-        {
-          type: 'text',
-          size: 'medium',
-          text: `Final Score: ${score}`
-        },
-        {
-          type: 'vstack',
-          gap: 'small',
-          alignment: 'center',
-          children: [
-            {
-              type: 'button',
-              appearance: 'primary',
-              text: 'Play Another Game',
-              onPress: () => setCurrentGame(null)
-            },
-            {
-              type: 'button',
-              appearance: 'secondary',
-              text: 'Back to Hub',
-              onPress: () => setCurrentGame(null)
-            }
-          ]
-        }
-      ]
-    };
+  if (gameMode === 'trivia') {
+    return (
+      <Trivia
+        username={username}
+        postId={postId}
+        isDark={isDark}
+        onComplete={(score) => {
+          setTotalScore((prev) => prev + score);
+          setGameMode('splash');
+        }}
+        onBack={() => setGameMode('splash')}
+      />
+    );
   }
 
-  // Render specific game
-  switch (currentGame) {
-    case 'spot_the_difference':
-      return SpotTheDifferenceGame({
-        gameData,
-        score,
-        timeRemaining,
-        onScoreUpdate: setScore,
-        onGameEnd: endGame
-      });
-    case 'word_search':
-      return WordSearchGame({
-        gameData,
-        score,
-        timeRemaining,
-        onScoreUpdate: setScore,
-        onGameEnd: endGame
-      });
-    case 'trivia':
-      return TriviaGame({
-        gameData,
-        score,
-        timeRemaining,
-        onScoreUpdate: setScore,
-        onGameEnd: endGame
-      });
-    case 'treasure_hunt':
-      return VirtualTreasureHunt({
-        gameData,
-        score,
-        timeRemaining,
-        onScoreUpdate: setScore,
-        onGameEnd: endGame
-      });
-    case 'drawing_challenge':
-      return DrawingChallenge({
-        gameData,
-        score,
-        timeRemaining,
-        onScoreUpdate: setScore,
-        onGameEnd: endGame
-      });
-    default:
-      return {
-        type: 'text',
-        text: 'Game not found'
-      };
+  if (gameMode === 'photo-hunt') {
+    return (
+      <PhotoHunt
+        username={username}
+        postId={postId}
+        isDark={isDark}
+        onComplete={(score) => {
+          setTotalScore((prev) => prev + score);
+          setGameMode('splash');
+        }}
+        onBack={() => setGameMode('splash')}
+      />
+    );
   }
+
+  // Modern Responsive Splash Screen
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        width: '100%',
+        background: theme.colors.background,
+        padding: '16px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}
+    >
+      {/* Main Container */}
+      <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+        {/* Logo Card */}
+        <div
+          style={{
+            background: theme.colors.card,
+            borderRadius: '24px',
+            padding: '24px',
+            marginBottom: '16px',
+            boxShadow: theme.shadows.lg,
+            border: `1px solid ${theme.colors.border}`,
+            textAlign: 'center',
+          }}
+        >
+          {/* Logo */}
+          <div style={{ marginBottom: '16px' }}>
+            <img
+              src="/michiganspots-logo.png"
+              alt="Michigan Spots"
+              style={{
+                width: '80px',
+                height: '80px',
+                objectFit: 'contain',
+                filter: isDark ? 'brightness(1.1)' : 'none',
+              }}
+            />
+          </div>
+
+          {/* Title */}
+          <h1
+            style={{
+              fontSize: 'clamp(24px, 6vw, 32px)',
+              fontWeight: '800',
+              color: theme.colors.copper,
+              marginBottom: '8px',
+              letterSpacing: '0.02em',
+            }}
+          >
+            MICHIGAN SPOTS
+          </h1>
+          <p
+            style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: theme.colors.ink.secondary,
+              marginBottom: '16px',
+            }}
+          >
+            Discover Hidden Gems
+          </p>
+
+          {/* User Badge */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              borderRadius: '100px',
+              background: `${theme.colors.cyan.primary}15`,
+              border: `2px solid ${theme.colors.cyan.primary}40`,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.colors.cyan.primary} strokeWidth="2">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.cyan.dark }}>
+              {username}
+            </span>
+          </div>
+        </div>
+
+        {/* Score Card */}
+        <div
+          style={{
+            background: `linear-gradient(135deg, ${theme.colors.amber.primary}20 0%, ${theme.colors.amber.light}10 100%)`,
+            borderRadius: '16px',
+            padding: '16px 20px',
+            marginBottom: '16px',
+            border: `1px solid ${theme.colors.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.ink.primary }}>
+            Total Score
+          </span>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              borderRadius: '100px',
+              background: `linear-gradient(135deg, ${theme.colors.amber.primary} 0%, ${theme.colors.amber.dark} 100%)`,
+              boxShadow: theme.shadows.md,
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <span style={{ fontSize: '20px', fontWeight: '800', color: 'white' }}>
+              {totalScore}
+            </span>
+          </div>
+        </div>
+
+        {/* Game Cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Memory Match */}
+          <button
+            onClick={() => setGameMode('memory-match')}
+            onMouseEnter={() => setHoveredCard('memory')}
+            onMouseLeave={() => setHoveredCard(null)}
+            style={{
+              width: '100%',
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '20px',
+              border: `2px solid ${hoveredCard === 'memory' ? theme.colors.copper : theme.colors.border}`,
+              boxShadow: hoveredCard === 'memory' ? theme.shadows.xl : theme.shadows.md,
+              transform: hoveredCard === 'memory' ? 'translateY(-2px)' : 'translateY(0)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              textAlign: 'left',
+            }}
+          >
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                flexShrink: 0,
+                borderRadius: '12px',
+                background: `${theme.colors.copper}15`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.copper} strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 9h6v6H9z" />
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '18px', fontWeight: '700', color: theme.colors.ink.primary, marginBottom: '4px' }}>
+                Memory Match
+              </div>
+              <div style={{ fontSize: '14px', color: theme.colors.ink.secondary }}>
+                Match Michigan landmark pairs
+              </div>
+            </div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={theme.colors.copper}
+              strokeWidth="2"
+              style={{
+                transform: hoveredCard === 'memory' ? 'translateX(4px)' : 'translateX(0)',
+                transition: 'transform 0.2s',
+              }}
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+
+          {/* Trivia */}
+          <button
+            onClick={() => setGameMode('trivia')}
+            onMouseEnter={() => setHoveredCard('trivia')}
+            onMouseLeave={() => setHoveredCard(null)}
+            style={{
+              width: '100%',
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '20px',
+              border: `2px solid ${hoveredCard === 'trivia' ? theme.colors.cyan.primary : theme.colors.border}`,
+              boxShadow: hoveredCard === 'trivia' ? theme.shadows.xl : theme.shadows.md,
+              transform: hoveredCard === 'trivia' ? 'translateY(-2px)' : 'translateY(0)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              textAlign: 'left',
+            }}
+          >
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                flexShrink: 0,
+                borderRadius: '12px',
+                background: `${theme.colors.cyan.primary}15`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.cyan.primary} strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <path d="M12 17h.01" />
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '18px', fontWeight: '700', color: theme.colors.ink.primary, marginBottom: '4px' }}>
+                Michigan Trivia
+              </div>
+              <div style={{ fontSize: '14px', color: theme.colors.ink.secondary }}>
+                Test your state knowledge
+              </div>
+            </div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={theme.colors.cyan.primary}
+              strokeWidth="2"
+              style={{
+                transform: hoveredCard === 'trivia' ? 'translateX(4px)' : 'translateX(0)',
+                transition: 'transform 0.2s',
+              }}
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+
+          {/* Photo Hunt - Featured */}
+          <button
+            onClick={() => setGameMode('photo-hunt')}
+            onMouseEnter={() => setHoveredCard('photo')}
+            onMouseLeave={() => setHoveredCard(null)}
+            style={{
+              width: '100%',
+              background: `linear-gradient(135deg, ${theme.colors.cyan.primary} 0%, ${theme.colors.cyan.dark} 100%)`,
+              borderRadius: '16px',
+              padding: '20px',
+              border: 'none',
+              boxShadow: hoveredCard === 'photo' ? theme.shadows.xl : theme.shadows.lg,
+              transform: hoveredCard === 'photo' ? 'translateY(-2px) scale(1.01)' : 'translateY(0) scale(1)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              textAlign: 'left',
+            }}
+          >
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                flexShrink: 0,
+                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                <circle cx="12" cy="13" r="3" />
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '18px', fontWeight: '700', color: 'white', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span>Photo Hunt</span>
+                <span
+                  style={{
+                    fontSize: '10px',
+                    padding: '4px 8px',
+                    borderRadius: '100px',
+                    background: 'rgba(255, 255, 255, 0.3)',
+                    fontWeight: '700',
+                  }}
+                >
+                  AI POWERED
+                </span>
+              </div>
+              <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)' }}>
+                Share Michigan photos
+              </div>
+            </div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              style={{
+                transform: hoveredCard === 'photo' ? 'translateX(4px)' : 'translateX(0)',
+                transition: 'transform 0.2s',
+              }}
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            marginTop: '20px',
+            textAlign: 'center',
+            padding: '16px',
+          }}
+        >
+          <p style={{ fontSize: '12px', fontWeight: '600', color: theme.colors.ink.secondary, margin: 0 }}>
+            Choose a game to start earning points
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
-
-
-
-// Helper functions for game generation
-function generateSpotTheDifferenceGame() {
-  return [
-    { x: 20, y: 30, found: false, id: 1 },
-    { x: 45, y: 60, found: false, id: 2 },
-    { x: 70, y: 25, found: false, id: 3 },
-    { x: 30, y: 80, found: false, id: 4 },
-    { x: 85, y: 70, found: false, id: 5 }
-  ];
-}
-
-function generateWordSearchGrid() {
-  // Simplified 8x8 grid with embedded words
-  return [
-    ['M', 'I', 'C', 'H', 'I', 'G', 'A', 'N'],
-    ['S', 'P', 'O', 'T', 'S', 'X', 'Y', 'Z'],
-    ['T', 'R', 'E', 'A', 'S', 'U', 'R', 'E'],
-    ['H', 'U', 'N', 'T', 'Q', 'W', 'E', 'R'],
-    ['L', 'O', 'C', 'A', 'L', 'A', 'S', 'D'],
-    ['F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X'],
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K']
-  ];
-}
-
-function generateMichiganTrivia() {
-  return [
-    {
-      question: "What is Michigan's nickname?",
-      options: ["The Great Lake State", "The Wolverine State", "Both A and B", "The Motor State"],
-      correct: 2
-    },
-    {
-      question: "Which city is known as the 'Motor City'?",
-      options: ["Grand Rapids", "Detroit", "Lansing", "Ann Arbor"],
-      correct: 1
-    },
-    {
-      question: "How many Great Lakes border Michigan?",
-      options: ["2", "3", "4", "5"],
-      correct: 2
-    },
-    {
-      question: "What is Michigan's state flower?",
-      options: ["Rose", "Apple Blossom", "Lily", "Sunflower"],
-      correct: 1
-    }
-  ];
-}
-
-function generateTreasureHuntClues() {
-  return [
-    {
-      clue: "I stand tall where ships once docked, my light guides sailors through the fog. What am I?",
-      answer: "lighthouse",
-      hint: "Think about Michigan's maritime history",
-      location: "Great Lakes shoreline"
-    },
-    {
-      clue: "In autumn, I turn brilliant colors. Visitors come from far to see my sugar-sweet transformation. What am I?",
-      answer: "maple tree",
-      hint: "Think about fall foliage and syrup",
-      location: "Michigan forests"
-    },
-    {
-      clue: "I'm a bridge that connects two peninsulas, spanning waters blue and wide. What am I?",
-      answer: "mackinac bridge",
-      hint: "Think about Michigan's two main land masses",
-      location: "Straits of Mackinac"
-    }
-  ];
-}
-
-function getRandomDrawingPrompt() {
-  const prompts = [
-    "Draw the Mackinac Bridge",
-    "Draw a Michigan lighthouse",
-    "Draw the Detroit skyline",
-    "Draw a Great Lakes sunset",
-    "Draw Michigan's state bird (Robin)",
-    "Draw a Michigan cherry tree",
-    "Draw Sleeping Bear Dunes"
-  ];
-  return prompts[Math.floor(Math.random() * prompts.length)];
-}
-
-export default InteractiveGameHub;

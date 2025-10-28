@@ -1,0 +1,62 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "michiganspots",
+  "post": {
+    "dir": "dist/client",
+    "entrypoints": {
+      "default": {
+        "entry": "index.html",
+        "height": "tall"
+      }
+    }
+  },
+  "server": {
+    "dir": "dist/server",
+    "entry": "index.cjs"
+  },
+  "permissions": {
+    "http": {
+      "enable": true,
+      "domains": ["michiganspots.com", "api.cloudflare.com"]
+    },
+    "redis": true,
+    "reddit": {
+      "enable": true,
+      "scope": "user"
+    }
+  },
+  "media": {
+    "dir": "assets"
+  },
+  "menu": {
+    "items": [
+      {
+        "label": "🎮 Create Michigan Arcade",
+        "description": "Create interactive arcade games post",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/create-arcade"
+      },
+      {
+        "label": "🏆 Create Leaderboard",
+        "description": "Create community leaderboard post",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/create-leaderboard"
+      },
+      {
+        "label": "🤖 Create AI Mod Tools",
+        "description": "Create AI moderator tools (Moderators Only)",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/create-ai-tools"
+      }
+    ]
+  },
+  "triggers": {
+    "onAppInstall": "/internal/on-app-install"
+  },
+  "dev": {
+    "subreddit": "michiganspots_dev"
+  }
+}
