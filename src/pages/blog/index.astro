@@ -4,14 +4,28 @@ import { Card } from '../../components/Card';
 import { Calendar, User, ArrowRight, Tag } from 'lucide-react';
 
 // Fetch blog posts
-const response = await fetch(`${Astro.url.origin}/api/blog/posts?status=published&limit=20`);
-const data = await response.json();
-const posts = data.posts || [];
+let posts = [];
+let categories = [];
 
-// Fetch categories
-const categoriesResponse = await fetch(`${Astro.url.origin}/api/blog/categories`);
-const categoriesData = await categoriesResponse.json();
-const categories = categoriesData.categories || [];
+try {
+  const response = await fetch(`${Astro.url.origin}/api/blog/posts?status=published&limit=20`);
+  if (response.ok) {
+    const data = await response.json();
+    posts = data.posts || [];
+  }
+} catch (error) {
+  console.error('Error fetching blog posts:', error);
+}
+
+try {
+  const categoriesResponse = await fetch(`${Astro.url.origin}/api/blog/categories`);
+  if (categoriesResponse.ok) {
+    const categoriesData = await categoriesResponse.json();
+    categories = categoriesData.categories || [];
+  }
+} catch (error) {
+  console.error('Error fetching categories:', error);
+}
 ---
 
 <Layout

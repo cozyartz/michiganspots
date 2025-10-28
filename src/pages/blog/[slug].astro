@@ -6,17 +6,29 @@ import { Calendar, User, Tag, Share2 } from 'lucide-react';
 const { slug } = Astro.params;
 
 // Fetch blog post
-const response = await fetch(`${Astro.url.origin}/api/blog/${slug}`);
+let post = null;
+let tags = [];
 
-if (!response.ok) {
+try {
+  const response = await fetch(`${Astro.url.origin}/api/blog/${slug}`);
+
+  if (!response.ok) {
+    return Astro.redirect('/blog');
+  }
+
+  const data = await response.json();
+  post = data.post;
+
+  // Parse tags if they exist
+  tags = post.tags ? JSON.parse(post.tags) : [];
+} catch (error) {
+  console.error('Error fetching blog post:', error);
   return Astro.redirect('/blog');
 }
 
-const data = await response.json();
-const post = data.post;
-
-// Parse tags if they exist
-const tags = post.tags ? JSON.parse(post.tags) : [];
+if (!post) {
+  return Astro.redirect('/blog');
+}
 ---
 
 <Layout
