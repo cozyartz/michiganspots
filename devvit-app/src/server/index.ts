@@ -281,8 +281,6 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
   try {
     const gameData = req.body;
 
-    // Store score in Redis for leaderboard
-    const scoreKey = `leaderboard:${gameData.game}`;
     const scoreData = JSON.stringify({
       username: gameData.username,
       score: gameData.score,
@@ -290,11 +288,23 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
       timestamp: Date.now(),
     });
 
-    // Add to sorted set with score as the sort value
-    await redis.zAdd(scoreKey, { member: scoreData, score: gameData.score });
+    // Store in all time leaderboard
+    const allTimeKey = `leaderboard:alltime:${gameData.game}`;
+    await redis.zAdd(allTimeKey, { member: scoreData, score: gameData.score });
+    await redis.zRemRangeByRank(allTimeKey, 0, -101); // Keep top 100
 
-    // Keep only top 100 scores
-    await redis.zRemRangeByRank(scoreKey, 0, -101);
+    // Store in time-period specific leaderboards
+    const periods = ['daily', 'weekly', 'monthly'];
+    for (const period of periods) {
+      const periodKey = getTimePeriodKey(period);
+      const scoreKey = `leaderboard:${periodKey}:${gameData.game}`;
+      await redis.zAdd(scoreKey, { member: scoreData, score: gameData.score });
+      await redis.zRemRangeByRank(scoreKey, 0, -101); // Keep top 100
+
+      // Set expiration for period-specific keys (30 days for daily, 90 days for weekly/monthly)
+      const expirySeconds = period === 'daily' ? 30 * 24 * 60 * 60 : 90 * 24 * 60 * 60;
+      await redis.expire(scoreKey, expirySeconds);
+    }
 
     // Forward to Cloudflare API if DEVVIT_API_KEY is configured
     const apiKey = process.env.DEVVIT_API_KEY;
@@ -1004,19 +1014,44 @@ router.get('/api/mod-history', async (req, res): Promise<void> => {
   }
 });
 
-// Get leaderboard data
+// Helper function to get time period key suffix
+function getTimePeriodKey(period: string): string {
+  const now = new Date();
+  switch (period) {
+    case 'daily':
+      return `daily:${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    case 'weekly':
+      const weekNum = Math.ceil((now.getDate() + 6 - now.getDay()) / 7);
+      return `weekly:${now.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+    case 'monthly':
+      return `monthly:${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    default:
+      return 'alltime';
+  }
+}
+
+// Get leaderboard data with time periods
 router.get('/api/leaderboard/:game', async (req, res): Promise<void> => {
   try {
     const game = req.params.game === 'all' ? '*' : req.params.game;
-    const scoreKey = game === '*' ? 'leaderboard:*' : `leaderboard:${game}`;
+    const period = (req.query.period as string) || 'alltime'; // daily, weekly, monthly, alltime
+    const limit = parseInt(req.query.limit as string) || 10;
 
-    // Get top 10 scores
-    const topScores = await redis.zRange(scoreKey, 0, 9, { reverse: true, by: 'score' });
+    const periodKey = getTimePeriodKey(period);
+    const scoreKey = game === '*'
+      ? `leaderboard:${periodKey}:*`
+      : `leaderboard:${periodKey}:${game}`;
+
+    // Get top scores for the period
+    const topScores = await redis.zRange(scoreKey, 0, limit - 1, { reverse: true, by: 'score' });
 
     const parsedScores = topScores.map((score) => JSON.parse(score.member));
 
     res.json({
       topScores: parsedScores,
+      period,
+      periodKey,
+      total: parsedScores.length,
     });
   } catch (error) {
     console.error('Leaderboard error:', error);
@@ -1024,6 +1059,46 @@ router.get('/api/leaderboard/:game', async (req, res): Promise<void> => {
       status: 'error',
       message: 'Failed to load leaderboard',
       topScores: [],
+    });
+  }
+});
+
+// Get all-time and period leaderboards combined
+router.get('/api/leaderboard/:game/combined', async (req, res): Promise<void> => {
+  try {
+    const game = req.params.game === 'all' ? '*' : req.params.game;
+    const periods = ['daily', 'weekly', 'monthly', 'alltime'];
+
+    const leaderboards: any = {};
+
+    for (const period of periods) {
+      try {
+        const periodKey = getTimePeriodKey(period);
+        const scoreKey = game === '*'
+          ? `leaderboard:${periodKey}:*`
+          : `leaderboard:${periodKey}:${game}`;
+
+        const scores = await redis.zRange(scoreKey, 0, 9, { reverse: true, by: 'score' });
+        leaderboards[period] = scores.map((score) => JSON.parse(score.member));
+      } catch (periodError) {
+        console.error(`Error loading ${period} leaderboard:`, periodError);
+        leaderboards[period] = [];
+      }
+    }
+
+    res.json({
+      leaderboards,
+      currentPeriod: {
+        daily: getTimePeriodKey('daily'),
+        weekly: getTimePeriodKey('weekly'),
+        monthly: getTimePeriodKey('monthly'),
+      },
+    });
+  } catch (error) {
+    console.error('Combined leaderboard error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load combined leaderboards',
     });
   }
 });
@@ -1179,6 +1254,165 @@ router.get('/api/challenges/leaderboard', async (_req, res): Promise<void> => {
       status: 'error',
       message: 'Failed to load challenge leaderboard',
       leaderboard: [],
+    });
+  }
+});
+
+// User Profile endpoint
+router.get('/api/profile/:username', async (req, res): Promise<void> => {
+  try {
+    const { username } = req.params;
+
+    if (!username) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username is required',
+      });
+      return;
+    }
+
+    // Get user's game scores across all games
+    const games = ['photo-hunt', 'trivia', 'word-search', 'memory-match'];
+    const gameStats: Record<string, any> = {};
+    let totalScore = 0;
+    let gamesPlayed = 0;
+
+    for (const game of games) {
+      const allTimeKey = `leaderboard:alltime:${game}`;
+      const userScores = await redis.zRange(allTimeKey, 0, -1, {
+        byScore: true,
+        withScores: true,
+      });
+
+      // Find user's scores
+      const userEntries = userScores.filter((entry: any) => {
+        try {
+          const data = JSON.parse(entry.member);
+          return data.username === username;
+        } catch {
+          return false;
+        }
+      });
+
+      if (userEntries.length > 0) {
+        const bestScore = Math.max(...userEntries.map((e: any) => e.score));
+        const totalGameScore = userEntries.reduce((sum: number, e: any) => sum + e.score, 0);
+
+        gameStats[game] = {
+          bestScore,
+          totalScore: totalGameScore,
+          timesPlayed: userEntries.length,
+        };
+
+        totalScore += totalGameScore;
+        gamesPlayed += userEntries.length;
+      } else {
+        gameStats[game] = {
+          bestScore: 0,
+          totalScore: 0,
+          timesPlayed: 0,
+        };
+      }
+    }
+
+    // Get challenge progress
+    const challengeKey = `challenge:progress:${username}`;
+    const challengeData = await redis.get(challengeKey);
+    let challengeProgress: any[] = [];
+    let challengesCompleted = 0;
+
+    if (challengeData) {
+      try {
+        challengeProgress = JSON.parse(challengeData as string);
+        challengesCompleted = challengeProgress.filter((c: any) => c.completedAt).length;
+      } catch {
+        challengeProgress = [];
+      }
+    }
+
+    // Get user's rank across all games
+    const rankings: Record<string, number> = {};
+    for (const game of games) {
+      const allTimeKey = `leaderboard:alltime:${game}`;
+      const leaderboard = await redis.zRange(allTimeKey, 0, -1, {
+        reverse: true,
+        withScores: true,
+      });
+
+      // Find user's rank
+      let rank = 0;
+      const uniqueUsers = new Set<string>();
+
+      for (const entry of leaderboard) {
+        try {
+          const data = JSON.parse(entry.member);
+          if (!uniqueUsers.has(data.username)) {
+            uniqueUsers.add(data.username);
+            rank++;
+            if (data.username === username) {
+              rankings[game] = rank;
+              break;
+            }
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      if (!rankings[game]) {
+        rankings[game] = 0; // Not ranked
+      }
+    }
+
+    // Get recent activity (last 10 plays)
+    const recentActivity: any[] = [];
+    for (const game of games) {
+      const allTimeKey = `leaderboard:alltime:${game}`;
+      const scores = await redis.zRange(allTimeKey, 0, -1, {
+        withScores: true,
+      });
+
+      for (const entry of scores) {
+        try {
+          const data = JSON.parse(entry.member);
+          if (data.username === username) {
+            recentActivity.push({
+              game,
+              score: entry.score,
+              timestamp: data.timestamp,
+            });
+          }
+        } catch {
+          continue;
+        }
+      }
+    }
+
+    // Sort by timestamp and take last 10
+    recentActivity.sort((a, b) => b.timestamp - a.timestamp);
+    const recentPlays = recentActivity.slice(0, 10);
+
+    res.json({
+      status: 'success',
+      profile: {
+        username,
+        stats: {
+          totalScore,
+          gamesPlayed,
+          challengesCompleted,
+          totalChallenges: 10, // Based on MICHIGAN_CHALLENGES array
+        },
+        gameStats,
+        rankings,
+        challengeProgress,
+        recentActivity: recentPlays,
+      },
+    });
+  } catch (error) {
+    console.error('Failed to load user profile:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load user profile',
     });
   }
 });
