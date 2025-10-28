@@ -55,6 +55,9 @@ export function Header() {
             <a href="/about" className="font-heading text-ink-primary hover:text-cyan-primary transition-colors">
               About
             </a>
+            <a href="/blog" className="font-heading text-ink-primary hover:text-cyan-primary transition-colors">
+              Blog
+            </a>
             <div
               className="relative"
               onMouseEnter={() => setIsPartnershipsOpen(true)}

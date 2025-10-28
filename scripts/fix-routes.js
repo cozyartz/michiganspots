@@ -4,18 +4,22 @@
  * Removes incorrect exclusions for server-rendered pages
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const routesPath = path.join(__dirname, '../dist/_routes.json');
 
 try {
   const routes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
-  
+
   // Remove server-rendered pages from exclude list
   const pagesToServe = ['/about', '/partnerships', '/chamber-partnerships', '/business-partnerships'];
   routes.exclude = routes.exclude.filter(route => !pagesToServe.includes(route));
-  
+
   fs.writeFileSync(routesPath, JSON.stringify(routes, null, 2));
   console.log('✅ Fixed _routes.json - removed incorrect exclusions');
 } catch (error) {

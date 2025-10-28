@@ -1,0 +1,197 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Card } from '../../components/Card';
+import { Calendar, User, Tag, Share2 } from 'lucide-react';
+
+const { slug } = Astro.params;
+
+// Fetch blog post
+const response = await fetch(`${Astro.url.origin}/api/blog/${slug}`);
+
+if (!response.ok) {
+  return Astro.redirect('/blog');
+}
+
+const data = await response.json();
+const post = data.post;
+
+// Parse tags if they exist
+const tags = post.tags ? JSON.parse(post.tags) : [];
+---
+
+<Layout
+  title={post.meta_title || post.title}
+  description={post.meta_description || post.excerpt}
+  keywords={post.keywords}
+>
+  <article class="container mx-auto px-4 py-20">
+    <!-- Back to Blog -->
+    <a
+      href="/blog"
+      class="inline-flex items-center text-copper-orange hover:underline mb-8"
+    >
+      ← Back to Blog
+    </a>
+
+    <!-- Featured Image -->
+    {post.featured_image_url && (
+      <img
+        src={post.featured_image_url}
+        alt={post.title}
+        class="w-full max-w-4xl mx-auto h-96 object-cover rounded-sm shadow-lg mb-8"
+      />
+    )}
+
+    <!-- Post Header -->
+    <header class="max-w-3xl mx-auto mb-8">
+      {post.category && (
+        <a
+          href={`/blog/category/${post.category}`}
+          class="inline-block px-4 py-2 bg-lakes-blue/10 text-lakes-blue font-medium rounded-full mb-4 hover:bg-lakes-blue/20 transition-colors"
+        >
+          {post.category}
+        </a>
+      )}
+
+      <h1 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-4">
+        {post.title}
+      </h1>
+
+      <p class="text-xl text-ink-secondary mb-6">
+        {post.excerpt}
+      </p>
+
+      <div class="flex items-center justify-between py-4 border-y border-ink-faded/30">
+        <div class="flex items-center space-x-6 text-sm text-ink-faded">
+          <span class="flex items-center">
+            <User class="w-4 h-4 mr-2" />
+            {post.author_name}
+          </span>
+          <span class="flex items-center">
+            <Calendar class="w-4 h-4 mr-2" />
+            {new Date(post.published_at).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </span>
+        </div>
+
+        <button
+          onclick="sharePost()"
+          class="flex items-center space-x-2 text-copper-orange hover:underline"
+        >
+          <Share2 class="w-4 h-4" />
+          <span>Share</span>
+        </button>
+      </div>
+
+      {post.neuronwriter_score && post.neuronwriter_score > 0 && (
+        <div class="mt-4 inline-flex items-center px-3 py-1 bg-forest-green/10 text-forest-green text-sm font-medium rounded-full">
+          ✓ SEO Optimized (Score: {post.neuronwriter_score}/100)
+        </div>
+      )}
+    </header>
+
+    <!-- Post Content -->
+    <Card className="max-w-3xl mx-auto">
+      <div class="prose prose-lg max-w-none" set:html={post.content} />
+    </Card>
+
+    <!-- Tags -->
+    {tags.length > 0 && (
+      <div class="max-w-3xl mx-auto mt-8">
+        <div class="flex items-center flex-wrap gap-2">
+          <Tag class="w-4 h-4 text-ink-faded" />
+          {tags.map((tag: string) => (
+            <span class="px-3 py-1 bg-ink-faded/10 text-ink-secondary text-sm rounded-full">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Related Posts / Back to Blog -->
+    <div class="max-w-3xl mx-auto mt-12 text-center">
+      <a
+        href="/blog"
+        class="inline-flex items-center px-6 py-3 bg-copper-orange text-parchment-light font-heading font-bold rounded hover:bg-sunset-red transition-colors"
+      >
+        Read More Articles
+      </a>
+    </div>
+  </article>
+
+  <script is:inline>
+    function sharePost() {
+      if (navigator.share) {
+        navigator.share({
+          title: document.title,
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    }
+  </script>
+
+  <style>
+    .prose {
+      color: var(--color-ink-primary);
+    }
+
+    .prose h2 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .prose h3 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .prose p {
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+
+    .prose a {
+      color: var(--color-lakes-blue);
+      text-decoration: underline;
+    }
+
+    .prose a:hover {
+      color: var(--color-copper-orange);
+    }
+
+    .prose ul, .prose ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .prose li {
+      margin-bottom: 0.5rem;
+    }
+
+    .prose img {
+      border-radius: 0.25rem;
+      margin: 2rem auto;
+    }
+
+    .prose blockquote {
+      border-left: 4px solid var(--color-copper-orange);
+      padding-left: 1.5rem;
+      font-style: italic;
+      color: var(--color-ink-secondary);
+    }
+  </style>
+</Layout>
