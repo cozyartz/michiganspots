@@ -703,7 +703,7 @@ Respond in JSON format:
 // Photo Hunt - AI Photo Rating
 router.post('/api/photo-hunt/analyze', async (req, res): Promise<void> => {
   try {
-    const { image, username, gps } = req.body;
+    const { image, username, gps, location } = req.body;
 
     if (!image) {
       res.status(400).json({
@@ -713,37 +713,30 @@ router.post('/api/photo-hunt/analyze', async (req, res): Promise<void> => {
       return;
     }
 
-    // Validate GPS data
-    if (!gps || typeof gps.latitude !== 'number' || typeof gps.longitude !== 'number') {
-      res.status(400).json({
-        status: 'error',
-        message: 'GPS location is required for treasure hunt submissions',
-      });
-      return;
+    // Location is now OPTIONAL - Photo Hunt doesn't require it
+    // Challenges feature (separate) will use GPS verification
+    const locationData = location || gps;
+
+    if (locationData && locationData.latitude && locationData.longitude) {
+      // Import location validation
+      const { isLocationInMichigan } = await import('../shared/types/challenges.js');
+
+      // If location provided, log it (but don't validate)
+      const tier = locationData.tier || 'gps';
+      const source = locationData.source || 'device-gps';
+
+      console.log(`Photo submission from ${username} at [${locationData.latitude}, ${locationData.longitude}]`);
+      console.log(`Location tier: ${tier} (${source}) with accuracy ±${locationData.accuracy}m`);
+
+      // Optional: Check if in Michigan (for logging/analytics only)
+      if (isLocationInMichigan(locationData.latitude, locationData.longitude)) {
+        console.log('Location is in Michigan');
+      } else {
+        console.log('Location is outside Michigan (but accepting submission)');
+      }
+    } else {
+      console.log(`Photo submission from ${username} (no location data provided)`);
     }
-
-    // Verify location is in Michigan
-    const MICHIGAN_BOUNDS = {
-      minLat: 41.7,
-      maxLat: 48.3,
-      minLon: -90.4,
-      maxLon: -82.1,
-    };
-
-    if (
-      gps.latitude < MICHIGAN_BOUNDS.minLat ||
-      gps.latitude > MICHIGAN_BOUNDS.maxLat ||
-      gps.longitude < MICHIGAN_BOUNDS.minLon ||
-      gps.longitude > MICHIGAN_BOUNDS.maxLon
-    ) {
-      res.status(400).json({
-        status: 'error',
-        message: 'Photo must be taken in Michigan',
-      });
-      return;
-    }
-
-    console.log(`Photo submission from ${username} at [${gps.latitude}, ${gps.longitude}] with accuracy ±${gps.accuracy}m`);
 
     // Extract base64 data from data URI
     const base64Match = image.match(/^data:image\/[a-z]+;base64,(.+)$/);
@@ -1344,6 +1337,276 @@ router.post('/api/challenges/match', async (req, res): Promise<void> => {
     res.status(500).json({
       status: 'error',
       message: 'Failed to match challenges',
+    });
+  }
+});
+
+// Challenge proximity verification endpoint - Verify user is at landmark
+router.post('/api/challenges/verify-location', async (req, res): Promise<void> => {
+  try {
+    const { username, latitude, longitude, landmarkName, radiusMeters } = req.body;
+
+    if (!username || !latitude || !longitude || !landmarkName) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username, latitude, longitude, and landmarkName are required',
+      });
+      return;
+    }
+
+    // Import proximity verification utilities
+    const { verifyProximity, findChallengesForLandmark, MICHIGAN_CHALLENGES } = await import(
+      '../shared/types/challenges.js'
+    );
+
+    // Verify user is within proximity of landmark (default 1000m = 1km)
+    const verification = verifyProximity(
+      parseFloat(latitude),
+      parseFloat(longitude),
+      landmarkName,
+      radiusMeters ? parseInt(radiusMeters) : 1000
+    );
+
+    if (!verification.verified) {
+      res.json({
+        status: 'not_verified',
+        verified: false,
+        distance: verification.distance,
+        message: verification.message,
+        landmark: verification.landmark,
+      });
+      return;
+    }
+
+    // User is verified at the landmark - update challenge progress
+    const progressKey = `challenges:progress:${username}`;
+    const progressData = await redis.get(progressKey);
+    let userProgress: any[] = [];
+
+    if (progressData) {
+      try {
+        userProgress = JSON.parse(progressData as string);
+      } catch {
+        userProgress = [];
+      }
+    }
+
+    // Find challenges that include this landmark
+    const matchedChallenges = findChallengesForLandmark(landmarkName);
+
+    const challengeResults = matchedChallenges.map((challenge) => {
+      // Find existing progress or create new
+      let progress = userProgress.find((p) => p.challengeId === challenge.id);
+
+      if (!progress) {
+        progress = {
+          challengeId: challenge.id,
+          completedLandmarks: [],
+          totalScore: 0,
+        };
+        userProgress.push(progress);
+      }
+
+      // Add landmark if not already completed
+      let newlyCompleted = false;
+      let challengeCompleted = false;
+
+      if (!progress.completedLandmarks.includes(landmarkName)) {
+        progress.completedLandmarks.push(landmarkName);
+        newlyCompleted = true;
+
+        // Check if challenge is now complete
+        if (progress.completedLandmarks.length >= challenge.requiredCount && !progress.completedAt) {
+          progress.completedAt = Date.now();
+          progress.totalScore += challenge.bonusPoints;
+          challengeCompleted = true;
+        }
+      }
+
+      return {
+        challengeId: challenge.id,
+        challengeName: challenge.name,
+        challengeIcon: challenge.icon,
+        progress: progress.completedLandmarks.length,
+        required: challenge.requiredCount,
+        completed: !!progress.completedAt,
+        bonusPoints: challenge.bonusPoints,
+        newlyCompleted,
+        challengeCompleted,
+      };
+    });
+
+    // Save updated progress
+    await redis.set(progressKey, JSON.stringify(userProgress));
+
+    res.json({
+      status: 'success',
+      verified: true,
+      distance: verification.distance,
+      message: verification.message,
+      landmark: verification.landmark,
+      matchedChallenges: challengeResults,
+    });
+  } catch (error) {
+    console.error('Failed to verify location:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to verify location',
+    });
+  }
+});
+
+// IP Geolocation fallback endpoint (Tier 2 location verification)
+router.post('/api/location/verify-ip', async (req, res): Promise<void> => {
+  try {
+    // Get client IP address from request
+    const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+
+    // For development/testing, allow override
+    const testIP = req.body.testIP;
+    const ipToCheck = testIP || (Array.isArray(clientIP) ? clientIP[0] : clientIP);
+
+    console.log('IP geolocation request for:', ipToCheck);
+
+    // Call free IP geolocation service (ip-api.com - no key required)
+    // Rate limit: 45 requests per minute
+    const geoResponse = await fetch(`http://ip-api.com/json/${ipToCheck}?fields=status,message,country,countryCode,region,regionName,city,lat,lon,query`);
+
+    if (!geoResponse.ok) {
+      res.status(500).json({
+        status: 'error',
+        message: 'IP geolocation service unavailable',
+        tier: 'ip',
+      });
+      return;
+    }
+
+    const geoData = await geoResponse.json();
+
+    if (geoData.status === 'fail') {
+      res.status(400).json({
+        status: 'error',
+        message: geoData.message || 'Invalid IP address',
+        tier: 'ip',
+      });
+      return;
+    }
+
+    // Check if location is in United States and Michigan
+    const isUSA = geoData.countryCode === 'US';
+    const isMichigan = geoData.region === 'MI' || geoData.regionName === 'Michigan';
+
+    // Import location validation
+    const { isLocationInMichigan } = await import('../shared/types/challenges.js');
+
+    // Validate coordinates are in Michigan bounds
+    const inMichiganBounds = isLocationInMichigan(geoData.lat, geoData.lon);
+
+    if (!isUSA || !isMichigan || !inMichiganBounds) {
+      res.json({
+        status: 'not_verified',
+        verified: false,
+        tier: 'ip',
+        message: `IP location detected: ${geoData.city}, ${geoData.regionName}. You must be in Michigan to participate.`,
+        location: {
+          city: geoData.city,
+          region: geoData.regionName,
+          country: geoData.country,
+          latitude: geoData.lat,
+          longitude: geoData.lon,
+        },
+      });
+      return;
+    }
+
+    // User is in Michigan (based on IP)
+    res.json({
+      status: 'success',
+      verified: true,
+      tier: 'ip',
+      message: `Approximate location verified: ${geoData.city}, Michigan`,
+      location: {
+        city: geoData.city,
+        region: geoData.regionName,
+        latitude: geoData.lat,
+        longitude: geoData.lon,
+        accuracy: 10000, // ~10km accuracy for IP geolocation
+        source: 'ip-geolocation',
+        timestamp: Date.now(),
+      },
+    });
+  } catch (error) {
+    console.error('IP geolocation error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to verify location via IP',
+      tier: 'ip',
+    });
+  }
+});
+
+// Manual city verification endpoint (Tier 3 location verification)
+router.post('/api/location/verify-manual', async (req, res): Promise<void> => {
+  try {
+    const { cityName, username } = req.body;
+
+    if (!cityName || !username) {
+      res.status(400).json({
+        status: 'error',
+        message: 'City name and username are required',
+      });
+      return;
+    }
+
+    // Import city validation utilities
+    const { isMichiganCity, getCityApproximateCoords, getRegionForCity } = await import(
+      '../shared/types/challenges.js'
+    );
+
+    // Validate city is in Michigan
+    if (!isMichiganCity(cityName)) {
+      res.status(400).json({
+        status: 'error',
+        message: `"${cityName}" is not a recognized Michigan city`,
+        tier: 'manual',
+      });
+      return;
+    }
+
+    // Get approximate coordinates and region
+    const coords = getCityApproximateCoords(cityName);
+    const region = getRegionForCity(cityName);
+
+    if (!coords || !region) {
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to get location data for city',
+        tier: 'manual',
+      });
+      return;
+    }
+
+    res.json({
+      status: 'success',
+      verified: true,
+      tier: 'manual',
+      message: `Location verified: ${cityName}, ${region.name}`,
+      location: {
+        cityName,
+        regionName: region.name,
+        latitude: coords.lat,
+        longitude: coords.lon,
+        accuracy: 25000, // ~25km accuracy for city-level
+        source: 'user-selected',
+        timestamp: Date.now(),
+      },
+    });
+  } catch (error) {
+    console.error('Manual city verification error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to verify city',
+      tier: 'manual',
     });
   }
 });
