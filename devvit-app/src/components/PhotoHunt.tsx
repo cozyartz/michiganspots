@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getTheme } from './theme';
 
 interface PhotoHuntProps {
@@ -17,81 +17,21 @@ interface PhotoRating {
   totalScore: number;
   feedback: string;
   detectedLandmark?: string;
+  landmarkName?: string;
+  matchedChallenges?: any[];
 }
-
-interface GPSCoordinates {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
-  timestamp: number;
-}
-
-// Michigan boundaries (approximate)
-const MICHIGAN_BOUNDS = {
-  minLat: 41.7,
-  maxLat: 48.3,
-  minLon: -90.4,
-  maxLon: -82.1,
-};
-
-const isInMichigan = (lat: number, lon: number): boolean => {
-  return (
-    lat >= MICHIGAN_BOUNDS.minLat &&
-    lat <= MICHIGAN_BOUNDS.maxLat &&
-    lon >= MICHIGAN_BOUNDS.minLon &&
-    lon <= MICHIGAN_BOUNDS.maxLon
-  );
-};
 
 export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: PhotoHuntProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [rating, setRating] = useState<PhotoRating | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [gpsCoordinates, setGpsCoordinates] = useState<GPSCoordinates | null>(null);
-  const [locationStatus, setLocationStatus] = useState<'checking' | 'granted' | 'denied' | 'unavailable' | 'outside-michigan'>('checking');
 
   const theme = getTheme(isDark);
 
-  // Request GPS location on component mount
-  const requestLocation = async () => {
-    if (!navigator.geolocation) {
-      setLocationStatus('unavailable');
-      setError('Location services are not available on your device');
-      return;
-    }
-
-    try {
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        });
-      });
-
-      const coords: GPSCoordinates = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        accuracy: position.coords.accuracy,
-        timestamp: position.timestamp,
-      };
-
-      // Check if location is in Michigan
-      if (!isInMichigan(coords.latitude, coords.longitude)) {
-        setLocationStatus('outside-michigan');
-        setError('You must be in Michigan to submit photos for the treasure hunt! 🗺️');
-        return;
-      }
-
-      setGpsCoordinates(coords);
-      setLocationStatus('granted');
-      setError(null);
-    } catch (err) {
-      console.error('Location error:', err);
-      setLocationStatus('denied');
-      setError('Location permission denied. Please enable location services to participate in the treasure hunt.');
-    }
+  // Simple photo selection - no location verification
+  const handleSelectPhotoClick = () => {
+    document.getElementById('photo-upload')?.click();
   };
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,24 +60,8 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
     reader.readAsDataURL(file);
   };
 
-  // Request location on component mount
-  useEffect(() => {
-    requestLocation();
-  }, []);
-
   const analyzePhoto = async () => {
     if (!selectedImage) return;
-
-    // Verify GPS location before analysis
-    if (!gpsCoordinates) {
-      setError('Location verification required. Please enable location services.');
-      return;
-    }
-
-    if (locationStatus !== 'granted') {
-      setError('You must be in Michigan with location services enabled to submit photos.');
-      return;
-    }
 
     setIsAnalyzing(true);
     setError(null);
@@ -152,7 +76,7 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
           image: selectedImage,
           username,
           postId,
-          gps: gpsCoordinates,
+          // No location data required - AI will detect Michigan content
         }),
       });
 
@@ -163,39 +87,7 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
       const result = await response.json();
       setRating(result.rating);
 
-      // Check for matching challenges if landmark detected
-      let matchedChallengesInfo: any[] = [];
-      if (result.rating.landmarkName) {
-        try {
-          const challengesRes = await fetch('/api/challenges/match', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              landmarkName: result.rating.landmarkName,
-              username,
-            }),
-          });
-
-          if (challengesRes.ok) {
-            const challengesData = await challengesRes.json();
-            if (challengesData.matchedChallenges && challengesData.matchedChallenges.length > 0) {
-              matchedChallengesInfo = challengesData.matchedChallenges;
-
-              // Update rating to include challenge info
-              setRating({
-                ...result.rating,
-                matchedChallenges: matchedChallengesInfo,
-              });
-            }
-          }
-        } catch (challengeErr) {
-          console.error('Failed to check challenges:', challengeErr);
-        }
-      }
-
-      // Track analytics
+      // Track analytics (Challenges are separate - no proximity verification here)
       await fetch('/api/analytics/game-complete', {
         method: 'POST',
         headers: {
@@ -210,7 +102,6 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
           michiganRelevance: result.rating.michiganRelevance,
           landmarkBonus: result.rating.landmarkBonus,
           creativity: result.rating.creativity,
-          matchedChallenges: matchedChallengesInfo.length,
         }),
       });
     } catch (err) {
@@ -324,81 +215,6 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
           </div>
 
           <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* Location Status */}
-            <div
-              style={{
-                padding: '12px 16px',
-                borderRadius: '12px',
-                background: locationStatus === 'granted'
-                  ? `${theme.colors.cyan.primary}15`
-                  : locationStatus === 'checking'
-                  ? `${theme.colors.amber}15`
-                  : `${theme.colors.coral}15`,
-                border: `2px solid ${
-                  locationStatus === 'granted'
-                    ? theme.colors.cyan.primary
-                    : locationStatus === 'checking'
-                    ? theme.colors.amber
-                    : theme.colors.coral
-                }40`,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-              }}
-            >
-              <span style={{ fontSize: '24px' }}>
-                {locationStatus === 'granted' && '📍'}
-                {locationStatus === 'checking' && '🔍'}
-                {(locationStatus === 'denied' || locationStatus === 'unavailable' || locationStatus === 'outside-michigan') && '⚠️'}
-              </span>
-              <div style={{ flex: 1 }}>
-                <p
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: '700',
-                    color: theme.colors.ink.primary,
-                    marginBottom: '2px',
-                  }}
-                >
-                  {locationStatus === 'granted' && '✓ Location Verified - In Michigan!'}
-                  {locationStatus === 'checking' && 'Checking Location...'}
-                  {locationStatus === 'denied' && 'Location Access Denied'}
-                  {locationStatus === 'unavailable' && 'Location Unavailable'}
-                  {locationStatus === 'outside-michigan' && 'Not in Michigan'}
-                </p>
-                <p
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    color: theme.colors.ink.secondary,
-                  }}
-                >
-                  {locationStatus === 'granted' && `Accuracy: ±${Math.round(gpsCoordinates?.accuracy || 0)}m`}
-                  {locationStatus === 'checking' && 'Requesting location permission...'}
-                  {locationStatus === 'denied' && 'Please enable location services to submit photos'}
-                  {locationStatus === 'unavailable' && 'Location services not available on this device'}
-                  {locationStatus === 'outside-michigan' && 'You must be in Michigan to participate'}
-                </p>
-              </div>
-              {locationStatus !== 'granted' && locationStatus !== 'checking' && (
-                <button
-                  onClick={requestLocation}
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    background: theme.colors.cyan.primary,
-                    color: 'white',
-                    border: 'none',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Retry
-                </button>
-              )}
-            </div>
-
             {/* Instructions */}
             {!selectedImage && (
               <div
@@ -458,8 +274,8 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
             {/* File upload */}
             {!selectedImage && (
               <div style={{ textAlign: 'center' }}>
-                <label
-                  htmlFor="photo-upload"
+                <button
+                  onClick={handleSelectPhotoClick}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -489,7 +305,7 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
                     <circle cx="12" cy="13" r="3" />
                   </svg>
                   Select Photo
-                </label>
+                </button>
                 <input
                   id="photo-upload"
                   type="file"
@@ -517,12 +333,12 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <button
                     onClick={analyzePhoto}
-                    disabled={isAnalyzing || locationStatus !== 'granted'}
+                    disabled={isAnalyzing}
                     style={{
                       flex: 1,
                       padding: '16px',
                       borderRadius: '16px',
-                      background: (isAnalyzing || locationStatus !== 'granted')
+                      background: isAnalyzing
                         ? theme.colors.border
                         : `linear-gradient(135deg, ${theme.colors.cyan.primary} 0%, ${theme.colors.cyan.dark} 100%)`,
                       color: 'white',
@@ -530,8 +346,8 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
                       fontSize: '16px',
                       border: 'none',
                       boxShadow: theme.shadows.md,
-                      cursor: (isAnalyzing || locationStatus !== 'granted') ? 'not-allowed' : 'pointer',
-                      opacity: (isAnalyzing || locationStatus !== 'granted') ? 0.6 : 1,
+                      cursor: isAnalyzing ? 'not-allowed' : 'pointer',
+                      opacity: isAnalyzing ? 0.6 : 1,
                       transition: 'all 0.2s',
                       display: 'flex',
                       alignItems: 'center',
@@ -695,6 +511,49 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
                     {rating.feedback}
                   </p>
                 </div>
+
+                {/* Proximity Verification Status */}
+                {rating.landmarkName && rating.proximityDistance !== undefined && (
+                  <div
+                    style={{
+                      padding: '16px',
+                      borderRadius: '12px',
+                      background: rating.proximityVerified
+                        ? `${theme.colors.cyan.primary}15`
+                        : `${theme.colors.coral}15`,
+                      border: `2px solid ${rating.proximityVerified ? theme.colors.cyan.primary : theme.colors.coral}40`,
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '12px',
+                    }}
+                  >
+                    <span style={{ fontSize: '24px', marginTop: '2px' }}>
+                      {rating.proximityVerified ? '✅' : '📍'}
+                    </span>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{
+                        fontSize: '14px',
+                        fontWeight: '700',
+                        color: theme.colors.ink.primary,
+                        margin: '0 0 4px 0'
+                      }}>
+                        {rating.proximityVerified ? 'Location Verified!' : 'Location Check'}
+                      </h4>
+                      <p style={{
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: theme.colors.ink.secondary,
+                        margin: 0
+                      }}>
+                        {rating.proximityMessage || (
+                          rating.proximityVerified
+                            ? `You are ${rating.proximityDistance}m from ${rating.landmarkName}. Challenge progress updated!`
+                            : `You are ${rating.proximityDistance}m from ${rating.landmarkName}. Get within 1km to earn challenge credit.`
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Matched Challenges */}
                 {rating.matchedChallenges && rating.matchedChallenges.length > 0 && (
