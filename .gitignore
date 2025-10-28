@@ -42,3 +42,7 @@ VERIFICATION*.md
 PURELYMAIL_SETUP.md
 SECURITY_AUDIT.md
 .secrets/
+
+# Backup directories
+*-backup-*/
+devvit-app-backup-*/
