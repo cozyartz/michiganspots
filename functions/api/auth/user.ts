@@ -29,7 +29,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   try {
-    const sessionId = getCookie(request.headers.get('Cookie'), 'session_id');
+    const sessionId = getCookie(request.headers.get('Cookie'), 'session');
 
     if (!sessionId) {
       return new Response(JSON.stringify({ user: null }), {
@@ -38,9 +38,9 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       });
     }
 
-    // Get session from database
+    // Get session from database (expires_at is stored as Unix timestamp)
     const session = await env.DB.prepare(
-      'SELECT * FROM sessions WHERE id = ? AND expires_at > datetime("now")'
+      'SELECT * FROM sessions WHERE id = ? AND expires_at > unixepoch()'
     ).bind(sessionId).first();
 
     if (!session) {
@@ -50,7 +50,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         headers: {
           'Content-Type': 'application/json',
           // Clear invalid session cookie
-          'Set-Cookie': 'session_id=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
+          'Set-Cookie': 'session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
         },
       });
     }
@@ -65,7 +65,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Set-Cookie': 'session_id=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
+          'Set-Cookie': 'session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax',
         },
       });
     }
