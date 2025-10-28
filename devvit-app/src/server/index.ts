@@ -711,6 +711,48 @@ Provide your response in this exact JSON format:
                         (parsedRating.landmarkBonus || 0) +
                         (parsedRating.creativity || 0);
 
+      // Check for challenge matches if landmark detected
+      let matchedChallenges: any[] = [];
+      if (parsedRating.detectedLandmark && username) {
+        try {
+          const { findChallengesForLandmark } = await import('../shared/types/challenges.js');
+          matchedChallenges = findChallengesForLandmark(parsedRating.detectedLandmark);
+
+          // Auto-update challenge progress for matched challenges
+          if (matchedChallenges.length > 0 && gps) {
+            const progressKey = `challenges:progress:${username}`;
+            const progressData = await redis.get(progressKey);
+            const progress = progressData ? JSON.parse(progressData) : {};
+
+            for (const challenge of matchedChallenges) {
+              if (!progress[challenge.id]) {
+                progress[challenge.id] = {
+                  challengeId: challenge.id,
+                  completedLandmarks: [],
+                  totalScore: 0,
+                };
+              }
+
+              if (!progress[challenge.id].completedLandmarks.includes(parsedRating.detectedLandmark)) {
+                progress[challenge.id].completedLandmarks.push(parsedRating.detectedLandmark);
+                progress[challenge.id].totalScore += totalScore;
+
+                const { isChallengeCompleted } = await import('../shared/types/challenges.js');
+                if (isChallengeCompleted(challenge, progress[challenge.id].completedLandmarks)) {
+                  progress[challenge.id].completedAt = Date.now();
+                  progress[challenge.id].totalScore += challenge.bonusPoints;
+                }
+              }
+            }
+
+            await redis.set(progressKey, JSON.stringify(progress));
+          }
+        } catch (challengeError) {
+          console.error('Challenge matching error:', challengeError);
+          // Don't fail the photo analysis if challenge matching fails
+        }
+      }
+
       res.json({
         rating: {
           quality: parsedRating.quality || 0,
@@ -720,6 +762,12 @@ Provide your response in this exact JSON format:
           totalScore,
           feedback: parsedRating.feedback || 'Great Michigan photo!',
           detectedLandmark: parsedRating.detectedLandmark || undefined,
+          matchedChallenges: matchedChallenges.map(c => ({
+            id: c.id,
+            name: c.name,
+            icon: c.icon,
+            bonusPoints: c.bonusPoints,
+          })),
         },
       });
     } catch (aiError) {
@@ -842,6 +890,161 @@ router.get('/api/leaderboard/:game', async (req, res): Promise<void> => {
       status: 'error',
       message: 'Failed to load leaderboard',
       topScores: [],
+    });
+  }
+});
+
+// Get all challenges
+router.get('/api/challenges', async (_req, res): Promise<void> => {
+  try {
+    // Import challenges dynamically to avoid build issues
+    const { MICHIGAN_CHALLENGES } = await import('../shared/types/challenges.js');
+    res.json({ challenges: MICHIGAN_CHALLENGES });
+  } catch (error) {
+    console.error('Failed to load challenges:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load challenges',
+      challenges: [],
+    });
+  }
+});
+
+// Get user's challenge progress
+router.get('/api/challenges/progress/:username', async (req, res): Promise<void> => {
+  try {
+    const { username } = req.params;
+    const progressKey = `challenges:progress:${username}`;
+
+    const progressData = await redis.get(progressKey);
+    const progress = progressData ? JSON.parse(progressData) : {};
+
+    res.json({ progress });
+  } catch (error) {
+    console.error('Failed to load challenge progress:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load challenge progress',
+      progress: {},
+    });
+  }
+});
+
+// Update challenge progress
+router.post('/api/challenges/progress', async (req, res): Promise<void> => {
+  try {
+    const { username, challengeId, landmarkName, photoScore, gps } = req.body;
+
+    if (!username || !challengeId || !landmarkName) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Missing required fields',
+      });
+      return;
+    }
+
+    const progressKey = `challenges:progress:${username}`;
+    const progressData = await redis.get(progressKey);
+    const progress = progressData ? JSON.parse(progressData) : {};
+
+    // Initialize challenge progress if it doesn't exist
+    if (!progress[challengeId]) {
+      progress[challengeId] = {
+        challengeId,
+        completedLandmarks: [],
+        totalScore: 0,
+      };
+    }
+
+    // Add landmark if not already completed
+    if (!progress[challengeId].completedLandmarks.includes(landmarkName)) {
+      progress[challengeId].completedLandmarks.push(landmarkName);
+      progress[challengeId].totalScore += photoScore || 0;
+
+      // Check if challenge is completed
+      const { MICHIGAN_CHALLENGES, isChallengeCompleted } = await import('../shared/types/challenges.js');
+      const challenge = MICHIGAN_CHALLENGES.find(c => c.id === challengeId);
+
+      if (challenge && isChallengeCompleted(challenge, progress[challengeId].completedLandmarks)) {
+        progress[challengeId].completedAt = Date.now();
+        progress[challengeId].totalScore += challenge.bonusPoints;
+      }
+
+      // Save progress
+      await redis.set(progressKey, JSON.stringify(progress));
+
+      // Store completion event in timeline
+      const completionEvent = {
+        username,
+        challengeId,
+        landmarkName,
+        timestamp: Date.now(),
+        gps,
+      };
+      await redis.zAdd('challenges:completions', {
+        member: JSON.stringify(completionEvent),
+        score: Date.now(),
+      });
+
+      res.json({
+        status: 'success',
+        progress: progress[challengeId],
+        challengeCompleted: !!progress[challengeId].completedAt,
+      });
+    } else {
+      res.json({
+        status: 'already_completed',
+        message: 'Landmark already completed for this challenge',
+        progress: progress[challengeId],
+      });
+    }
+  } catch (error) {
+    console.error('Failed to update challenge progress:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to update challenge progress',
+    });
+  }
+});
+
+// Get challenge leaderboard
+router.get('/api/challenges/leaderboard', async (_req, res): Promise<void> => {
+  try {
+    const { MICHIGAN_CHALLENGES } = await import('../shared/types/challenges.js');
+
+    // Get all users with challenge progress
+    const keys = await redis.keys('challenges:progress:*');
+    const leaderboard: Array<{ username: string; totalChallenges: number; totalScore: number }> = [];
+
+    for (const key of keys) {
+      const username = key.replace('challenges:progress:', '');
+      const progressData = await redis.get(key);
+      if (progressData) {
+        const progress = JSON.parse(progressData);
+        const completedChallenges = Object.values(progress).filter((p: any) => p.completedAt);
+        const totalScore = completedChallenges.reduce((sum: number, p: any) => sum + p.totalScore, 0);
+
+        leaderboard.push({
+          username,
+          totalChallenges: completedChallenges.length,
+          totalScore,
+        });
+      }
+    }
+
+    // Sort by total score descending
+    leaderboard.sort((a, b) => b.totalScore - a.totalScore);
+
+    res.json({
+      leaderboard: leaderboard.slice(0, 50), // Top 50
+      totalChallenges: MICHIGAN_CHALLENGES.length,
+    });
+  } catch (error) {
+    console.error('Failed to load challenge leaderboard:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load challenge leaderboard',
+      leaderboard: [],
     });
   }
 });
