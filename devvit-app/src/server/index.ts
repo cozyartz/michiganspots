@@ -1348,6 +1348,217 @@ router.post('/api/challenges/match', async (req, res): Promise<void> => {
   }
 });
 
+// Achievements endpoint - Check and unlock achievements
+router.post('/api/achievements/check', async (req, res): Promise<void> => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username is required',
+      });
+      return;
+    }
+
+    // Import achievement utilities
+    const { ACHIEVEMENTS, isAchievementUnlocked, calculateAchievementProgress } = await import('../shared/types/achievements.js');
+
+    // Get user's current achievements
+    const achievementsKey = `achievements:${username}`;
+    const achievementsData = await redis.get(achievementsKey);
+    let unlockedAchievements: any[] = [];
+
+    if (achievementsData) {
+      try {
+        unlockedAchievements = JSON.parse(achievementsData as string);
+      } catch {
+        unlockedAchievements = [];
+      }
+    }
+
+    // Get user stats for checking achievements
+    const games = ['photo-hunt', 'trivia', 'word-search', 'memory-match'];
+    const gameStats: Record<string, any> = {};
+    let totalScore = 0;
+    let gamesPlayed = 0;
+
+    for (const game of games) {
+      const allTimeKey = `leaderboard:alltime:${game}`;
+      const userScores = await redis.zRange(allTimeKey, 0, -1, {
+        byScore: true,
+        withScores: true,
+      });
+
+      const userEntries = userScores.filter((entry: any) => {
+        try {
+          const data = JSON.parse(entry.member);
+          return data.username === username;
+        } catch {
+          return false;
+        }
+      });
+
+      if (userEntries.length > 0) {
+        const bestScore = Math.max(...userEntries.map((e: any) => e.score));
+        const totalGameScore = userEntries.reduce((sum: number, e: any) => sum + e.score, 0);
+
+        gameStats[game] = {
+          bestScore,
+          totalScore: totalGameScore,
+          timesPlayed: userEntries.length,
+        };
+
+        totalScore += totalGameScore;
+        gamesPlayed += userEntries.length;
+      }
+    }
+
+    // Get challenge progress
+    const challengeKey = `challenge:progress:${username}`;
+    const challengeData = await redis.get(challengeKey);
+    let challengesCompleted = 0;
+    let completedChallengeIds: string[] = [];
+    let landmarksVisited = new Set<string>();
+
+    if (challengeData) {
+      try {
+        const challengeProgress = JSON.parse(challengeData as string);
+        challengesCompleted = challengeProgress.filter((c: any) => c.completedAt).length;
+        completedChallengeIds = challengeProgress
+          .filter((c: any) => c.completedAt)
+          .map((c: any) => c.challengeId);
+
+        // Count unique landmarks visited
+        challengeProgress.forEach((c: any) => {
+          c.completedLandmarks?.forEach((landmark: string) => landmarksVisited.add(landmark));
+        });
+      } catch {}
+    }
+
+    const userStats = {
+      totalScore,
+      gamesPlayed,
+      challengesCompleted,
+      landmarksVisited: landmarksVisited.size,
+      gameStats,
+      completedChallengeIds,
+    };
+
+    // Check for newly unlocked achievements
+    const newlyUnlocked: any[] = [];
+    const achievementProgress: any[] = [];
+
+    for (const achievement of ACHIEVEMENTS) {
+      const alreadyUnlocked = unlockedAchievements.some(
+        (ua: any) => ua.achievementId === achievement.id
+      );
+
+      if (!alreadyUnlocked && isAchievementUnlocked(achievement, userStats)) {
+        // Achievement unlocked!
+        const unlockedAchievement = {
+          achievementId: achievement.id,
+          unlockedAt: Date.now(),
+        };
+
+        newlyUnlocked.push({
+          ...achievement,
+          unlockedAt: Date.now(),
+        });
+
+        unlockedAchievements.push(unlockedAchievement);
+      }
+
+      // Calculate progress for all achievements
+      const progress = calculateAchievementProgress(achievement, userStats);
+      achievementProgress.push({
+        achievementId: achievement.id,
+        progress,
+        unlocked: alreadyUnlocked || newlyUnlocked.some((na) => na.id === achievement.id),
+      });
+    }
+
+    // Save updated achievements
+    if (newlyUnlocked.length > 0) {
+      await redis.set(achievementsKey, JSON.stringify(unlockedAchievements));
+    }
+
+    res.json({
+      status: 'success',
+      newlyUnlocked,
+      totalUnlocked: unlockedAchievements.length,
+      totalAchievements: ACHIEVEMENTS.length,
+      achievementProgress,
+    });
+  } catch (error) {
+    console.error('Failed to check achievements:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to check achievements',
+    });
+  }
+});
+
+// Get user's achievements
+router.get('/api/achievements/:username', async (req, res): Promise<void> => {
+  try {
+    const { username } = req.params;
+
+    if (!username) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username is required',
+      });
+      return;
+    }
+
+    const { ACHIEVEMENTS } = await import('../shared/types/achievements.js');
+
+    // Get unlocked achievements
+    const achievementsKey = `achievements:${username}`;
+    const achievementsData = await redis.get(achievementsKey);
+    let unlockedAchievements: any[] = [];
+
+    if (achievementsData) {
+      try {
+        unlockedAchievements = JSON.parse(achievementsData as string);
+      } catch {
+        unlockedAchievements = [];
+      }
+    }
+
+    // Combine with achievement details
+    const achievements = ACHIEVEMENTS.map((achievement) => {
+      const unlocked = unlockedAchievements.find((ua: any) => ua.achievementId === achievement.id);
+      return {
+        ...achievement,
+        unlocked: !!unlocked,
+        unlockedAt: unlocked?.unlockedAt,
+      };
+    });
+
+    // Calculate prestige points
+    const prestigePoints = unlockedAchievements.reduce((sum, ua) => {
+      const achievement = ACHIEVEMENTS.find((a) => a.id === ua.achievementId);
+      return sum + (achievement?.points || 0);
+    }, 0);
+
+    res.json({
+      status: 'success',
+      achievements,
+      unlockedCount: unlockedAchievements.length,
+      totalCount: ACHIEVEMENTS.length,
+      prestigePoints,
+    });
+  } catch (error) {
+    console.error('Failed to get achievements:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to get achievements',
+    });
+  }
+});
+
 // User Profile endpoint
 router.get('/api/profile/:username', async (req, res): Promise<void> => {
   try {

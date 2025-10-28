@@ -4,6 +4,7 @@ import { Trivia } from './Trivia';
 import { PhotoHunt } from './PhotoHunt';
 import { UserProfile } from './UserProfile';
 import { ChallengeBrowser } from './ChallengeBrowser';
+import { Achievements } from './Achievements';
 import { getTheme, lightTheme, darkTheme } from './theme';
 
 interface InteractiveGameHubProps {
@@ -12,7 +13,7 @@ interface InteractiveGameHubProps {
   isDark: boolean;
 }
 
-type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile' | 'challenges';
+type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile' | 'challenges' | 'achievements';
 
 export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGameHubProps) => {
   const [gameMode, setGameMode] = useState<GameMode>('splash');
@@ -72,6 +73,10 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
 
   if (gameMode === 'challenges') {
     return <ChallengeBrowser username={username} onBack={() => setGameMode('splash')} />;
+  }
+
+  if (gameMode === 'achievements') {
+    return <Achievements username={username} onBack={() => setGameMode('splash')} />;
   }
 
   // Modern Responsive Splash Screen
@@ -199,7 +204,7 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
         </div>
 
         {/* Quick Action Buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '16px' }}>
           <button
             onClick={() => setGameMode('profile')}
             style={{
@@ -229,8 +234,8 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
               <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
-            <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.cyan.dark, textAlign: 'center' }}>
-              Profile & Stats
+            <span style={{ fontSize: '13px', fontWeight: '700', color: theme.colors.cyan.dark, textAlign: 'center' }}>
+              Profile
             </span>
           </button>
 
@@ -265,8 +270,41 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
               <path d="M13 17V5" />
               <path d="M8 17v-3" />
             </svg>
-            <span style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.amber.dark, textAlign: 'center' }}>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: theme.colors.amber.dark, textAlign: 'center' }}>
               Challenges
+            </span>
+          </button>
+
+          <button
+            onClick={() => setGameMode('achievements')}
+            style={{
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '16px',
+              border: `2px solid ${theme.colors.coral.primary}40`,
+              boxShadow: theme.shadows.md,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = theme.shadows.xl;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = theme.shadows.md;
+            }}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.coral.primary} strokeWidth="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: theme.colors.coral.dark, textAlign: 'center' }}>
+              Achievements
             </span>
           </button>
         </div>
