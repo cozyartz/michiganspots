@@ -327,6 +327,140 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
   }
 });
 
+// AI Mod Tools - Batch Content Analysis
+router.post('/api/ai-mod/batch-analyze', async (req, res): Promise<void> => {
+  try {
+    const { items, tool } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0 || !tool) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Items array and tool type are required',
+      });
+      return;
+    }
+
+    if (items.length > 50) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Maximum 50 items per batch',
+      });
+      return;
+    }
+
+    const aiApiKey = process.env.CLOUDFLARE_AI_API_KEY;
+    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+
+    const results: any[] = [];
+
+    // Process each item
+    for (const item of items) {
+      if (!item.text || !item.id) continue;
+
+      try {
+        let analysisResult;
+
+        // Fallback simulation if Cloudflare AI not configured
+        if (!aiApiKey || aiApiKey === 'PLACEHOLDER' || !accountId || accountId === 'PLACEHOLDER') {
+          if (tool === 'content-analysis') {
+            analysisResult = {
+              tool: 'Content Analysis',
+              toxicity: Math.random() * 0.3,
+              profanity: Math.random() * 0.2,
+              spam: Math.random() * 0.25,
+              recommendation: Math.random() > 0.7 ? 'Remove' : 'Approve',
+              simulated: true,
+            };
+          } else if (tool === 'sentiment') {
+            analysisResult = {
+              tool: 'Sentiment Analysis',
+              positive: Math.random() * 0.8,
+              negative: Math.random() * 0.4,
+              neutral: Math.random() * 0.5,
+              overall: Math.random() > 0.5 ? 'Positive' : 'Neutral',
+              simulated: true,
+            };
+          } else if (tool === 'spam-detection') {
+            analysisResult = {
+              tool: 'Spam Detection',
+              spamScore: Math.random() * 0.4,
+              isSpam: Math.random() > 0.8,
+              confidence: 0.85 + Math.random() * 0.14,
+              simulated: true,
+            };
+          }
+        } else {
+          // Real Cloudflare AI implementation (simplified for batch)
+          let prompt = '';
+          if (tool === 'content-analysis') {
+            prompt = `Analyze this text for content moderation. Rate toxicity (0-1), profanity (0-1), and spam likelihood (0-1). Provide a recommendation (Approve/Review/Remove).
+
+Text: "${item.text.substring(0, 500)}"
+
+Respond in JSON format:
+{
+  "toxicity": <number 0-1>,
+  "profanity": <number 0-1>,
+  "spam": <number 0-1>,
+  "recommendation": "<Approve/Review/Remove>"
+}`;
+          }
+
+          const aiResponse = await fetch(
+            `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3-8b-instruct`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${aiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                prompt,
+                max_tokens: 256,
+              }),
+            }
+          );
+
+          if (aiResponse.ok) {
+            const aiResult = await aiResponse.json();
+            const responseText = aiResult.result?.response || aiResult.result;
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              analysisResult = JSON.parse(jsonMatch[0]);
+            }
+          }
+        }
+
+        results.push({
+          id: item.id,
+          text: item.text.substring(0, 100),
+          result: analysisResult || { error: 'Failed to analyze' },
+        });
+      } catch (itemError) {
+        console.error(`Error analyzing item ${item.id}:`, itemError);
+        results.push({
+          id: item.id,
+          text: item.text.substring(0, 100),
+          result: { error: 'Analysis failed' },
+        });
+      }
+    }
+
+    res.json({
+      status: 'success',
+      total: items.length,
+      processed: results.length,
+      results,
+    });
+  } catch (error) {
+    console.error('Batch analysis error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to process batch analysis',
+    });
+  }
+});
+
 // AI Mod Tools - Content Analysis
 router.post('/api/ai-mod/analyze', async (req, res): Promise<void> => {
   try {
