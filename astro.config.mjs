@@ -9,6 +9,26 @@ export default defineConfig({
   adapter: cloudflare({
     mode: 'directory',
     imageService: 'compile', // Use compile-time image optimization (sharp not available on Cloudflare)
+    routes: {
+      strategy: 'exclude',
+      exclude: [
+        '/_astro/*',
+        '/#',
+        '/sitemap.xml',
+        '/http:/*',
+        '/.DS_Store',
+        '/MiSpot_logo.png',
+        '/favicon.svg',
+        '/google-search-console-setup.md',
+        '/humans.txt',
+        '/llms.txt',
+        '/mispots_opt.png',
+        '/r-michiganspots-community-guidelines.html',
+        '/robots.txt',
+        '/site.webmanifest',
+        '/.well-known/*'
+      ]
+    }
   }),
   vite: {
     ssr: {

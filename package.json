@@ -4,9 +4,9 @@
   "description": "Michigan Spots - Discover Michigan's Hidden Gems",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/fix-routes.js",
     "preview": "astro preview",
-    "deploy": "astro build && npx wrangler pages deploy ./dist"
+    "deploy": "npm run build && npx wrangler pages deploy ./dist"
   },
   "keywords": [
     "michigan",

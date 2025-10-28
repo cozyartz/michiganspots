@@ -6,9 +6,3 @@
 # Force HTTPS (if not already)
 http://michiganspots.com/* https://michiganspots.com/:splat 301!
 http://www.michiganspots.com/* https://michiganspots.com/:splat 301!
-
-# Trailing slash redirects (normalize URLs)
-/about /about/ 301
-/partnerships /partnerships/ 301
-/chamber-partnerships /chamber-partnerships/ 301
-/business-partnerships /business-partnerships/ 301
