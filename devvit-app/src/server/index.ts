@@ -236,22 +236,22 @@ router.post('/internal/menu/create-ai-tools', async (_req, res): Promise<void> =
 
     const post = await reddit.submitCustomPost({
       splash: {
-        appDisplayName: 'AI Moderator Tools',
+        appDisplayName: 'Challenge Generator',
         backgroundUri: 'ai-mod-bg.png',
-        buttonLabel: 'Open Tools',
-        description: 'AI-powered moderation tools for subreddit management',
+        buttonLabel: 'Generate Challenges',
+        description: 'AI-powered treasure hunt challenge generator for businesses',
         entryUri: 'default',
-        heading: 'AI Moderator Tools 🤖',
+        heading: 'Challenge Generator 🎯',
         appIconUri: 'ai-mod-icon.png',
         height: 'tall',
       },
       postData: {
         postType: 'ai-mod-tools',
-        toolsVersion: '1.0',
-        features: ['content-analysis', 'sentiment-detection', 'spam-detection'],
+        toolsVersion: '2.0',
+        features: ['challenge-generator'],
       },
       subredditName: subredditName,
-      title: '🤖 AI Moderator Tools - Moderation Dashboard',
+      title: '🎯 Challenge Generator - AI-Powered Treasure Hunt Creator',
     });
 
     // Store post data in Redis
@@ -259,8 +259,8 @@ router.post('/internal/menu/create-ai-tools', async (_req, res): Promise<void> =
       `post:${post.id}:data`,
       JSON.stringify({
         postType: 'ai-mod-tools',
-        toolsVersion: '1.0',
-        features: ['content-analysis', 'sentiment-detection', 'spam-detection'],
+        toolsVersion: '2.0',
+        features: ['challenge-generator'],
       })
     );
 

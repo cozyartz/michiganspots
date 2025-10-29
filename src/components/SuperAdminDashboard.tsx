@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Users, TrendingUp, DollarSign, CheckCircle, MapPin, MessageSquare, Award, AlertCircle, Download, Search, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PartnerManagement } from './PartnerManagement';
+import { AIModerationPanel } from './admin/AIModerationPanel';
 
 interface DashboardData {
   stats: {
@@ -51,7 +52,7 @@ export function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'waitlist' | 'partner'>('all');
-  const [activeTab, setActiveTab] = useState<'overview' | 'partners'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'partners' | 'ai-moderation'>('overview');
 
   useEffect(() => {
     loadDashboard();
@@ -159,6 +160,17 @@ export function SuperAdminDashboard() {
               }`}
             >
               Platform Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('ai-moderation')}
+              className={`px-6 py-2 font-heading font-bold rounded-md transition-colors flex items-center gap-2 ${
+                activeTab === 'ai-moderation'
+                  ? 'bg-cyan-primary text-white'
+                  : 'text-ink-secondary hover:text-ink-primary'
+              }`}
+            >
+              <AlertCircle className="w-4 h-4" />
+              AI Moderation
             </button>
             <button
               onClick={() => setActiveTab('partners')}
@@ -426,6 +438,11 @@ export function SuperAdminDashboard() {
           </div>
         </motion.div>
           </>
+        )}
+
+        {/* AI Moderation Tab */}
+        {activeTab === 'ai-moderation' && (
+          <AIModerationPanel />
         )}
 
         {/* Partner Management Tab */}

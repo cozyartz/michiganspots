@@ -36,7 +36,7 @@ export const App = () => {
   }
 
   if (postType === 'ai-mod-tools') {
-    return <AIModTools username={username} postId={postId} />;
+    return <AIModTools username={username} postId={postId} onBack={() => window.history.back()} />;
   }
 
   // Default to arcade games

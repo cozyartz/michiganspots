@@ -45,8 +45,8 @@
         "endpoint": "/internal/menu/create-leaderboard"
       },
       {
-        "label": "🤖 Create AI Mod Tools",
-        "description": "Create AI moderator tools (Moderators Only)",
+        "label": "🎯 Create Challenge Generator",
+        "description": "Create AI-powered challenge generator for treasure hunts (Moderators Only)",
         "location": "subreddit",
         "forUserType": "moderator",
         "endpoint": "/internal/menu/create-ai-tools"
