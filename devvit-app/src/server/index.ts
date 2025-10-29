@@ -281,11 +281,41 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
   try {
     const gameData = req.body;
 
+    // Validate required fields
+    if (!gameData.username || !gameData.game || typeof gameData.score !== 'number') {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username, game, and score are required',
+      });
+      return;
+    }
+
+    // Ensure score is positive and reasonable (prevent cheating)
+    const maxScores = {
+      'photo-hunt': 120,    // Max 30+40+30+20
+      'trivia': 1000,       // Reasonable trivia max
+      'word-search': 1000,  // Reasonable word search max
+      'memory-match': 1000, // Reasonable memory match max
+    };
+
+    const maxScore = maxScores[gameData.game as keyof typeof maxScores] || 1000;
+    if (gameData.score < 0 || gameData.score > maxScore) {
+      console.warn(`Suspicious score: ${gameData.score} for ${gameData.game} by ${gameData.username}`);
+      // Still record but cap the score
+      gameData.score = Math.max(0, Math.min(gameData.score, maxScore));
+    }
+
     const scoreData = JSON.stringify({
       username: gameData.username,
       score: gameData.score,
       game: gameData.game,
       timestamp: Date.now(),
+      postId: gameData.postId,
+      // Include additional game-specific data for analytics
+      ...(gameData.quality && { quality: gameData.quality }),
+      ...(gameData.michiganRelevance && { michiganRelevance: gameData.michiganRelevance }),
+      ...(gameData.landmarkBonus && { landmarkBonus: gameData.landmarkBonus }),
+      ...(gameData.creativity && { creativity: gameData.creativity }),
     });
 
     // Store in all time leaderboard
@@ -306,21 +336,99 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
       await redis.expire(scoreKey, expirySeconds);
     }
 
-    // Forward to Cloudflare API if DEVVIT_API_KEY is configured
+    // Update user's total stats
+    const userStatsKey = `user:stats:${gameData.username}`;
+    const currentStats = await redis.get(userStatsKey);
+    let stats = currentStats ? JSON.parse(currentStats) : {
+      totalScore: 0,
+      gamesPlayed: 0,
+      gameBreakdown: {},
+      lastPlayed: 0,
+    };
+
+    stats.totalScore += gameData.score;
+    stats.gamesPlayed += 1;
+    stats.lastPlayed = Date.now();
+    
+    if (!stats.gameBreakdown[gameData.game]) {
+      stats.gameBreakdown[gameData.game] = { plays: 0, totalScore: 0, bestScore: 0 };
+    }
+    
+    stats.gameBreakdown[gameData.game].plays += 1;
+    stats.gameBreakdown[gameData.game].totalScore += gameData.score;
+    stats.gameBreakdown[gameData.game].bestScore = Math.max(
+      stats.gameBreakdown[gameData.game].bestScore,
+      gameData.score
+    );
+
+    await redis.set(userStatsKey, JSON.stringify(stats));
+
+    // Store in global user leaderboard (total scores across all games)
+    await redis.zAdd('leaderboard:global:total', {
+      member: JSON.stringify({ username: gameData.username, totalScore: stats.totalScore, gamesPlayed: stats.gamesPlayed }),
+      score: stats.totalScore,
+    });
+    await redis.zRemRangeByRank('leaderboard:global:total', 0, -101); // Keep top 100
+
+    // Forward comprehensive data to Cloudflare API if DEVVIT_API_KEY is configured
     const apiKey = process.env.DEVVIT_API_KEY;
     if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER') {
       try {
+        // Send game completion data
         await fetch('https://michiganspots.com/api/analytics/game-complete', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-API-Key': apiKey,
           },
-          body: JSON.stringify(gameData),
+          body: JSON.stringify({
+            ...gameData,
+            timestamp: Date.now(),
+            source: 'reddit-devvit',
+          }),
+        });
+
+        // Send updated user statistics to Cloudflare
+        await fetch('https://michiganspots.com/api/users/sync-stats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': apiKey,
+          },
+          body: JSON.stringify({
+            username: gameData.username,
+            stats: {
+              ...stats,
+              lastUpdated: Date.now(),
+              source: 'reddit-devvit',
+            },
+          }),
+        });
+
+        // Send leaderboard position update
+        const globalRank = await redis.zRevRank('leaderboard:global:total', 
+          JSON.stringify({ username: gameData.username, totalScore: stats.totalScore, gamesPlayed: stats.gamesPlayed })
+        );
+
+        await fetch('https://michiganspots.com/api/leaderboard/sync-position', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': apiKey,
+          },
+          body: JSON.stringify({
+            username: gameData.username,
+            game: gameData.game,
+            score: gameData.score,
+            totalScore: stats.totalScore,
+            globalRank: globalRank !== null ? globalRank + 1 : null,
+            timestamp: Date.now(),
+            source: 'reddit-devvit',
+          }),
         });
       } catch (err) {
-        console.error('Failed to forward analytics to Cloudflare:', err);
-        // Don't fail the request if Cloudflare tracking fails
+        console.error('Failed to sync data to Cloudflare:', err);
+        // Don't fail the request if Cloudflare sync fails
       }
     }
 
@@ -1188,6 +1296,33 @@ router.post('/api/challenges/progress', async (req, res): Promise<void> => {
         score: Date.now(),
       });
 
+      // Sync challenge progress to Cloudflare
+      const apiKey = process.env.DEVVIT_API_KEY;
+      if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER') {
+        try {
+          await fetch('https://michiganspots.com/api/challenges/sync-progress', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': apiKey,
+            },
+            body: JSON.stringify({
+              username,
+              challengeId,
+              landmarkName,
+              photoScore,
+              gps,
+              progress: progress[challengeId],
+              challengeCompleted: !!progress[challengeId].completedAt,
+              timestamp: Date.now(),
+              source: 'reddit-devvit',
+            }),
+          });
+        } catch (err) {
+          console.error('Failed to sync challenge progress to Cloudflare:', err);
+        }
+      }
+
       res.json({
         status: 'success',
         progress: progress[challengeId],
@@ -1744,6 +1879,30 @@ router.post('/api/achievements/check', async (req, res): Promise<void> => {
     // Save updated achievements
     if (newlyUnlocked.length > 0) {
       await redis.set(achievementsKey, JSON.stringify(unlockedAchievements));
+
+      // Sync new achievements to Cloudflare
+      const apiKey = process.env.DEVVIT_API_KEY;
+      if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER') {
+        try {
+          await fetch('https://michiganspots.com/api/achievements/sync-unlocked', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': apiKey,
+            },
+            body: JSON.stringify({
+              username,
+              newlyUnlocked,
+              totalUnlocked: unlockedAchievements.length,
+              totalAchievements: ACHIEVEMENTS.length,
+              timestamp: Date.now(),
+              source: 'reddit-devvit',
+            }),
+          });
+        } catch (err) {
+          console.error('Failed to sync achievements to Cloudflare:', err);
+        }
+      }
     }
 
     res.json({
@@ -1818,6 +1977,95 @@ router.get('/api/achievements/:username', async (req, res): Promise<void> => {
     res.status(500).json({
       status: 'error',
       message: 'Failed to get achievements',
+    });
+  }
+});
+
+// Get user statistics
+router.get('/api/user/stats/:username', async (req, res): Promise<void> => {
+  try {
+    const { username } = req.params;
+
+    if (!username) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username is required',
+      });
+      return;
+    }
+
+    // Get user stats
+    const userStatsKey = `user:stats:${username}`;
+    const statsData = await redis.get(userStatsKey);
+    
+    if (!statsData) {
+      res.json({
+        status: 'success',
+        stats: {
+          totalScore: 0,
+          gamesPlayed: 0,
+          gameBreakdown: {},
+          lastPlayed: 0,
+          globalRank: null,
+        },
+      });
+      return;
+    }
+
+    const stats = JSON.parse(statsData);
+
+    // Get user's global rank
+    const globalRank = await redis.zRevRank('leaderboard:global:total', 
+      JSON.stringify({ username, totalScore: stats.totalScore, gamesPlayed: stats.gamesPlayed })
+    );
+
+    res.json({
+      status: 'success',
+      stats: {
+        ...stats,
+        globalRank: globalRank !== null ? globalRank + 1 : null,
+      },
+    });
+  } catch (error) {
+    console.error('Failed to get user stats:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to get user stats',
+    });
+  }
+});
+
+// Get global leaderboard (total scores across all games)
+router.get('/api/leaderboard/global', async (req, res): Promise<void> => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const topUsers = await redis.zRange('leaderboard:global:total', 0, limit - 1, { 
+      reverse: true, 
+      withScores: true 
+    });
+
+    const leaderboard = topUsers.map((entry, index) => {
+      const userData = JSON.parse(entry.member);
+      return {
+        rank: index + 1,
+        username: userData.username,
+        totalScore: entry.score,
+        gamesPlayed: userData.gamesPlayed,
+      };
+    });
+
+    res.json({
+      status: 'success',
+      leaderboard,
+      total: topUsers.length,
+    });
+  } catch (error) {
+    console.error('Failed to get global leaderboard:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to get global leaderboard',
+      leaderboard: [],
     });
   }
 });
@@ -1977,6 +2225,286 @@ router.get('/api/profile/:username', async (req, res): Promise<void> => {
     res.status(500).json({
       status: 'error',
       message: 'Failed to load user profile',
+    });
+  }
+});
+
+// Comprehensive data sync to Cloudflare endpoint
+router.post('/api/sync/cloudflare', async (req, res): Promise<void> => {
+  try {
+    const { syncType = 'full', username } = req.body;
+    const apiKey = process.env.DEVVIT_API_KEY;
+
+    if (!apiKey || apiKey === 'DEVVIT_API_KEY_PLACEHOLDER') {
+      res.status(400).json({
+        status: 'error',
+        message: 'Cloudflare API key not configured',
+      });
+      return;
+    }
+
+    const syncResults = {
+      users: 0,
+      scores: 0,
+      challenges: 0,
+      achievements: 0,
+      errors: [],
+    };
+
+    try {
+      if (syncType === 'full' || syncType === 'users') {
+        // Sync all user statistics
+        const userKeys = await redis.keys('user:stats:*');
+        
+        for (const key of userKeys) {
+          try {
+            const userData = await redis.get(key);
+            if (userData) {
+              const stats = JSON.parse(userData);
+              const user = key.replace('user:stats:', '');
+
+              // Get global rank
+              const globalRank = await redis.zRevRank('leaderboard:global:total', 
+                JSON.stringify({ username: user, totalScore: stats.totalScore, gamesPlayed: stats.gamesPlayed })
+              );
+
+              await fetch('https://michiganspots.com/api/users/sync-stats', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-API-Key': apiKey,
+                },
+                body: JSON.stringify({
+                  username: user,
+                  stats: {
+                    ...stats,
+                    globalRank: globalRank !== null ? globalRank + 1 : null,
+                    lastSynced: Date.now(),
+                    source: 'reddit-devvit-bulk',
+                  },
+                }),
+              });
+
+              syncResults.users++;
+            }
+          } catch (userError) {
+            console.error(`Failed to sync user ${key}:`, userError);
+            syncResults.errors.push(`User sync failed: ${key}`);
+          }
+        }
+      }
+
+      if (syncType === 'full' || syncType === 'leaderboards') {
+        // Sync leaderboard data
+        const games = ['photo-hunt', 'trivia', 'word-search', 'memory-match'];
+        const periods = ['alltime', 'daily', 'weekly', 'monthly'];
+
+        for (const game of games) {
+          for (const period of periods) {
+            try {
+              const periodKey = period === 'alltime' ? 'alltime' : getTimePeriodKey(period);
+              const scoreKey = `leaderboard:${periodKey}:${game}`;
+              
+              const scores = await redis.zRange(scoreKey, 0, 49, { reverse: true, withScores: true });
+              
+              if (scores.length > 0) {
+                await fetch('https://michiganspots.com/api/leaderboard/sync-bulk', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': apiKey,
+                  },
+                  body: JSON.stringify({
+                    game,
+                    period,
+                    periodKey,
+                    scores: scores.map((entry, index) => {
+                      const data = JSON.parse(entry.member);
+                      return {
+                        rank: index + 1,
+                        username: data.username,
+                        score: entry.score,
+                        timestamp: data.timestamp,
+                        game: data.game,
+                      };
+                    }),
+                    lastSynced: Date.now(),
+                    source: 'reddit-devvit-bulk',
+                  }),
+                });
+
+                syncResults.scores += scores.length;
+              }
+            } catch (leaderboardError) {
+              console.error(`Failed to sync leaderboard ${game}:${period}:`, leaderboardError);
+              syncResults.errors.push(`Leaderboard sync failed: ${game}:${period}`);
+            }
+          }
+        }
+      }
+
+      if (syncType === 'full' || syncType === 'challenges') {
+        // Sync challenge progress
+        const challengeKeys = await redis.keys('challenges:progress:*');
+        
+        for (const key of challengeKeys) {
+          try {
+            const progressData = await redis.get(key);
+            if (progressData) {
+              const progress = JSON.parse(progressData);
+              const user = key.replace('challenges:progress:', '');
+
+              await fetch('https://michiganspots.com/api/challenges/sync-user-progress', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-API-Key': apiKey,
+                },
+                body: JSON.stringify({
+                  username: user,
+                  progress,
+                  lastSynced: Date.now(),
+                  source: 'reddit-devvit-bulk',
+                }),
+              });
+
+              syncResults.challenges++;
+            }
+          } catch (challengeError) {
+            console.error(`Failed to sync challenge progress ${key}:`, challengeError);
+            syncResults.errors.push(`Challenge sync failed: ${key}`);
+          }
+        }
+      }
+
+      if (syncType === 'full' || syncType === 'achievements') {
+        // Sync achievements
+        const achievementKeys = await redis.keys('achievements:*');
+        
+        for (const key of achievementKeys) {
+          try {
+            const achievementData = await redis.get(key);
+            if (achievementData) {
+              const achievements = JSON.parse(achievementData);
+              const user = key.replace('achievements:', '');
+
+              await fetch('https://michiganspots.com/api/achievements/sync-user-achievements', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-API-Key': apiKey,
+                },
+                body: JSON.stringify({
+                  username: user,
+                  achievements,
+                  lastSynced: Date.now(),
+                  source: 'reddit-devvit-bulk',
+                }),
+              });
+
+              syncResults.achievements++;
+            }
+          } catch (achievementError) {
+            console.error(`Failed to sync achievements ${key}:`, achievementError);
+            syncResults.errors.push(`Achievement sync failed: ${key}`);
+          }
+        }
+      }
+
+      // Send sync summary to Cloudflare
+      await fetch('https://michiganspots.com/api/sync/summary', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+        },
+        body: JSON.stringify({
+          syncType,
+          results: syncResults,
+          timestamp: Date.now(),
+          source: 'reddit-devvit',
+        }),
+      });
+
+      res.json({
+        status: 'success',
+        message: 'Data synced to Cloudflare successfully',
+        results: syncResults,
+      });
+    } catch (syncError) {
+      console.error('Cloudflare sync error:', syncError);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to sync data to Cloudflare',
+        results: syncResults,
+      });
+    }
+  } catch (error) {
+    console.error('Sync endpoint error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to process sync request',
+    });
+  }
+});
+
+// Cloudflare health check endpoint
+router.get('/api/sync/status', async (req, res): Promise<void> => {
+  try {
+    const apiKey = process.env.DEVVIT_API_KEY;
+    
+    if (!apiKey || apiKey === 'DEVVIT_API_KEY_PLACEHOLDER') {
+      res.json({
+        status: 'warning',
+        message: 'Cloudflare API key not configured',
+        cloudflareSync: false,
+        redisConnected: true,
+      });
+      return;
+    }
+
+    // Test Cloudflare connectivity
+    try {
+      const testResponse = await fetch('https://michiganspots.com/api/health', {
+        method: 'GET',
+        headers: {
+          'X-API-Key': apiKey,
+        },
+      });
+
+      const cloudflareHealthy = testResponse.ok;
+
+      // Get sync statistics
+      const userCount = (await redis.keys('user:stats:*')).length;
+      const challengeCount = (await redis.keys('challenges:progress:*')).length;
+      const achievementCount = (await redis.keys('achievements:*')).length;
+
+      res.json({
+        status: 'success',
+        message: 'Sync system operational',
+        cloudflareSync: cloudflareHealthy,
+        redisConnected: true,
+        dataStats: {
+          users: userCount,
+          challengeProgress: challengeCount,
+          achievements: achievementCount,
+        },
+        lastChecked: Date.now(),
+      });
+    } catch (cloudflareError) {
+      res.json({
+        status: 'warning',
+        message: 'Cloudflare connectivity issues',
+        cloudflareSync: false,
+        redisConnected: true,
+        error: cloudflareError.message,
+      });
+    }
+  } catch (error) {
+    console.error('Sync status error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to check sync status',
     });
   }
 });

@@ -5,6 +5,7 @@ import { PhotoHunt } from './PhotoHunt';
 import { UserProfile } from './UserProfile';
 import { ChallengeBrowser } from './ChallengeBrowser';
 import { Achievements } from './Achievements';
+import { PointsSystemStatus } from './PointsSystemStatus';
 import { getTheme, lightTheme, darkTheme } from './theme';
 
 interface InteractiveGameHubProps {
@@ -13,7 +14,7 @@ interface InteractiveGameHubProps {
   isDark: boolean;
 }
 
-type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile' | 'challenges' | 'achievements';
+type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile' | 'challenges' | 'achievements' | 'points-status';
 
 export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGameHubProps) => {
   const [gameMode, setGameMode] = useState<GameMode>('splash');
@@ -77,6 +78,10 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
 
   if (gameMode === 'achievements') {
     return <Achievements username={username} onBack={() => setGameMode('splash')} />;
+  }
+
+  if (gameMode === 'points-status') {
+    return <PointsSystemStatus username={username} onBack={() => setGameMode('splash')} />;
   }
 
   // Modern Responsive Splash Screen
@@ -204,7 +209,7 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
         </div>
 
         {/* Quick Action Buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '16px' }}>
           <button
             onClick={() => setGameMode('profile')}
             style={{
@@ -305,6 +310,41 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
             </svg>
             <span style={{ fontSize: '13px', fontWeight: '700', color: theme.colors.coral.dark, textAlign: 'center' }}>
               Achievements
+            </span>
+          </button>
+
+          <button
+            onClick={() => setGameMode('points-status')}
+            style={{
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '16px',
+              border: `2px solid ${theme.colors.forest.primary}40`,
+              boxShadow: theme.shadows.md,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = theme.shadows.xl;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = theme.shadows.md;
+            }}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.forest.primary} strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21l5-5"/>
+            </svg>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: theme.colors.forest.dark, textAlign: 'center' }}>
+              Points System
             </span>
           </button>
         </div>
