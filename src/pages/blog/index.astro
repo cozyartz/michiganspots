@@ -3,28 +3,48 @@ import Layout from '../../layouts/Layout.astro';
 import { Card } from '../../components/Card';
 import { Calendar, User, ArrowRight, Tag } from 'lucide-react';
 
-// Fetch blog posts
+// Fetch blog posts directly from database
 let posts = [];
 let categories = [];
+let total = 0;
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/blog/posts?status=published&limit=20`);
-  if (response.ok) {
-    const data = await response.json();
-    posts = data.posts || [];
-  }
-} catch (error) {
-  console.error('Error fetching blog posts:', error);
-}
+  const DB = (Astro.locals as any).runtime?.env?.DB;
 
-try {
-  const categoriesResponse = await fetch(`${Astro.url.origin}/api/blog/categories`);
-  if (categoriesResponse.ok) {
-    const categoriesData = await categoriesResponse.json();
-    categories = categoriesData.categories || [];
+  if (DB) {
+    // Get posts
+    const postsResult = await DB
+      .prepare(`
+        SELECT
+          id, title, slug, excerpt, featured_image_url,
+          category, tags, author_name, published_at,
+          view_count, share_count
+        FROM blog_posts
+        WHERE status = 'published'
+        ORDER BY published_at DESC
+        LIMIT 20
+      `)
+      .all();
+
+    posts = postsResult.results || [];
+
+    // Get total count
+    const countResult = await DB
+      .prepare('SELECT COUNT(*) as total FROM blog_posts WHERE status = ?')
+      .bind('published')
+      .first();
+
+    total = countResult?.total || 0;
+
+    // Get categories
+    const categoriesResult = await DB
+      .prepare('SELECT * FROM blog_categories ORDER BY display_order')
+      .all();
+
+    categories = categoriesResult.results || [];
   }
 } catch (error) {
-  console.error('Error fetching categories:', error);
+  console.error('Error fetching blog data:', error);
 }
 ---
 
@@ -121,13 +141,13 @@ try {
     )}
 
     <!-- Pagination (if needed) -->
-    {data.total > 20 && (
+    {total > 20 && (
       <div class="mt-12 flex justify-center">
         <Card className="inline-flex items-center space-x-4">
           <button class="px-4 py-2 text-ink-secondary hover:text-copper-orange transition-colors">
             Previous
           </button>
-          <span class="text-ink-secondary">Page 1 of {Math.ceil(data.total / 20)}</span>
+          <span class="text-ink-secondary">Page 1 of {Math.ceil(total / 20)}</span>
           <button class="px-4 py-2 text-ink-secondary hover:text-copper-orange transition-colors">
             Next
           </button>

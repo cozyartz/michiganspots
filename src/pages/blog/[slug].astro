@@ -5,25 +5,44 @@ import { Calendar, User, Tag, Share2 } from 'lucide-react';
 
 const { slug } = Astro.params;
 
-// Fetch blog post
+// Fetch blog post directly from database
 let post = null;
 let tags = [];
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/blog/${slug}`);
+  const DB = (Astro.locals as any).runtime?.env?.DB;
 
-  if (!response.ok) {
-    return Astro.redirect('/blog');
+  if (DB) {
+    const result = await DB
+      .prepare(`
+        SELECT *
+        FROM blog_posts
+        WHERE slug = ? AND status = 'published'
+      `)
+      .bind(slug)
+      .first();
+
+    post = result;
+
+    // Parse tags if they exist
+    if (post && post.tags) {
+      try {
+        tags = JSON.parse(post.tags);
+      } catch (e) {
+        tags = [];
+      }
+    }
+
+    // Increment view count
+    if (post) {
+      await DB
+        .prepare('UPDATE blog_posts SET view_count = view_count + 1 WHERE id = ?')
+        .bind(post.id)
+        .run();
+    }
   }
-
-  const data = await response.json();
-  post = data.post;
-
-  // Parse tags if they exist
-  tags = post.tags ? JSON.parse(post.tags) : [];
 } catch (error) {
   console.error('Error fetching blog post:', error);
-  return Astro.redirect('/blog');
 }
 
 if (!post) {
