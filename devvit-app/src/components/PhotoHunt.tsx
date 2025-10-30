@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getTheme } from './theme';
+import type { Geocache } from '../shared/types/geocache';
 
 interface PhotoHuntProps {
   username: string;
@@ -26,6 +27,13 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [rating, setRating] = useState<PhotoRating | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Geocaching state
+  const [nearbyGeocaches, setNearbyGeocaches] = useState<Geocache[]>([]);
+  const [isSearchingCaches, setIsSearchingCaches] = useState(false);
+  const [selectedGeocache, setSelectedGeocache] = useState<Geocache | null>(null);
+  const [userLocation, setUserLocation] = useState<{latitude: number; longitude: number} | null>(null);
+  const [geocacheBonus, setGeocacheBonus] = useState(0);
 
   const theme = getTheme(isDark);
 
@@ -112,9 +120,97 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
     }
   };
 
+  const searchNearbyGeocaches = async () => {
+    setIsSearchingCaches(true);
+    setError(null);
+
+    try {
+      // Check if geolocation is available
+      if (!navigator.geolocation) {
+        throw new Error('Geolocation is not supported by your browser');
+      }
+
+      // Get user's location
+      const location = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          resolve,
+          (error) => {
+            // Handle specific geolocation errors
+            let message = 'Location access denied';
+            if (error.code === error.PERMISSION_DENIED) {
+              message = 'Location permission denied. Geocache search unavailable.';
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+              message = 'Location information unavailable. Geocache search unavailable.';
+            } else if (error.code === error.TIMEOUT) {
+              message = 'Location request timed out. Geocache search unavailable.';
+            }
+            reject(new Error(message));
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          }
+        );
+      });
+
+      const lat = location.coords.latitude;
+      const lon = location.coords.longitude;
+      setUserLocation({ latitude: lat, longitude: lon });
+
+      // Search for nearby geocaches
+      const response = await fetch(
+        `/api/geocaches/search?latitude=${lat}&longitude=${lon}&radius=10000&limit=20`
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to search geocaches');
+      }
+
+      const result = await response.json();
+      setNearbyGeocaches(result.caches || []);
+    } catch (err: any) {
+      console.error('Geocache search error:', err);
+      setError(err.message || 'Unable to find nearby geocaches. Please enable location services.');
+    } finally {
+      setIsSearchingCaches(false);
+    }
+  };
+
+  const selectGeocache = async (cache: Geocache) => {
+    setSelectedGeocache(cache);
+
+    // Calculate bonus based on cache attributes
+    let bonus = 50; // Base geocache bonus
+    if (cache.difficulty >= 3) bonus += 25;
+    if (cache.terrain >= 3) bonus += 25;
+    setGeocacheBonus(bonus);
+
+    // Record the geocache visit
+    if (rating && userLocation) {
+      try {
+        await fetch('/api/geocaches/visit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            cacheCode: cache.code,
+            userLocation,
+            photoScore: rating.totalScore,
+          }),
+        });
+      } catch (err) {
+        console.error('Error recording geocache visit:', err);
+      }
+    }
+  };
+
   const handleComplete = () => {
     if (rating) {
-      onComplete(rating.totalScore);
+      const finalScore = rating.totalScore + geocacheBonus;
+      onComplete(finalScore);
     }
   };
 
@@ -122,6 +218,10 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
     setSelectedImage(null);
     setRating(null);
     setError(null);
+    setNearbyGeocaches([]);
+    setSelectedGeocache(null);
+    setGeocacheBonus(0);
+    setUserLocation(null);
   };
 
   return (
@@ -623,6 +723,175 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
                           )}
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Geocache Search & Selection */}
+                {!selectedGeocache && nearbyGeocaches.length === 0 && (
+                  <button
+                    onClick={searchNearbyGeocaches}
+                    disabled={isSearchingCaches}
+                    style={{
+                      width: '100%',
+                      padding: '16px',
+                      borderRadius: '16px',
+                      background: `linear-gradient(135deg, ${theme.colors.forest.primary} 0%, ${theme.colors.forest.dark} 100%)`,
+                      color: 'white',
+                      fontWeight: '700',
+                      fontSize: '16px',
+                      cursor: isSearchingCaches ? 'not-allowed' : 'pointer',
+                      border: 'none',
+                      boxShadow: theme.shadows.lg,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      opacity: isSearchingCaches ? 0.6 : 1,
+                    }}
+                  >
+                    {isSearchingCaches ? '🔍 Searching...' : '📍 Search Nearby Geocaches'}
+                  </button>
+                )}
+
+                {/* Geocache List */}
+                {nearbyGeocaches.length > 0 && !selectedGeocache && (
+                  <div style={{
+                    padding: '20px',
+                    borderRadius: '16px',
+                    background: theme.colors.card,
+                    border: `2px solid ${theme.colors.forest.primary}`,
+                    boxShadow: theme.shadows.md,
+                  }}>
+                    <h3 style={{
+                      fontSize: '18px',
+                      fontWeight: '800',
+                      color: theme.colors.forest.primary,
+                      marginBottom: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}>
+                      <span>🎯</span>
+                      {nearbyGeocaches.length} Nearby Geocaches
+                    </h3>
+                    <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {nearbyGeocaches.map((cache) => (
+                        <button
+                          key={cache.code}
+                          onClick={() => selectGeocache(cache)}
+                          style={{
+                            padding: '12px',
+                            borderRadius: '12px',
+                            background: theme.colors.secondary,
+                            border: `1px solid ${theme.colors.border}`,
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            transition: 'all 0.2s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = theme.colors.forest.primary + '20';
+                            e.currentTarget.style.borderColor = theme.colors.forest.primary;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = theme.colors.secondary;
+                            e.currentTarget.style.borderColor = theme.colors.border;
+                          }}
+                        >
+                          <div style={{ fontWeight: '700', color: theme.colors.ink.primary, marginBottom: '4px' }}>
+                            {cache.name}
+                          </div>
+                          <div style={{ fontSize: '12px', color: theme.colors.ink.secondary, display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                            <span>📏 {cache.distance ? (cache.distance / 1000).toFixed(1) + ' km' : 'Unknown'}</span>
+                            <span>⭐ D{cache.difficulty}/T{cache.terrain}</span>
+                            <span>📦 {cache.size}</span>
+                            <span>🗺️ {cache.type}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Selected Geocache */}
+                {selectedGeocache && (
+                  <div style={{
+                    padding: '20px',
+                    borderRadius: '16px',
+                    background: `linear-gradient(135deg, ${theme.colors.forest.primary}20 0%, ${theme.colors.forest.light}10 100%)`,
+                    border: `2px solid ${theme.colors.forest.primary}`,
+                    boxShadow: theme.shadows.lg,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                      <span style={{ fontSize: '32px' }}>✅</span>
+                      <div style={{ flex: 1 }}>
+                        <h3 style={{ fontSize: '18px', fontWeight: '800', color: theme.colors.forest.primary, marginBottom: '4px' }}>
+                          Geocache Selected!
+                        </h3>
+                        <p style={{ fontSize: '14px', fontWeight: '600', color: theme.colors.ink.primary }}>
+                          {selectedGeocache.name}
+                        </p>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        background: theme.colors.forest.primary,
+                        color: 'white',
+                      }}>
+                        +{geocacheBonus} Bonus Points
+                      </span>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        background: theme.colors.card,
+                        color: theme.colors.ink.primary,
+                        border: `1px solid ${theme.colors.border}`,
+                      }}>
+                        D{selectedGeocache.difficulty} / T{selectedGeocache.terrain}
+                      </span>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        background: theme.colors.card,
+                        color: theme.colors.ink.primary,
+                        border: `1px solid ${theme.colors.border}`,
+                      }}>
+                        {selectedGeocache.type}
+                      </span>
+                    </div>
+                    {selectedGeocache.hint && (
+                      <div style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        background: theme.colors.card,
+                        border: `1px solid ${theme.colors.border}`,
+                      }}>
+                        <p style={{ fontSize: '12px', fontWeight: '600', color: theme.colors.ink.secondary, marginBottom: '4px' }}>
+                          💡 Hint:
+                        </p>
+                        <p style={{ fontSize: '13px', color: theme.colors.ink.primary }}>
+                          {selectedGeocache.hint}
+                        </p>
+                      </div>
+                    )}
+                    <div style={{
+                      marginTop: '12px',
+                      padding: '12px',
+                      borderRadius: '8px',
+                      background: theme.colors.forest.primary + '15',
+                      textAlign: 'center',
+                    }}>
+                      <p style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.forest.primary, margin: 0 }}>
+                        Total Score: {rating ? rating.totalScore + geocacheBonus : geocacheBonus} points
+                      </p>
                     </div>
                   </div>
                 )}

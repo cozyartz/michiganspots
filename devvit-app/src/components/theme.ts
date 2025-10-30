@@ -20,6 +20,12 @@ export const lightTheme = {
     coral: {
       primary: '#FB7185',
       light: '#FDA4AF',
+      dark: '#E11D48',
+    },
+    forest: {
+      primary: '#10B981',
+      dark: '#059669',
+      light: '#34D399',
     },
     ink: {
       primary: '#2C1810',
@@ -28,6 +34,9 @@ export const lightTheme = {
     background: '#FAFAF9',
     card: '#FFFFFF',
     border: '#E7E5E4',
+    text: '#1F1F1F',
+    textSecondary: '#6B7280',
+    secondary: '#F3F4F6',
   },
   shadows: {
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
@@ -39,9 +48,9 @@ export const lightTheme = {
 
 export const darkTheme = {
   colors: {
-    copper: '#E88A3F',
-    copperLight: '#FFA860',
-    copperDark: '#D2691E',
+    copper: '#969696',
+    copperLight: '#B0B0B0',
+    copperDark: '#7A7A7A',
     cyan: {
       primary: '#22D3EE',
       dark: '#06B6D4',
@@ -56,14 +65,23 @@ export const darkTheme = {
     coral: {
       primary: '#FDA4AF',
       light: '#FECDD3',
+      dark: '#FB7185',
+    },
+    forest: {
+      primary: '#34D399',
+      dark: '#10B981',
+      light: '#6EE7B7',
     },
     ink: {
       primary: '#F5F5F4',
       secondary: '#D6D3D1',
     },
-    background: '#1C1917',
-    card: '#292524',
-    border: '#44403C',
+    background: '#1A1A1A',
+    card: '#2D2D2D',
+    border: '#4A4A4A',
+    text: '#E5E5E5',
+    textSecondary: '#A0A0A0',
+    secondary: '#3A3A3A',
   },
   shadows: {
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.3)',

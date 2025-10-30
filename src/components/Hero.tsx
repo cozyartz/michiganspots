@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Trophy, Users, Sparkles } from 'lucide-react';
+import { MapPin, Users, Sparkles } from 'lucide-react';
 import { Button } from './Button';
 import { useState, useEffect } from 'react';
 
@@ -82,14 +82,29 @@ export function Hero() {
             </motion.div>
 
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-ink-primary mb-6 leading-tight">
-              Discover Michigan's
-              <span className="text-cyan-primary text-shadow-treasure"> Hidden Gems</span>
+              Discover
+              <span className="text-cyan-primary text-shadow-treasure"> 60+ Hidden Gems</span>
+              <br />Across Michigan
             </h1>
 
             <p className="text-lg md:text-xl text-ink-secondary mb-8 leading-relaxed">
-              Be among the first explorers in a community-powered treasure hunt across the Great Lakes State.
-              Find spots, complete challenges, earn badges, and compete with cities across Michigan.
+              Join thousands of Michiganders exploring our beautiful state together. Visit real locations, capture memories, and share the adventure with fellow explorers across the Great Lakes State.
             </p>
+
+            <div className="flex items-center space-x-6 mb-8">
+              <div className="flex items-center space-x-2">
+                <span className="font-display text-3xl font-bold text-lakes-blue">10</span>
+                <span className="text-sm text-ink-secondary">Adventures</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="font-display text-3xl font-bold text-amber-primary">60+</span>
+                <span className="text-sm text-ink-secondary">Locations</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="font-display text-3xl font-bold text-forest-green">FREE</span>
+                <span className="text-sm text-ink-secondary">to Play</span>
+              </div>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
@@ -97,14 +112,14 @@ export function Hero() {
                 size="lg"
                 onClick={() => document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Join the Hunt
+                Start Your Adventure
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => window.location.href = '/about'}
               >
-                Learn More
+                Explore Challenges
               </Button>
             </div>
 
@@ -113,22 +128,22 @@ export function Hero() {
                 <div className="flex justify-center mb-2">
                   <MapPin className="w-8 h-8 text-cyan-primary" />
                 </div>
-                <div className="font-heading font-bold text-2xl text-ink-primary">Discover</div>
-                <div className="text-sm text-ink-secondary">Hidden Spots</div>
+                <div className="font-heading font-bold text-2xl text-ink-primary">Explore</div>
+                <div className="text-sm text-ink-secondary">Real Locations</div>
               </div>
               <div className="text-center">
                 <div className="flex justify-center mb-2">
-                  <Trophy className="w-8 h-8 text-amber-primary" />
+                  <Sparkles className="w-8 h-8 text-amber-primary" />
                 </div>
-                <div className="font-heading font-bold text-2xl text-ink-primary">Complete</div>
-                <div className="text-sm text-ink-secondary">Challenges</div>
+                <div className="font-heading font-bold text-2xl text-ink-primary">Capture</div>
+                <div className="text-sm text-ink-secondary">Your Memories</div>
               </div>
               <div className="text-center">
                 <div className="flex justify-center mb-2">
                   <Users className="w-8 h-8 text-coral-primary" />
                 </div>
-                <div className="font-heading font-bold text-2xl text-ink-primary">Compete</div>
-                <div className="text-sm text-ink-secondary">With Your City</div>
+                <div className="font-heading font-bold text-2xl text-ink-primary">Share</div>
+                <div className="text-sm text-ink-secondary">With Community</div>
               </div>
             </div>
           </motion.div>

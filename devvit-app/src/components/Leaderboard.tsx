@@ -8,7 +8,7 @@ interface LeaderboardProps {
 }
 
 type GameFilter = 'all' | 'word-search' | 'trivia' | 'memory-match' | 'photo-hunt';
-type TimePeriod = 'alltime' | 'daily' | 'weekly' | 'monthly';
+type TimePeriod = 'alltime' | 'daily' | 'weekly' | 'quarterly';
 
 export const Leaderboard = ({ username, postId, onViewProfile }: LeaderboardProps) => {
   const [topScores, setTopScores] = useState<GameScore[]>([]);
@@ -128,14 +128,14 @@ export const Leaderboard = ({ username, postId, onViewProfile }: LeaderboardProp
               📊 Weekly
             </button>
             <button
-              onClick={() => setTimePeriod('monthly')}
+              onClick={() => setTimePeriod('quarterly')}
               className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                timePeriod === 'monthly'
+                timePeriod === 'quarterly'
                   ? 'bg-purple-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              📈 Monthly
+              📈 Quarterly
             </button>
             <button
               onClick={() => setTimePeriod('alltime')}

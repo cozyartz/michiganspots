@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MemoryMatch } from './MemoryMatch';
 import { Trivia } from './Trivia';
 import { PhotoHunt } from './PhotoHunt';
+import { Geocaching } from './Geocaching';
 import { UserProfile } from './UserProfile';
 import { ChallengeBrowser } from './ChallengeBrowser';
 import { Achievements } from './Achievements';
@@ -14,7 +15,7 @@ interface InteractiveGameHubProps {
   isDark: boolean;
 }
 
-type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'profile' | 'challenges' | 'achievements' | 'points-status';
+type GameMode = 'splash' | 'memory-match' | 'trivia' | 'photo-hunt' | 'geocaching' | 'profile' | 'challenges' | 'achievements' | 'points-status';
 
 export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGameHubProps) => {
   const [gameMode, setGameMode] = useState<GameMode>('splash');
@@ -39,16 +40,21 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
   }
 
   if (gameMode === 'trivia') {
+    console.log('[InteractiveGameHub] Rendering Trivia game');
     return (
       <Trivia
         username={username}
         postId={postId}
         isDark={isDark}
         onComplete={(score) => {
+          console.log('[InteractiveGameHub] Trivia complete with score:', score);
           setTotalScore((prev) => prev + score);
           setGameMode('splash');
         }}
-        onBack={() => setGameMode('splash')}
+        onBack={() => {
+          console.log('[InteractiveGameHub] Trivia back button clicked');
+          setGameMode('splash');
+        }}
       />
     );
   }
@@ -68,8 +74,23 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
     );
   }
 
+  if (gameMode === 'geocaching') {
+    return (
+      <Geocaching
+        username={username}
+        postId={postId}
+        isDark={isDark}
+        onComplete={(score) => {
+          setTotalScore((prev) => prev + score);
+          setGameMode('splash');
+        }}
+        onBack={() => setGameMode('splash')}
+      />
+    );
+  }
+
   if (gameMode === 'profile') {
-    return <UserProfile username={username} onBack={() => setGameMode('splash')} />;
+    return <UserProfile username={username} onBack={() => setGameMode('splash')} isDark={isDark} />;
   }
 
   if (gameMode === 'challenges') {
@@ -77,7 +98,7 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
   }
 
   if (gameMode === 'achievements') {
-    return <Achievements username={username} onBack={() => setGameMode('splash')} />;
+    return <Achievements username={username} onBack={() => setGameMode('splash')} isDark={isDark} />;
   }
 
   if (gameMode === 'points-status') {
@@ -415,7 +436,10 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
 
           {/* Trivia */}
           <button
-            onClick={() => setGameMode('trivia')}
+            onClick={() => {
+              console.log('[InteractiveGameHub] Trivia button clicked');
+              setGameMode('trivia');
+            }}
             onMouseEnter={() => setHoveredCard('trivia')}
             onMouseLeave={() => setHoveredCard(null)}
             style={{
@@ -542,6 +566,68 @@ export const InteractiveGameHub = ({ username, postId, isDark }: InteractiveGame
               strokeWidth="2"
               style={{
                 transform: hoveredCard === 'photo' ? 'translateX(4px)' : 'translateX(0)',
+                transition: 'transform 0.2s',
+              }}
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+
+          {/* Geocaching */}
+          <button
+            onClick={() => setGameMode('geocaching')}
+            onMouseEnter={() => setHoveredCard('geocaching')}
+            onMouseLeave={() => setHoveredCard(null)}
+            style={{
+              width: '100%',
+              background: theme.colors.card,
+              borderRadius: '16px',
+              padding: '20px',
+              border: `2px solid ${hoveredCard === 'geocaching' ? theme.colors.forest.primary : theme.colors.border}`,
+              boxShadow: hoveredCard === 'geocaching' ? theme.shadows.xl : theme.shadows.md,
+              transform: hoveredCard === 'geocaching' ? 'translateY(-2px)' : 'translateY(0)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              textAlign: 'left',
+            }}
+          >
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                flexShrink: 0,
+                borderRadius: '12px',
+                background: `${theme.colors.forest.primary}15`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={theme.colors.forest.primary} strokeWidth="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '18px', fontWeight: '700', color: theme.colors.ink.primary, marginBottom: '4px' }}>
+                Geocaching
+              </div>
+              <div style={{ fontSize: '14px', color: theme.colors.ink.secondary }}>
+                Find hidden caches in Michigan
+              </div>
+            </div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={theme.colors.forest.primary}
+              strokeWidth="2"
+              style={{
+                transform: hoveredCard === 'geocaching' ? 'translateX(4px)' : 'translateX(0)',
                 transition: 'transform 0.2s',
               }}
             >

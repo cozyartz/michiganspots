@@ -21,21 +21,45 @@ export const usePostData = () => {
   useEffect(() => {
     const init = async () => {
       try {
+        console.log('Fetching /api/init...');
         const res = await fetch('/api/init');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        console.log('Init response status:', res.status);
+        
+        if (!res.ok) {
+          console.error('Init request failed:', res.status);
+          // Set fallback data instead of failing
+          setState({
+            postId: 'fallback',
+            username: 'anonymous',
+            postType: 'arcade',
+            postData: { postType: 'arcade', gameMode: 'splash' },
+            loading: false,
+          });
+          return;
+        }
+        
         const data: InitResponse = await res.json();
-        if (data.type !== 'init') throw new Error('Unexpected response');
+        console.log('Init response data:', data);
 
         setState({
-          postId: data.postId,
-          username: data.username,
+          postId: data.postId || 'fallback',
+          username: data.username || 'anonymous',
           postType: data.postType || 'arcade',
           postData: data.postData || {},
           loading: false,
         });
+        
+        console.log('Post data loaded successfully');
       } catch (err) {
         console.error('Failed to init post data', err);
-        setState((prev) => ({ ...prev, loading: false }));
+        // Set fallback data on any error
+        setState({
+          postId: 'fallback',
+          username: 'anonymous',
+          postType: 'arcade',
+          postData: { postType: 'arcade', gameMode: 'splash' },
+          loading: false,
+        });
       }
     };
     void init();

@@ -10,53 +10,108 @@ interface TriviaProps {
 }
 
 interface Question {
+  id?: string;
   question: string;
   options: string[];
   correctIndex: number;
   explanation: string;
+  category?: string;
+  difficulty?: string;
+  source?: string;
 }
 
-const TRIVIA_QUESTIONS: Question[] = [
+// Fallback questions in case API fails
+const FALLBACK_QUESTIONS: Question[] = [
   {
     question: 'What is the capital of Michigan?',
     options: ['Detroit', 'Lansing', 'Grand Rapids', 'Ann Arbor'],
     correctIndex: 1,
     explanation: 'Lansing has been Michigan\'s capital since 1847.',
+    category: 'Geography',
+    difficulty: 'easy'
   },
   {
     question: 'Which Great Lake does NOT border Michigan?',
     options: ['Lake Superior', 'Lake Michigan', 'Lake Erie', 'Lake Ontario'],
     correctIndex: 3,
     explanation: 'Michigan borders Lakes Superior, Michigan, Huron, and Erie.',
-  },
-  {
-    question: 'What is Michigan\'s state nickname?',
-    options: ['The Great Lake State', 'The Wolverine State', 'The Mitten State', 'All of the above'],
-    correctIndex: 3,
-    explanation: 'Michigan has several nicknames including all three listed!',
-  },
-  {
-    question: 'Which university is located in Ann Arbor?',
-    options: ['Michigan State', 'University of Michigan', 'Wayne State', 'Western Michigan'],
-    correctIndex: 1,
-    explanation: 'The University of Michigan is located in Ann Arbor.',
+    category: 'Geography',
+    difficulty: 'medium'
   },
   {
     question: 'What is Michigan\'s largest city?',
     options: ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights'],
     correctIndex: 0,
     explanation: 'Detroit is Michigan\'s largest city and was once the 4th largest in the US.',
+    category: 'Geography',
+    difficulty: 'easy'
   },
+  {
+    question: 'What is Michigan\'s state bird?',
+    options: ['Cardinal', 'Robin', 'Blue Jay', 'Bald Eagle'],
+    correctIndex: 1,
+    explanation: 'The American Robin has been Michigan\'s state bird since 1931.',
+    category: 'Nature',
+    difficulty: 'medium'
+  },
+  {
+    question: 'What major industry is Michigan known for?',
+    options: ['Technology', 'Automotive', 'Agriculture', 'Mining'],
+    correctIndex: 1,
+    explanation: 'Michigan is known as the automotive capital of the world, home to the Big Three automakers.',
+    category: 'Industry',
+    difficulty: 'easy'
+  }
 ];
 
 export const Trivia = ({ username, postId, isDark, onComplete, onBack }: TriviaProps) => {
+  console.log('[Trivia] Component mounting with:', { username, postId, isDark });
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const [timeLeft, setTimeLeft] = useState(90);
+  const [questions, setQuestions] = useState<Question[]>(FALLBACK_QUESTIONS);
+  const [loading, setLoading] = useState(true);
+  const [dailyTheme, setDailyTheme] = useState<string>('Michigan Trivia');
 
   const theme = getTheme(isDark);
+
+  console.log('[Trivia] State:', { currentQuestion, loading, questionsCount: questions.length });
+
+  // Load daily trivia questions
+  useEffect(() => {
+    loadDailyQuestions();
+  }, []);
+
+  const loadDailyQuestions = async () => {
+    try {
+      const response = await fetch('/api/trivia/daily', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'success' && data.questions && data.questions.length > 0) {
+          setQuestions(data.questions);
+
+          // Set daily theme based on question categories
+          const categories = [...new Set(data.questions.map((q: Question) => q.category).filter(Boolean))];
+          if (categories.length === 1) {
+            setDailyTheme(`Today's Focus: ${categories[0]}`);
+          } else if (categories.length > 1) {
+            setDailyTheme(`Today's Mix: ${categories.slice(0, 2).join(' & ')}`);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load daily questions, using fallback:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -85,9 +140,11 @@ export const Trivia = ({ username, postId, isDark, onComplete, onBack }: TriviaP
           postId,
           game: 'trivia',
           score: finalScore,
-          questionsAnswered: currentQuestion,
+          questionsAnswered: currentQuestion + 1,
           correctAnswers: Math.floor(score / 100),
           timeRemaining: timeLeft,
+          dailyTheme,
+          questionCategories: questions.map(q => q.category).filter(Boolean),
         }),
       });
     } catch (err) {
@@ -103,12 +160,12 @@ export const Trivia = ({ username, postId, isDark, onComplete, onBack }: TriviaP
     setSelectedAnswer(answerIndex);
     setShowExplanation(true);
 
-    if (answerIndex === TRIVIA_QUESTIONS[currentQuestion].correctIndex) {
+    if (answerIndex === questions[currentQuestion].correctIndex) {
       setScore((prev) => prev + 100);
     }
 
     setTimeout(() => {
-      if (currentQuestion < TRIVIA_QUESTIONS.length - 1) {
+      if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
         setSelectedAnswer(null);
         setShowExplanation(false);
@@ -118,8 +175,32 @@ export const Trivia = ({ username, postId, isDark, onComplete, onBack }: TriviaP
     }, 3000);
   };
 
-  const question = TRIVIA_QUESTIONS[currentQuestion];
-  const progress = ((currentQuestion + 1) / TRIVIA_QUESTIONS.length) * 100;
+  // Show simple loading screen while questions load (only for 1 second max)
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          width: '100%',
+          background: theme.colors.background,
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🧠</div>
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: theme.colors.cyan.primary }}>
+            Loading Trivia...
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  const question = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
     <div
@@ -204,7 +285,12 @@ export const Trivia = ({ username, postId, isDark, onComplete, onBack }: TriviaP
                 >
                   Michigan Trivia
                 </h2>
-                <p style={{ fontSize: '14px', fontWeight: '600', color: theme.colors.ink.secondary }}>{username}</p>
+                <p style={{ fontSize: '12px', fontWeight: '600', color: theme.colors.ink.secondary }}>{username}</p>
+                {dailyTheme && (
+                  <p style={{ fontSize: '11px', fontWeight: '500', color: theme.colors.amber.dark, marginTop: '2px' }}>
+                    {dailyTheme}
+                  </p>
+                )}
               </div>
               <div
                 style={{
@@ -271,9 +357,24 @@ export const Trivia = ({ username, postId, isDark, onComplete, onBack }: TriviaP
                 border: `1px solid ${theme.colors.copper}30`,
               }}
             >
-              <p style={{ fontSize: '12px', fontWeight: '700', color: theme.colors.ink.secondary, marginBottom: '12px' }}>
-                Question {currentQuestion + 1} of {TRIVIA_QUESTIONS.length}
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: theme.colors.ink.secondary }}>
+                  Question {currentQuestion + 1} of {questions.length}
+                </p>
+                {question.category && (
+                  <span style={{ 
+                    fontSize: '10px', 
+                    fontWeight: '600', 
+                    color: theme.colors.amber.dark,
+                    background: theme.colors.amber.light + '20',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    border: `1px solid ${theme.colors.amber.primary}40`
+                  }}>
+                    {question.category}
+                  </span>
+                )}
+              </div>
               <h3 style={{ fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: '800', color: theme.colors.ink.primary, margin: 0 }}>
                 {question.question}
               </h3>

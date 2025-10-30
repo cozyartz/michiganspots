@@ -5,58 +5,95 @@ import { createPost } from './core/post';
 
 const app = express();
 
-// Middleware for JSON body parsing
-app.use(express.json());
-// Middleware for URL-encoded body parsing
-app.use(express.urlencoded({ extended: true }));
-// Middleware for plain text body parsing
-app.use(express.text());
+// Middleware for JSON body parsing with size limits
+app.use(express.json({ limit: '1mb' }));
+// Middleware for URL-encoded body parsing with size limits
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// Middleware for plain text body parsing with size limits
+app.use(express.text({ limit: '1mb' }));
 
 const router = express.Router();
+
+// Simple health check endpoint
+router.get('/api/health', async (_req, res): Promise<void> => {
+  res.json({
+    status: 'ok',
+    timestamp: Date.now(),
+    message: 'Michigan Spots server is running',
+  });
+});
 
 router.get<{ postId: string }, InitResponse | { status: string; message: string }>(
   '/api/init',
   async (_req, res): Promise<void> => {
-    const { postId } = context;
-
-    if (!postId) {
-      console.error('API Init Error: postId not found in devvit context');
-      res.status(400).json({
-        status: 'error',
-        message: 'postId is required but missing from context',
-      });
-      return;
-    }
-
     try {
-      const [count, username, postData] = await Promise.all([
-        redis.get('count'),
-        reddit.getCurrentUsername(),
-        redis.get(`post:${postId}:data`),
-      ]);
+      // Get context data
+      const { postId, subredditName } = context;
+      
+      console.log('Init API called - context:', { postId, subredditName });
 
-      let parsedPostData = null;
+      // If no postId in context, try to get username anyway and return default data
+      let username = 'anonymous';
       try {
-        parsedPostData = postData ? JSON.parse(postData) : null;
-      } catch (e) {
-        console.error('Failed to parse post data:', e);
+        username = await reddit.getCurrentUsername() || 'anonymous';
+      } catch (userError) {
+        console.warn('Failed to get username:', userError);
       }
 
-      res.json({
+      if (!postId) {
+        console.warn('No postId in context, returning default arcade data');
+        res.json({
+          type: 'init',
+          postId: 'default',
+          count: 0,
+          username: username,
+          postType: 'arcade',
+          postData: { postType: 'arcade', gameMode: 'splash', score: 0, gamesPlayed: 0 },
+        });
+        return;
+      }
+
+      // Try to get stored post data
+      let postData = null;
+      try {
+        const storedData = await redis.get(`post:${postId}:data`);
+        postData = storedData ? JSON.parse(storedData) : null;
+      } catch (redisError) {
+        console.warn('Failed to get post data from Redis:', redisError);
+      }
+
+      // Get count
+      let count = 0;
+      try {
+        const countData = await redis.get('count');
+        count = countData ? parseInt(countData) : 0;
+      } catch (countError) {
+        console.warn('Failed to get count:', countError);
+      }
+
+      const response = {
         type: 'init',
         postId: postId,
-        count: count ? parseInt(count) : 0,
-        username: username ?? 'anonymous',
-        postType: parsedPostData?.postType || 'arcade',
-        postData: parsedPostData || {},
-      });
+        count: count,
+        username: username,
+        postType: postData?.postType || 'arcade',
+        postData: postData || { postType: 'arcade', gameMode: 'splash', score: 0, gamesPlayed: 0 },
+      };
+
+      console.log('Sending init response:', response);
+      res.json(response);
     } catch (error) {
-      console.error(`API Init Error for post ${postId}:`, error);
-      let errorMessage = 'Unknown error during initialization';
-      if (error instanceof Error) {
-        errorMessage = `Initialization failed: ${error.message}`;
-      }
-      res.status(400).json({ status: 'error', message: errorMessage });
+      console.error('API Init Error:', error);
+      
+      // Always return something, even if there's an error
+      res.json({
+        type: 'init',
+        postId: 'error-fallback',
+        count: 0,
+        username: 'anonymous',
+        postType: 'arcade',
+        postData: { postType: 'arcade', gameMode: 'splash', score: 0, gamesPlayed: 0 },
+      });
     }
   }
 );
@@ -324,15 +361,22 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
     await redis.zRemRangeByRank(allTimeKey, 0, -101); // Keep top 100
 
     // Store in time-period specific leaderboards
-    const periods = ['daily', 'weekly', 'monthly'];
+    const periods = ['daily', 'weekly', 'quarterly'];
     for (const period of periods) {
       const periodKey = getTimePeriodKey(period);
       const scoreKey = `leaderboard:${periodKey}:${gameData.game}`;
       await redis.zAdd(scoreKey, { member: scoreData, score: gameData.score });
       await redis.zRemRangeByRank(scoreKey, 0, -101); // Keep top 100
 
-      // Set expiration for period-specific keys (30 days for daily, 90 days for weekly/monthly)
-      const expirySeconds = period === 'daily' ? 30 * 24 * 60 * 60 : 90 * 24 * 60 * 60;
+      // Set expiration for period-specific keys (30 days for daily, 90 days for weekly, 365 days for quarterly)
+      let expirySeconds: number;
+      if (period === 'daily') {
+        expirySeconds = 30 * 24 * 60 * 60; // 30 days
+      } else if (period === 'weekly') {
+        expirySeconds = 90 * 24 * 60 * 60; // 90 days
+      } else {
+        expirySeconds = 365 * 24 * 60 * 60; // 365 days for quarterly
+      }
       await redis.expire(scoreKey, expirySeconds);
     }
 
@@ -370,62 +414,34 @@ router.post('/api/analytics/game-complete', async (req, res): Promise<void> => {
     });
     await redis.zRemRangeByRank('leaderboard:global:total', 0, -101); // Keep top 100
 
-    // Forward comprehensive data to Cloudflare API if DEVVIT_API_KEY is configured
+    // Forward essential data to Cloudflare API if DEVVIT_API_KEY is configured
     const apiKey = process.env.DEVVIT_API_KEY;
-    if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER') {
+    const enableCloudflareSync = process.env.ENABLE_CLOUDFLARE_SYNC !== 'false';
+    
+    if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER' && enableCloudflareSync) {
       try {
-        // Send game completion data
-        await fetch('https://michiganspots.com/api/analytics/game-complete', {
+        // Send only essential game completion data (reduced payload)
+        const essentialData = {
+          username: gameData.username,
+          game: gameData.game,
+          score: gameData.score,
+          timestamp: Date.now(),
+          source: 'reddit-devvit',
+          postId: gameData.postId,
+        };
+
+        const response = await fetch('https://michiganspots.com/api/analytics/game-complete', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-API-Key': apiKey,
           },
-          body: JSON.stringify({
-            ...gameData,
-            timestamp: Date.now(),
-            source: 'reddit-devvit',
-          }),
+          body: JSON.stringify(essentialData),
         });
 
-        // Send updated user statistics to Cloudflare
-        await fetch('https://michiganspots.com/api/users/sync-stats', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': apiKey,
-          },
-          body: JSON.stringify({
-            username: gameData.username,
-            stats: {
-              ...stats,
-              lastUpdated: Date.now(),
-              source: 'reddit-devvit',
-            },
-          }),
-        });
-
-        // Send leaderboard position update
-        const globalRank = await redis.zRevRank('leaderboard:global:total', 
-          JSON.stringify({ username: gameData.username, totalScore: stats.totalScore, gamesPlayed: stats.gamesPlayed })
-        );
-
-        await fetch('https://michiganspots.com/api/leaderboard/sync-position', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': apiKey,
-          },
-          body: JSON.stringify({
-            username: gameData.username,
-            game: gameData.game,
-            score: gameData.score,
-            totalScore: stats.totalScore,
-            globalRank: globalRank !== null ? globalRank + 1 : null,
-            timestamp: Date.now(),
-            source: 'reddit-devvit',
-          }),
-        });
+        if (!response.ok) {
+          console.warn(`Cloudflare sync failed with status: ${response.status}`);
+        }
       } catch (err) {
         console.error('Failed to sync data to Cloudflare:', err);
         // Don't fail the request if Cloudflare sync fails
@@ -1044,6 +1060,365 @@ Provide your response in this exact JSON format:
   }
 });
 
+// Geocaching API Endpoints - OpenCaching.us Integration
+
+// Search for geocaches near a location
+router.get('/api/geocaches/search', async (req, res): Promise<void> => {
+  try {
+    const { latitude, longitude, radius, limit } = req.query;
+
+    if (!latitude || !longitude) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Latitude and longitude are required',
+      });
+      return;
+    }
+
+    const {
+      searchNearbyGeocaches,
+    } = await import('./services/geocaching.js');
+
+    const lat = parseFloat(latitude as string);
+    const lon = parseFloat(longitude as string);
+    const radiusMeters = radius ? parseInt(radius as string) : 10000; // Default 10km
+    const limitNum = limit ? parseInt(limit as string) : 20;
+
+    const caches = await searchNearbyGeocaches(lat, lon, radiusMeters, limitNum);
+
+    res.json({
+      status: 'success',
+      caches,
+      count: caches.length,
+    });
+  } catch (error) {
+    console.error('Geocache search error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to search geocaches',
+      caches: [],
+    });
+  }
+});
+
+// Get all Michigan geocaches (or filtered subset)
+router.get('/api/geocaches/michigan', async (req, res): Promise<void> => {
+  try {
+    const { limit, minDifficulty, maxDifficulty, minTerrain, maxTerrain, type } = req.query;
+
+    const {
+      searchMichiganGeocaches,
+    } = await import('./services/geocaching.js');
+
+    const params: any = {};
+    if (limit) params.limit = parseInt(limit as string);
+    if (minDifficulty) params.minDifficulty = parseFloat(minDifficulty as string);
+    if (maxDifficulty) params.maxDifficulty = parseFloat(maxDifficulty as string);
+    if (minTerrain) params.minTerrain = parseFloat(minTerrain as string);
+    if (maxTerrain) params.maxTerrain = parseFloat(maxTerrain as string);
+    if (type) params.type = type as string;
+
+    const caches = await searchMichiganGeocaches(params);
+
+    res.json({
+      status: 'success',
+      caches,
+      count: caches.length,
+    });
+  } catch (error) {
+    console.error('Michigan geocache search error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to search Michigan geocaches',
+      caches: [],
+    });
+  }
+});
+
+// Get details for a specific geocache
+router.get('/api/geocaches/:code', async (req, res): Promise<void> => {
+  try {
+    const { code } = req.params;
+
+    if (!code) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Cache code is required',
+      });
+      return;
+    }
+
+    const {
+      getCacheDetails,
+    } = await import('./services/geocaching.js');
+
+    const cache = await getCacheDetails(code);
+
+    if (!cache) {
+      res.status(404).json({
+        status: 'error',
+        message: 'Geocache not found',
+      });
+      return;
+    }
+
+    res.json({
+      status: 'success',
+      cache,
+    });
+  } catch (error) {
+    console.error(`Geocache details error for ${req.params.code}:`, error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to get geocache details',
+    });
+  }
+});
+
+// Verify geocache visit and award points
+router.post('/api/geocaches/visit', async (req, res): Promise<void> => {
+  try {
+    const { username, cacheCode, userLocation, photoScore } = req.body;
+
+    if (!username || !cacheCode || !userLocation) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Username, cache code, and user location are required',
+      });
+      return;
+    }
+
+    const {
+      getCacheDetails,
+      verifyGeocacheProximity,
+      calculateGeocacheBonus,
+    } = await import('./services/geocaching.js');
+
+    // Get cache details
+    const cache = await getCacheDetails(cacheCode);
+    if (!cache) {
+      res.status(404).json({
+        status: 'error',
+        message: 'Geocache not found',
+      });
+      return;
+    }
+
+    // Verify proximity (161 meters / 0.1 miles)
+    const verified = verifyGeocacheProximity(
+      userLocation.latitude,
+      userLocation.longitude,
+      cache.location.latitude,
+      cache.location.longitude,
+      161
+    );
+
+    // Calculate geocache bonus
+    const geocacheBonus = calculateGeocacheBonus(cache, verified);
+
+    // Calculate total score (photo score + geocache bonus)
+    const totalScore = (photoScore || 0) + geocacheBonus;
+
+    // Record geocache visit
+    const visit = {
+      username,
+      cacheCode: cache.code,
+      cacheName: cache.name,
+      visitedAt: Date.now(),
+      photoSubmitted: !!photoScore,
+      pointsEarned: totalScore,
+      location: userLocation,
+      verified,
+    };
+
+    // Save visit to Redis
+    const visitsKey = `geocache:visits:${username}`;
+    const visitsData = await redis.get(visitsKey);
+    const visits = visitsData ? JSON.parse(visitsData) : [];
+    visits.push(visit);
+    await redis.set(visitsKey, JSON.stringify(visits));
+
+    // Track unique caches visited
+    const uniqueCachesKey = `geocache:unique:${username}`;
+    await redis.sAdd(uniqueCachesKey, cacheCode);
+
+    // Update user's total geocaching score
+    const scoreKey = `geocache:score:${username}`;
+    const currentScore = await redis.get(scoreKey);
+    const newScore = (currentScore ? parseInt(currentScore) : 0) + totalScore;
+    await redis.set(scoreKey, newScore.toString());
+
+    res.json({
+      status: 'success',
+      visit,
+      geocacheBonus,
+      totalScore,
+      verified,
+      message: verified
+        ? 'Geocache visit verified!'
+        : 'Visit recorded (location not verified)',
+    });
+  } catch (error) {
+    console.error('Geocache visit error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to record geocache visit',
+    });
+  }
+});
+
+// Get user geocaching statistics
+router.get('/api/geocaches/stats/:username', async (req, res): Promise<void> => {
+  try {
+    const { username } = req.params;
+
+    // Get all visits
+    const visitsKey = `geocache:visits:${username}`;
+    const visits = await redis.lRange(visitsKey, 0, -1);
+    const parsedVisits = visits.map((v) => JSON.parse(v));
+
+    // Get unique caches
+    const uniqueKey = `geocache:unique:${username}`;
+    const uniqueCaches = await redis.sMembers(uniqueKey);
+
+    // Get total score
+    const scoreKey = `geocache:score:${username}`;
+    const totalScore = parseInt((await redis.get(scoreKey)) || '0');
+
+    // Calculate difficulty and terrain statistics
+    const difficultyStats = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const terrainStats = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+    parsedVisits.forEach((visit) => {
+      const difficulty = Math.round(visit.cache.difficulty);
+      const terrain = Math.round(visit.cache.terrain);
+
+      if (difficulty >= 1 && difficulty <= 5) {
+        difficultyStats[difficulty as keyof typeof difficultyStats]++;
+      }
+      if (terrain >= 1 && terrain <= 5) {
+        terrainStats[terrain as keyof typeof terrainStats]++;
+      }
+    });
+
+    res.json({
+      status: 'success',
+      data: {
+        username,
+        totalFinds: parsedVisits.length,
+        uniqueCaches: uniqueCaches.length,
+        totalPoints: totalScore,
+        difficultyStats,
+        terrainStats,
+        recentVisits: parsedVisits.slice(0, 10),
+      },
+    });
+  } catch (error) {
+    console.error('Geocache stats error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch geocache statistics',
+    });
+  }
+});
+
+// Log a geocache find or DNF
+router.post('/api/geocaches/log', async (req, res): Promise<void> => {
+  try {
+    const { username, cacheCode, logType, comment, latitude, longitude } = req.body;
+
+    if (!username || !cacheCode || !logType) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Missing required fields: username, cacheCode, logType',
+      });
+      return;
+    }
+
+    if (!['found', 'dnf'].includes(logType)) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Invalid logType. Must be "found" or "dnf"',
+      });
+      return;
+    }
+
+    // Get cache details
+    const cache = await getCacheDetails(cacheCode);
+    if (!cache) {
+      res.status(404).json({
+        status: 'error',
+        message: 'Cache not found',
+      });
+      return;
+    }
+
+    // Verify GPS proximity if coordinates provided
+    let verified = false;
+    if (latitude && longitude) {
+      verified = verifyGeocacheProximity(
+        latitude,
+        longitude,
+        cache.location.latitude,
+        cache.location.longitude
+      );
+    }
+
+    // Calculate points (only for "found" logs)
+    let points = 0;
+    if (logType === 'found') {
+      points = calculateGeocacheBonus(cache, verified);
+    }
+
+    // Create log entry
+    const logEntry = {
+      username,
+      cacheCode,
+      cacheName: cache.name,
+      logType,
+      comment: comment || '',
+      verified,
+      points,
+      timestamp: new Date().toISOString(),
+      latitude: latitude || null,
+      longitude: longitude || null,
+    };
+
+    // Store log in Redis
+    const logsKey = `geocache:logs:${username}`;
+    await redis.lPush(logsKey, JSON.stringify(logEntry));
+
+    // Update statistics if "found"
+    if (logType === 'found') {
+      // Add to unique caches set
+      const uniqueKey = `geocache:unique:${username}`;
+      await redis.sAdd(uniqueKey, cacheCode);
+
+      // Update total score
+      const scoreKey = `geocache:score:${username}`;
+      await redis.incrBy(scoreKey, points);
+    }
+
+    res.json({
+      status: 'success',
+      data: {
+        logEntry,
+        points,
+        verified,
+        message: logType === 'found'
+          ? `Congratulations! You found ${cache.name}!`
+          : `Better luck next time at ${cache.name}!`,
+      },
+    });
+  } catch (error) {
+    console.error('Geocache log error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to log geocache find',
+    });
+  }
+});
+
 // Get moderation history
 router.get('/api/mod-history', async (req, res): Promise<void> => {
   try {
@@ -1124,6 +1499,10 @@ function getTimePeriodKey(period: string): string {
     case 'weekly':
       const weekNum = Math.ceil((now.getDate() + 6 - now.getDay()) / 7);
       return `weekly:${now.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+    case 'quarterly':
+      // Q1: Jan-Mar (months 0-2), Q2: Apr-Jun (3-5), Q3: Jul-Sep (6-8), Q4: Oct-Dec (9-11)
+      const quarter = Math.floor(now.getMonth() / 3) + 1;
+      return `quarterly:${now.getFullYear()}-Q${quarter}`;
     case 'monthly':
       return `monthly:${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     default:
@@ -1168,7 +1547,7 @@ router.get('/api/leaderboard/:game', async (req, res): Promise<void> => {
 router.get('/api/leaderboard/:game/combined', async (req, res): Promise<void> => {
   try {
     const game = req.params.game === 'all' ? '*' : req.params.game;
-    const periods = ['daily', 'weekly', 'monthly', 'alltime'];
+    const periods = ['daily', 'weekly', 'quarterly', 'alltime'];
 
     const leaderboards: any = {};
 
@@ -1192,7 +1571,7 @@ router.get('/api/leaderboard/:game/combined', async (req, res): Promise<void> =>
       currentPeriod: {
         daily: getTimePeriodKey('daily'),
         weekly: getTimePeriodKey('weekly'),
-        monthly: getTimePeriodKey('monthly'),
+        quarterly: getTimePeriodKey('quarterly'),
       },
     });
   } catch (error) {
@@ -1216,6 +1595,316 @@ router.get('/api/challenges', async (_req, res): Promise<void> => {
       status: 'error',
       message: 'Failed to load challenges',
       challenges: [],
+    });
+  }
+});
+
+// Get daily trivia questions
+router.get('/api/trivia/daily', async (req, res): Promise<void> => {
+  try {
+    // Fallback questions if import fails
+    const fallbackQuestions = [
+      {
+        id: 'capital-1',
+        question: 'What is the capital of Michigan?',
+        options: ['Detroit', 'Lansing', 'Grand Rapids', 'Ann Arbor'],
+        correctIndex: 1,
+        explanation: 'Lansing has been Michigan\'s capital since 1847.',
+        category: 'Geography',
+        difficulty: 'easy'
+      },
+      {
+        id: 'great-lakes-1',
+        question: 'Which Great Lake does NOT border Michigan?',
+        options: ['Lake Superior', 'Lake Michigan', 'Lake Erie', 'Lake Ontario'],
+        correctIndex: 3,
+        explanation: 'Michigan borders Lakes Superior, Michigan, Huron, and Erie.',
+        category: 'Geography',
+        difficulty: 'medium'
+      },
+      {
+        id: 'largest-city-1',
+        question: 'What is Michigan\'s largest city?',
+        options: ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights'],
+        correctIndex: 0,
+        explanation: 'Detroit is Michigan\'s largest city and was once the 4th largest in the US.',
+        category: 'Geography',
+        difficulty: 'easy'
+      },
+      {
+        id: 'university-1',
+        question: 'Which university is located in Ann Arbor?',
+        options: ['Michigan State', 'University of Michigan', 'Wayne State', 'Western Michigan'],
+        correctIndex: 1,
+        explanation: 'The University of Michigan is located in Ann Arbor.',
+        category: 'Education',
+        difficulty: 'easy'
+      },
+      {
+        id: 'nickname-1',
+        question: 'What is Michigan\'s most common nickname?',
+        options: ['The Great Lake State', 'The Wolverine State', 'The Mitten State', 'The Motor State'],
+        correctIndex: 1,
+        explanation: 'Michigan is commonly known as the Wolverine State.',
+        category: 'General',
+        difficulty: 'medium'
+      }
+    ];
+
+    try {
+      const { getDailyQuestionSet, MICHIGAN_TRIVIA_QUESTIONS } = await import('../shared/types/trivia.js');
+      const date = req.query.date ? new Date(req.query.date as string) : new Date();
+      const dailyQuestions = getDailyQuestionSet(date);
+      
+      res.json({
+        status: 'success',
+        date: date.toISOString().split('T')[0],
+        questions: dailyQuestions,
+        totalAvailable: MICHIGAN_TRIVIA_QUESTIONS.length,
+      });
+    } catch (importError) {
+      console.warn('Trivia import failed, using fallback questions:', importError);
+      res.json({
+        status: 'success',
+        date: new Date().toISOString().split('T')[0],
+        questions: fallbackQuestions,
+        totalAvailable: fallbackQuestions.length,
+        fallback: true,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load daily trivia:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load daily trivia questions',
+      questions: [],
+    });
+  }
+});
+
+// Generate new trivia questions using AI
+router.post('/api/trivia/generate', async (req, res): Promise<void> => {
+  try {
+    const { category, difficulty, count = 1, theme } = req.body;
+    
+    const aiApiKey = process.env.CLOUDFLARE_AI_API_KEY;
+    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+
+    if (!aiApiKey || aiApiKey === 'PLACEHOLDER' || !accountId || accountId === 'PLACEHOLDER') {
+      console.warn('Cloudflare AI not configured, using fallback questions');
+      
+      // Fallback: return basic questions if import fails
+      let questions = [];
+      try {
+        const { getQuestionsByCategory, getQuestionsByDifficulty, getRandomQuestions } = await import('../shared/types/trivia.js');
+        
+        if (category) {
+          questions = getQuestionsByCategory(category);
+        } else if (difficulty) {
+          questions = getQuestionsByDifficulty(difficulty);
+        } else {
+          questions = getRandomQuestions(count);
+        }
+      } catch (importError) {
+        console.warn('Trivia import failed in generation, using basic fallback:', importError);
+        questions = [
+          {
+            id: 'fallback-1',
+            question: 'What is the capital of Michigan?',
+            options: ['Detroit', 'Lansing', 'Grand Rapids', 'Ann Arbor'],
+            correctIndex: 1,
+            explanation: 'Lansing has been Michigan\'s capital since 1847.',
+            category: 'Geography',
+            difficulty: 'easy'
+          }
+        ];
+      }
+
+      
+      res.json({
+        status: 'success',
+        questions: questions.slice(0, count),
+        generated: false,
+        message: 'Using existing question database',
+      });
+      return;
+    }
+
+    // AI-powered question generation
+    const prompt = `Generate ${count} Michigan trivia question(s) in JSON format. 
+
+Requirements:
+- Category: ${category || 'any Michigan topic'}
+- Difficulty: ${difficulty || 'medium'}
+- Theme: ${theme || 'general Michigan knowledge'}
+
+Each question should follow this exact JSON structure:
+{
+  "id": "unique-id",
+  "question": "Question text ending with ?",
+  "options": ["Option A", "Option B", "Option C", "Option D"],
+  "correctIndex": 0,
+  "explanation": "Detailed explanation of the correct answer",
+  "category": "${category || 'General'}",
+  "difficulty": "${difficulty || 'medium'}"
+}
+
+Focus on interesting, lesser-known Michigan facts. Include specific details like dates, numbers, and locations. Make questions engaging and educational.
+
+Topics to consider:
+- Michigan history and founding
+- Great Lakes geography and facts
+- Famous Michigan landmarks and attractions
+- Michigan industries (automotive, agriculture, tourism)
+- Michigan universities and education
+- Michigan sports teams and achievements
+- Michigan culture, food, and traditions
+- Michigan nature, wildlife, and parks
+- Famous people from Michigan
+- Unique Michigan laws or customs
+
+Return only valid JSON array of question objects.`;
+
+    try {
+      const aiResponse = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3-8b-instruct`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${aiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt,
+            max_tokens: 1024,
+          }),
+        }
+      );
+
+      if (!aiResponse.ok) {
+        throw new Error('Cloudflare AI request failed');
+      }
+
+      const aiResult = await aiResponse.json();
+      const responseText = aiResult.result?.response || aiResult.result;
+      
+      // Extract JSON from AI response
+      let generatedQuestions = [];
+      try {
+        const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          generatedQuestions = JSON.parse(jsonMatch[0]);
+        } else {
+          // Try to find individual question objects
+          const questionMatches = responseText.match(/\{[\s\S]*?\}/g);
+          if (questionMatches) {
+            generatedQuestions = questionMatches.map(match => JSON.parse(match));
+          }
+        }
+      } catch (parseError) {
+        console.error('Failed to parse AI-generated questions:', parseError);
+        throw new Error('Invalid AI response format');
+      }
+
+      // Validate and store generated questions
+      const validQuestions = generatedQuestions.filter(q => 
+        q.question && q.options && Array.isArray(q.options) && 
+        q.options.length === 4 && typeof q.correctIndex === 'number' &&
+        q.correctIndex >= 0 && q.correctIndex < 4 && q.explanation
+      );
+
+      if (validQuestions.length === 0) {
+        throw new Error('No valid questions generated');
+      }
+
+      // Store generated questions in Redis for future use
+      const timestamp = Date.now();
+      for (const question of validQuestions) {
+        question.id = question.id || `ai-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
+        question.dateAdded = new Date().toISOString();
+        question.source = 'ai-generated';
+        
+        await redis.set(`trivia:generated:${question.id}`, JSON.stringify(question));
+        await redis.zAdd('trivia:generated:timeline', {
+          member: JSON.stringify(question),
+          score: timestamp,
+        });
+      }
+
+      // Keep only last 1000 generated questions
+      await redis.zRemRangeByRank('trivia:generated:timeline', 0, -1001);
+
+      res.json({
+        status: 'success',
+        questions: validQuestions,
+        generated: true,
+        count: validQuestions.length,
+        message: `Generated ${validQuestions.length} new Michigan trivia questions`,
+      });
+
+    } catch (aiError) {
+      console.error('AI question generation error:', aiError);
+      
+      // Fallback to basic questions
+      let fallbackQuestions = [];
+      try {
+        const { getRandomQuestions } = await import('../shared/types/trivia.js');
+        fallbackQuestions = getRandomQuestions(count);
+      } catch (importError) {
+        console.warn('Trivia import failed in AI fallback:', importError);
+        fallbackQuestions = [
+          {
+            id: 'ai-fallback-1',
+            question: 'What is Michigan\'s largest city?',
+            options: ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights'],
+            correctIndex: 0,
+            explanation: 'Detroit is Michigan\'s largest city.',
+            category: 'Geography',
+            difficulty: 'easy'
+          }
+        ];
+      }
+      
+      res.json({
+        status: 'success',
+        questions: fallbackQuestions,
+        generated: false,
+        message: 'AI temporarily unavailable, using existing questions',
+        error: aiError.message,
+      });
+    }
+  } catch (error) {
+    console.error('Trivia generation error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to generate trivia questions',
+    });
+  }
+});
+
+// Get AI-generated questions from storage
+router.get('/api/trivia/generated', async (req, res): Promise<void> => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 50;
+    
+    const generatedQuestions = await redis.zRange('trivia:generated:timeline', 0, limit - 1, {
+      reverse: true,
+      by: 'score',
+    });
+
+    const questions = generatedQuestions.map(entry => JSON.parse(entry.member));
+
+    res.json({
+      status: 'success',
+      questions,
+      total: questions.length,
+    });
+  } catch (error) {
+    console.error('Failed to get generated questions:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to load generated questions',
+      questions: [],
     });
   }
 });
@@ -1296,28 +1985,34 @@ router.post('/api/challenges/progress', async (req, res): Promise<void> => {
         score: Date.now(),
       });
 
-      // Sync challenge progress to Cloudflare
+      // Sync essential challenge progress to Cloudflare (reduced payload)
       const apiKey = process.env.DEVVIT_API_KEY;
-      if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER') {
+      const enableCloudflareSync = process.env.ENABLE_CLOUDFLARE_SYNC !== 'false';
+      
+      if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER' && enableCloudflareSync) {
         try {
-          await fetch('https://michiganspots.com/api/challenges/sync-progress', {
+          const essentialProgress = {
+            username,
+            challengeId,
+            landmarkName,
+            photoScore: photoScore || 0,
+            challengeCompleted: !!progress[challengeId].completedAt,
+            timestamp: Date.now(),
+            source: 'reddit-devvit',
+          };
+
+          const response = await fetch('https://michiganspots.com/api/challenges/sync-progress', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'X-API-Key': apiKey,
             },
-            body: JSON.stringify({
-              username,
-              challengeId,
-              landmarkName,
-              photoScore,
-              gps,
-              progress: progress[challengeId],
-              challengeCompleted: !!progress[challengeId].completedAt,
-              timestamp: Date.now(),
-              source: 'reddit-devvit',
-            }),
+            body: JSON.stringify(essentialProgress),
           });
+
+          if (!response.ok) {
+            console.warn(`Challenge sync failed with status: ${response.status}`);
+          }
         } catch (err) {
           console.error('Failed to sync challenge progress to Cloudflare:', err);
         }
@@ -1880,25 +2575,33 @@ router.post('/api/achievements/check', async (req, res): Promise<void> => {
     if (newlyUnlocked.length > 0) {
       await redis.set(achievementsKey, JSON.stringify(unlockedAchievements));
 
-      // Sync new achievements to Cloudflare
+      // Sync essential achievement data to Cloudflare (reduced payload)
       const apiKey = process.env.DEVVIT_API_KEY;
-      if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER') {
+      const enableCloudflareSync = process.env.ENABLE_CLOUDFLARE_SYNC !== 'false';
+      
+      if (apiKey && apiKey !== 'DEVVIT_API_KEY_PLACEHOLDER' && enableCloudflareSync) {
         try {
-          await fetch('https://michiganspots.com/api/achievements/sync-unlocked', {
+          const essentialAchievements = {
+            username,
+            newlyUnlockedCount: newlyUnlocked.length,
+            newlyUnlockedIds: newlyUnlocked.map(a => a.id),
+            totalUnlocked: unlockedAchievements.length,
+            timestamp: Date.now(),
+            source: 'reddit-devvit',
+          };
+
+          const response = await fetch('https://michiganspots.com/api/achievements/sync-unlocked', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'X-API-Key': apiKey,
             },
-            body: JSON.stringify({
-              username,
-              newlyUnlocked,
-              totalUnlocked: unlockedAchievements.length,
-              totalAchievements: ACHIEVEMENTS.length,
-              timestamp: Date.now(),
-              source: 'reddit-devvit',
-            }),
+            body: JSON.stringify(essentialAchievements),
           });
+
+          if (!response.ok) {
+            console.warn(`Achievement sync failed with status: ${response.status}`);
+          }
         } catch (err) {
           console.error('Failed to sync achievements to Cloudflare:', err);
         }
@@ -2083,6 +2786,38 @@ router.get('/api/profile/:username', async (req, res): Promise<void> => {
       return;
     }
 
+    // Fetch Reddit user data
+    let redditUser: any = null;
+    try {
+      const user = await reddit.getUserByUsername(username);
+      if (user) {
+        // Try multiple possible avatar properties
+        const avatarUrl = user.snoovatarUrl || (user as any).iconImg || (user as any).icon_img || `https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png`;
+
+        console.log('Reddit user avatar data for', username, ':', {
+          snoovatarUrl: user.snoovatarUrl,
+          iconImg: (user as any).iconImg,
+          icon_img: (user as any).icon_img,
+          finalUrl: avatarUrl
+        });
+
+        redditUser = {
+          id: user.id,
+          username: user.username,
+          createdAt: user.createdAt.getTime(),
+          karma: {
+            total: (user.linkKarma || 0) + (user.commentKarma || 0),
+            link: user.linkKarma || 0,
+            comment: user.commentKarma || 0,
+          },
+          iconUrl: avatarUrl,
+        };
+      }
+    } catch (redditError) {
+      console.warn(`Failed to fetch Reddit profile for ${username}:`, redditError);
+      // Continue without Reddit data
+    }
+
     // Get user's game scores across all games
     const games = ['photo-hunt', 'trivia', 'word-search', 'memory-match'];
     const gameStats: Record<string, any> = {};
@@ -2208,6 +2943,7 @@ router.get('/api/profile/:username', async (req, res): Promise<void> => {
       status: 'success',
       profile: {
         username,
+        redditUser,
         stats: {
           totalScore,
           gamesPlayed,
@@ -2234,11 +2970,21 @@ router.post('/api/sync/cloudflare', async (req, res): Promise<void> => {
   try {
     const { syncType = 'full', username } = req.body;
     const apiKey = process.env.DEVVIT_API_KEY;
+    const enableCloudflareSync = process.env.ENABLE_CLOUDFLARE_SYNC !== 'false';
 
     if (!apiKey || apiKey === 'DEVVIT_API_KEY_PLACEHOLDER') {
       res.status(400).json({
         status: 'error',
         message: 'Cloudflare API key not configured',
+      });
+      return;
+    }
+
+    if (!enableCloudflareSync) {
+      res.json({
+        status: 'success',
+        message: 'Cloudflare sync is disabled',
+        results: { users: 0, scores: 0, challenges: 0, achievements: 0, errors: [] },
       });
       return;
     }
@@ -2297,7 +3043,7 @@ router.post('/api/sync/cloudflare', async (req, res): Promise<void> => {
       if (syncType === 'full' || syncType === 'leaderboards') {
         // Sync leaderboard data
         const games = ['photo-hunt', 'trivia', 'word-search', 'memory-match'];
-        const periods = ['alltime', 'daily', 'weekly', 'monthly'];
+        const periods = ['alltime', 'daily', 'weekly', 'quarterly'];
 
         for (const game of games) {
           for (const period of periods) {
@@ -2511,6 +3257,24 @@ router.get('/api/sync/status', async (req, res): Promise<void> => {
 
 // Use router middleware
 app.use(router);
+
+// Error handling middleware for payload size (must be after routes)
+app.use((error: any, req: any, res: any, next: any) => {
+  if (error && error.type === 'entity.too.large') {
+    res.status(413).json({
+      status: 'error',
+      message: 'Request payload too large. Please reduce the size of your request.',
+    });
+  } else if (error) {
+    console.error('Server error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Internal server error',
+    });
+  } else {
+    next();
+  }
+});
 
 // Get port from environment variable with fallback
 const port = getServerPort();

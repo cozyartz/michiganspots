@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getTheme } from './theme';
+import { AITriviaGenerator } from './AITriviaGenerator';
 
 interface AIModToolsProps {
   username: string;
@@ -7,7 +8,7 @@ interface AIModToolsProps {
   onBack: () => void;
 }
 
-type Tool = 'content-analysis' | 'sentiment' | 'spam-detection' | 'business-onboarding' | 'challenge-generator' | null;
+type Tool = 'content-analysis' | 'sentiment' | 'spam-detection' | 'business-onboarding' | 'challenge-generator' | 'trivia-generator' | null;
 
 export const AIModTools = ({ username, postId, onBack }: AIModToolsProps) => {
   const theme = getTheme(false); // Always use light theme for mod tools
@@ -145,6 +146,7 @@ export const AIModTools = ({ username, postId, onBack }: AIModToolsProps) => {
                 width: '100%',
                 color: 'white',
                 boxShadow: '0 10px 25px rgba(245, 158, 11, 0.3)',
+                marginBottom: '16px',
               }}
             >
               <div style={{
@@ -174,6 +176,50 @@ export const AIModTools = ({ username, postId, onBack }: AIModToolsProps) => {
                 opacity: 0.9,
               }}>
                 Generate custom treasure hunt challenges and adventures for businesses using AI
+              </p>
+            </button>
+
+            <button
+              onClick={() => setActiveTool('trivia-generator')}
+              style={{
+                textAlign: 'left',
+                padding: '32px',
+                background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+                borderRadius: '20px',
+                border: 'none',
+                cursor: 'pointer',
+                width: '100%',
+                color: 'white',
+                boxShadow: '0 10px 25px rgba(59, 130, 246, 0.3)',
+              }}
+            >
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '16px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                marginBottom: '20px',
+              }}>
+                🧠
+              </div>
+              <h3 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                marginBottom: '12px',
+              }}>
+                Trivia Generator
+              </h3>
+              <p style={{
+                fontSize: '16px',
+                lineHeight: '1.5',
+                margin: 0,
+                opacity: 0.9,
+              }}>
+                Create fresh Michigan trivia questions daily using AI-powered content generation
               </p>
             </button>
           </div>
@@ -667,6 +713,11 @@ export const AIModTools = ({ username, postId, onBack }: AIModToolsProps) => {
         </div>
       </div>
     );
+  }
+
+  // AI Trivia Generator Tool
+  if (activeTool === 'trivia-generator') {
+    return <AITriviaGenerator username={username} onBack={() => setActiveTool(null)} />;
   }
 
   return null;

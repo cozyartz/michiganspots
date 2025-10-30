@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getTierColor, getTierName, type Achievement, type AchievementTier } from '../shared/types/achievements';
+import { getTheme } from './theme';
 
 interface AchievementsProps {
   username: string;
   onBack?: () => void;
+  isDark: boolean;
 }
 
 interface AchievementWithProgress extends Achievement {
@@ -11,13 +13,15 @@ interface AchievementWithProgress extends Achievement {
   unlockedAt?: number;
 }
 
-export const Achievements = ({ username, onBack }: AchievementsProps) => {
+export const Achievements = ({ username, onBack, isDark }: AchievementsProps) => {
   const [achievements, setAchievements] = useState<AchievementWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [tierFilter, setTierFilter] = useState<string>('all');
   const [prestigePoints, setPrestigePoints] = useState(0);
   const [unlockedCount, setUnlockedCount] = useState(0);
+
+  const theme = getTheme(isDark);
 
   useEffect(() => {
     loadAchievements();
@@ -51,74 +55,183 @@ export const Achievements = ({ username, onBack }: AchievementsProps) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500">
-        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
-          <div className="animate-spin text-6xl mb-4">🏆</div>
-          <p className="text-xl text-gray-700">Loading achievements...</p>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        padding: '16px',
+        background: `linear-gradient(135deg, ${theme.colors.copper} 0%, ${theme.colors.cyan.primary} 50%, ${theme.colors.amber} 100%)`,
+      }}>
+        <div style={{
+          maxWidth: '672px',
+          width: '100%',
+          backgroundColor: theme.colors.card,
+          borderRadius: '16px',
+          boxShadow: theme.shadows.xl,
+          padding: '32px',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '60px', marginBottom: '16px' }}>🏆</div>
+          <p style={{ fontSize: '20px', color: theme.colors.text }}>Loading achievements...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500">
-      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-2xl p-6 space-y-6">
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      minHeight: '100vh',
+      padding: '16px',
+      background: `linear-gradient(135deg, ${theme.colors.copper} 0%, ${theme.colors.cyan.primary} 50%, ${theme.colors.amber} 100%)`,
+    }}>
+      <div style={{
+        maxWidth: '896px',
+        width: '100%',
+        backgroundColor: theme.colors.card,
+        borderRadius: '16px',
+        boxShadow: theme.shadows.xl,
+        padding: '24px',
+      }}>
         {/* Header */}
-        <div className="text-center border-b pb-4">
-          <div className="flex items-center justify-between mb-2">
+        <div style={{ borderBottom: `2px solid ${theme.colors.border}`, paddingBottom: '24px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             {onBack && (
               <button
                 onClick={onBack}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.text,
+                  borderRadius: '8px',
+                  fontWeight: '600',
+                  border: 'none',
+                  cursor: 'pointer',
+                  boxShadow: theme.shadows.sm,
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = theme.colors.cyan.light;
+                  e.currentTarget.style.boxShadow = theme.shadows.md;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = theme.colors.secondary;
+                  e.currentTarget.style.boxShadow = theme.shadows.sm;
+                }}
               >
                 ← Back
               </button>
             )}
-            <div className="flex-1" />
+            <div style={{ flex: 1 }} />
           </div>
-          <div className="text-6xl mb-3">🏆</div>
-          <h1 className="text-3xl font-bold text-purple-900 mb-2">Achievements</h1>
-          <p className="text-gray-600">Unlock badges and earn prestige points</p>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '60px', marginBottom: '12px' }}>🏆</div>
+            <h1 style={{
+              fontSize: '36px',
+              fontWeight: 'bold',
+              color: theme.colors.copper,
+              marginBottom: '8px',
+            }}>
+              Achievements
+            </h1>
+            <p style={{ color: theme.colors.text, fontSize: '18px', fontWeight: '500' }}>Unlock badges and earn prestige points</p>
+          </div>
         </div>
 
         {/* Progress Summary */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">{unlockedCount}</div>
-              <div className="text-sm text-gray-600">Unlocked</div>
+        <div style={{
+          backgroundColor: isDark ? '#1F2937' : '#F3F4F6',
+          borderRadius: '16px',
+          padding: '24px',
+          border: `2px solid ${theme.colors.cyan.primary}`,
+          boxShadow: theme.shadows.lg,
+          marginBottom: '24px',
+        }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '20px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: '900',
+                color: theme.colors.copper,
+              }}>
+                {unlockedCount}
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.text, marginTop: '4px' }}>Unlocked</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-pink-600">{Math.round(completionPercent)}%</div>
-              <div className="text-sm text-gray-600">Complete</div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: '900',
+                color: theme.colors.cyan.dark,
+              }}>
+                {Math.round(completionPercent)}%
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.text, marginTop: '4px' }}>Complete</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-red-600">{prestigePoints}</div>
-              <div className="text-sm text-gray-600">Prestige</div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: '900',
+                color: theme.colors.amber,
+              }}>
+                {prestigePoints}
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '700', color: theme.colors.text, marginTop: '4px' }}>Prestige</div>
             </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all"
-              style={{ width: `${completionPercent}%` }}
-            />
+          <div style={{
+            width: '100%',
+            backgroundColor: isDark ? '#374151' : '#D1D5DB',
+            borderRadius: '9999px',
+            height: '20px',
+            overflow: 'hidden',
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+          }}>
+            <div style={{
+              height: '100%',
+              background: `linear-gradient(90deg, ${theme.colors.copper} 0%, ${theme.colors.cyan.primary} 50%, ${theme.colors.amber} 100%)`,
+              width: `${completionPercent}%`,
+              transition: 'width 0.5s ease',
+              boxShadow: theme.shadows.lg,
+            }} />
           </div>
         </div>
 
         {/* Filters */}
-        <div className="space-y-3">
-          <div>
-            <p className="text-sm font-semibold text-gray-700 mb-2">Category</p>
-            <div className="flex gap-2 flex-wrap">
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '12px' }}>
+            <p style={{ fontSize: '14px', fontWeight: '600', color: theme.colors.text, marginBottom: '8px' }}>Category</p>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {['all', 'games', 'challenges', 'exploration', 'mastery', 'social'].map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    filter === cat
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.2s',
+                    border: 'none',
+                    cursor: 'pointer',
+                    backgroundColor: filter === cat ? theme.colors.copper : theme.colors.secondary,
+                    color: filter === cat ? '#FFFFFF' : theme.colors.text,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (filter !== cat) {
+                      e.currentTarget.style.backgroundColor = theme.colors.cyan.light;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (filter !== cat) {
+                      e.currentTarget.style.backgroundColor = theme.colors.secondary;
+                    }
+                  }}
                 >
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </button>
@@ -127,17 +240,33 @@ export const Achievements = ({ username, onBack }: AchievementsProps) => {
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-2">Tier</p>
-            <div className="flex gap-2 flex-wrap">
+            <p style={{ fontSize: '14px', fontWeight: '600', color: theme.colors.text, marginBottom: '8px' }}>Tier</p>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {['all', 'bronze', 'silver', 'gold', 'platinum', 'legendary'].map((tier) => (
                 <button
                   key={tier}
                   onClick={() => setTierFilter(tier)}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    tierFilter === tier
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.2s',
+                    border: 'none',
+                    cursor: 'pointer',
+                    backgroundColor: tierFilter === tier ? theme.colors.copper : theme.colors.secondary,
+                    color: tierFilter === tier ? '#FFFFFF' : theme.colors.text,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (tierFilter !== tier) {
+                      e.currentTarget.style.backgroundColor = theme.colors.cyan.light;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (tierFilter !== tier) {
+                      e.currentTarget.style.backgroundColor = theme.colors.secondary;
+                    }
+                  }}
                 >
                   {tier.charAt(0).toUpperCase() + tier.slice(1)}
                 </button>
@@ -147,52 +276,90 @@ export const Achievements = ({ username, onBack }: AchievementsProps) => {
         </div>
 
         {/* Achievement Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginBottom: '24px' }}>
           {filteredAchievements.map((achievement) => {
             const tierColor = getTierColor(achievement.tier as AchievementTier);
 
             return (
               <div
                 key={achievement.id}
-                className={`rounded-xl p-5 border-2 transition-all ${
-                  achievement.unlocked
-                    ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-400'
-                    : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-300 opacity-60'
-                }`}
+                style={{
+                  borderRadius: '12px',
+                  padding: '20px',
+                  border: `3px solid ${achievement.unlocked ? theme.colors.amber : theme.colors.border}`,
+                  transition: 'all 0.2s',
+                  backgroundColor: achievement.unlocked
+                    ? (isDark ? '#1F2937' : '#FEF3C7')
+                    : theme.colors.secondary,
+                  boxShadow: achievement.unlocked ? theme.shadows.lg : theme.shadows.sm,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                  e.currentTarget.style.boxShadow = theme.shadows.xl;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = achievement.unlocked ? theme.shadows.lg : theme.shadows.sm;
+                }}
               >
-                <div className="flex items-start gap-4 mb-3">
-                  <div
-                    className={`text-5xl ${achievement.unlocked ? '' : 'grayscale opacity-40'}`}
-                  >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '12px' }}>
+                  <div style={{
+                    fontSize: '48px',
+                    transition: 'all 0.2s',
+                    filter: achievement.unlocked ? 'none' : 'grayscale(100%)',
+                    opacity: achievement.unlocked ? 1 : 0.5,
+                  }}>
                     {achievement.icon}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      color: theme.colors.text,
+                      marginBottom: '6px',
+                    }}>
                       {achievement.name}
                     </h3>
-                    <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
-                    <div className="flex gap-2 flex-wrap">
-                      <span
-                        className="px-2 py-1 text-xs font-semibold rounded border"
-                        style={{
-                          backgroundColor: `${tierColor}20`,
-                          borderColor: `${tierColor}60`,
-                          color: tierColor,
-                        }}
-                      >
+                    <p style={{ fontSize: '14px', color: theme.colors.text, marginBottom: '10px', opacity: 0.85 }}>{achievement.description}</p>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <span style={{
+                        padding: '6px 12px',
+                        fontSize: '13px',
+                        fontWeight: 'bold',
+                        borderRadius: '6px',
+                        border: `2px solid ${tierColor}`,
+                        backgroundColor: isDark ? '#111827' : '#FFFFFF',
+                        color: tierColor,
+                      }}>
                         {getTierName(achievement.tier as AchievementTier)}
                       </span>
-                      <span className="px-2 py-1 text-xs font-semibold rounded border bg-purple-100 text-purple-700 border-purple-300">
+                      <span style={{
+                        padding: '6px 12px',
+                        fontSize: '13px',
+                        fontWeight: 'bold',
+                        borderRadius: '6px',
+                        border: `2px solid ${theme.colors.copper}`,
+                        backgroundColor: isDark ? '#111827' : '#FFFFFF',
+                        color: theme.colors.copper,
+                      }}>
                         +{achievement.points} prestige
                       </span>
                     </div>
                   </div>
-                  {achievement.unlocked && <div className="text-3xl">✅</div>}
+                  {achievement.unlocked && <div style={{ fontSize: '30px' }}>✅</div>}
                 </div>
 
                 {achievement.unlocked && achievement.unlockedAt && (
-                  <p className="text-xs text-green-600 font-semibold text-right">
-                    Unlocked {new Date(achievement.unlockedAt).toLocaleDateString()}
+                  <p style={{
+                    fontSize: '13px',
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    textAlign: 'right',
+                    backgroundColor: theme.colors.forest.primary,
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                  }}>
+                    🎉 Unlocked {new Date(achievement.unlockedAt).toLocaleDateString()}
                   </p>
                 )}
               </div>
@@ -201,15 +368,21 @@ export const Achievements = ({ username, onBack }: AchievementsProps) => {
         </div>
 
         {filteredAchievements.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <div className="text-6xl mb-4">🔍</div>
-            <p className="text-xl">No achievements match your filters</p>
-            <p className="text-sm">Try adjusting your category or tier filters</p>
+          <div style={{ textAlign: 'center', padding: '48px 0', color: theme.colors.textSecondary }}>
+            <div style={{ fontSize: '60px', marginBottom: '16px' }}>🔍</div>
+            <p style={{ fontSize: '20px', marginBottom: '8px' }}>No achievements match your filters</p>
+            <p style={{ fontSize: '14px' }}>Try adjusting your category or tier filters</p>
           </div>
         )}
 
         {/* Stats Footer */}
-        <div className="border-t pt-4 text-center text-sm text-gray-600">
+        <div style={{
+          borderTop: `1px solid ${theme.colors.border}`,
+          paddingTop: '16px',
+          textAlign: 'center',
+          fontSize: '14px',
+          color: theme.colors.textSecondary,
+        }}>
           Showing {unlockedFiltered} unlocked of {filteredAchievements.length} achievements
         </div>
       </div>

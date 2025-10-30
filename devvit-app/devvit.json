@@ -17,7 +17,7 @@
   "permissions": {
     "http": {
       "enable": true,
-      "domains": ["michiganspots.com", "api.cloudflare.com"]
+      "domains": ["*.michiganspots.com", "michiganspots.com", "api.cloudflare.com", "*.cloudflare.com", "ip-api.com", "www.opencaching.us", "opencaching.us"]
     },
     "redis": true,
     "reddit": {

@@ -218,6 +218,40 @@ export const MICHIGAN_CHALLENGES: MichiganChallenge[] = [
       'Grand Hotel Mackinac',
     ],
   },
+  // Geocaching Challenges
+  {
+    id: 'geocache-explorer',
+    name: 'Michigan Geocache Explorer',
+    description: 'Find and photograph 10 different geocaches across Michigan',
+    category: 'hidden-gems',
+    difficulty: 'medium',
+    bonusPoints: 500,
+    icon: '🎯',
+    requiredCount: 10,
+    landmarks: [], // Dynamically populated from geocache visits
+  },
+  {
+    id: 'up-cache-hunter',
+    name: 'UP Cache Hunter',
+    description: 'Discover 5 geocaches in the Upper Peninsula',
+    category: 'hidden-gems',
+    difficulty: 'hard',
+    bonusPoints: 300,
+    icon: '🗺️',
+    requiredCount: 5,
+    landmarks: [], // UP geocaches
+  },
+  {
+    id: 'terrain-master',
+    name: 'Terrain Master',
+    description: 'Complete 5 geocaches with 3+ star terrain ratings',
+    category: 'natural-wonders',
+    difficulty: 'hard',
+    bonusPoints: 400,
+    icon: '⛰️',
+    requiredCount: 5,
+    landmarks: [], // High-terrain caches
+  },
 ];
 
 /**
