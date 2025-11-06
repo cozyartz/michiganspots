@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ProductRecommendations } from '../components/ProductRecommendations';
+import { michiganProducts, getProductsByCategory } from '../data/affiliateProducts';
+import { Card } from '../components/Card';
+import { Backpack, Camera, Map, Snowflake, Compass } from 'lucide-react';
+
+const travelGuides = getProductsByCategory('Travel Guide');
+const outdoorGear = getProductsByCategory('Outdoor Gear');
+const photography = getProductsByCategory('Photography');
+const camping = getProductsByCategory('Camping');
+---
+
+<Layout
+  title="Michigan Adventure Gear & Resources - Michigan Spots"
+  description="Essential gear, guides, and resources for exploring Michigan's hidden gems. Recommended equipment for hiking, photography, geocaching, and more."
+>
+  <div class="container mx-auto px-4 py-20">
+    <div class="max-w-6xl mx-auto">
+      {/* Hero Section */}
+      <div class="text-center mb-16">
+        <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-6">
+          Gear Up for Adventure
+        </h1>
+        <p class="text-xl text-ink-secondary max-w-3xl mx-auto leading-relaxed">
+          Everything you need to explore Michigan's hidden gems, from essential guides
+          to outdoor equipment. Curated recommendations for Michigan Spots explorers.
+        </p>
+      </div>
+
+      {/* Category Overview Cards */}
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <Card className="text-center p-6">
+          <div class="flex justify-center mb-4">
+            <div class="p-3 rounded-full bg-lakes-blue/10">
+              <Map class="w-8 h-8 text-lakes-blue" />
+            </div>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            Travel Guides
+          </h3>
+          <p class="text-sm text-ink-secondary">
+            Discover the best Michigan has to offer
+          </p>
+        </Card>
+
+        <Card className="text-center p-6">
+          <div class="flex justify-center mb-4">
+            <div class="p-3 rounded-full bg-copper-orange/10">
+              <Backpack class="w-8 h-8 text-copper-orange" />
+            </div>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            Outdoor Gear
+          </h3>
+          <p class="text-sm text-ink-secondary">
+            Essential equipment for trail adventures
+          </p>
+        </Card>
+
+        <Card className="text-center p-6">
+          <div class="flex justify-center mb-4">
+            <div class="p-3 rounded-full bg-forest-green/10">
+              <Camera class="w-8 h-8 text-forest-green" />
+            </div>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            Photography
+          </h3>
+          <p class="text-sm text-ink-secondary">
+            Capture stunning Michigan moments
+          </p>
+        </Card>
+
+        <Card className="text-center p-6">
+          <div class="flex justify-center mb-4">
+            <div class="p-3 rounded-full bg-gold/10">
+              <Compass class="w-8 h-8 text-gold" />
+            </div>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            Navigation
+          </h3>
+          <p class="text-sm text-ink-secondary">
+            GPS and mapping tools for geocaching
+          </p>
+        </Card>
+      </div>
+
+      {/* Travel Guides Section */}
+      {travelGuides.length > 0 && (
+        <ProductRecommendations
+          products={travelGuides}
+          title="📚 Michigan Travel Guides"
+          description="Start your adventure with comprehensive guides to Michigan's cities, trails, and attractions. Perfect for planning your Michigan Spots journey."
+          client:load
+        />
+      )}
+
+      {/* Outdoor Gear Section */}
+      {outdoorGear.length > 0 && (
+        <ProductRecommendations
+          products={outdoorGear}
+          title="🎒 Essential Outdoor Gear"
+          description="Stay prepared for Michigan's unpredictable weather and diverse terrain with quality outdoor equipment."
+          showDisclosure={false}
+          client:load
+        />
+      )}
+
+      {/* Photography Section */}
+      {photography.length > 0 && (
+        <ProductRecommendations
+          products={photography}
+          title="📸 Photography Equipment"
+          description="Document your Michigan Spots discoveries with professional-quality photos using the right gear."
+          showDisclosure={false}
+          client:load
+        />
+      )}
+
+      {/* Camping Section */}
+      {camping.length > 0 && (
+        <ProductRecommendations
+          products={camping}
+          title="⛺ Camping & Recreation"
+          description="Make the most of Michigan's beautiful parks and outdoor spaces with comfortable camping gear."
+          showDisclosure={false}
+          columns={4}
+          client:load
+        />
+      )}
+
+      {/* Bottom CTA */}
+      <div class="mt-16 bg-parchment-dark treasure-border border-2 rounded-lg p-8 text-center">
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-3">
+          Ready to Start Exploring?
+        </h2>
+        <p class="text-ink-secondary mb-6 max-w-2xl mx-auto">
+          Join thousands of Michigan explorers discovering hidden gems across the Great Lakes State.
+          Sign up for early access and get notified when we launch.
+        </p>
+        <a
+          href="/#signup"
+          class="inline-flex items-center px-6 py-3 bg-lakes-blue text-parchment rounded-md hover:bg-copper-orange transition-colors font-semibold"
+        >
+          Join the Waitlist
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

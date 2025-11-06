@@ -19,7 +19,9 @@
   "type": "module",
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.10",
+    "@astrojs/mdx": "^4.3.10",
     "@astrojs/react": "^4.4.0",
+    "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/tailwind": "^6.0.2",
     "@lucia-auth/adapter-sqlite": "^3.0.2",
@@ -32,6 +34,7 @@
     "astro": "^5.14.5",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "decap-cms-app": "^3.9.0",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.24",
     "lucia": "^3.2.2",

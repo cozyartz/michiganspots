@@ -1,158 +1,197 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import { Card } from '../../components/Card';
-import { Calendar, User, ArrowRight, Tag } from 'lucide-react';
+import { BlogHero } from '../../components/BlogHero';
+import { BlogCard } from '../../components/BlogCard';
+import { CategoryFilter } from '../../components/CategoryFilter';
+import { NewsletterSubscribe } from '../../components/NewsletterSubscribe';
+import { BackToTop } from '../../components/BackToTop';
+import { DarkModeToggle } from '../../components/DarkModeToggle';
 
-// Fetch blog posts directly from database
-let posts = [];
-let categories = [];
-let total = 0;
+// Get all published blog posts
+const allPosts = await getCollection('blog', ({ data }) => {
+  return data.status === 'published';
+});
 
-try {
-  const DB = (Astro.locals as any).runtime?.env?.DB;
+// Sort by date (newest first)
+const posts = allPosts.sort((a, b) =>
+  new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime()
+);
 
-  if (DB) {
-    // Get posts
-    const postsResult = await DB
-      .prepare(`
-        SELECT
-          id, title, slug, excerpt, featured_image_url,
-          category, tags, author_name, published_at,
-          view_count, share_count
-        FROM blog_posts
-        WHERE status = 'published'
-        ORDER BY published_at DESC
-        LIMIT 20
-      `)
-      .all();
+// Get featured post (most recent)
+const featuredPost = posts[0];
+const remainingPosts = posts.slice(1);
 
-    posts = postsResult.results || [];
-
-    // Get total count
-    const countResult = await DB
-      .prepare('SELECT COUNT(*) as total FROM blog_posts WHERE status = ?')
-      .bind('published')
-      .first();
-
-    total = countResult?.total || 0;
-
-    // Get categories
-    const categoriesResult = await DB
-      .prepare('SELECT * FROM blog_categories ORDER BY display_order')
-      .all();
-
-    categories = categoriesResult.results || [];
-  }
-} catch (error) {
-  console.error('Error fetching blog data:', error);
-}
+// Get unique categories
+const categories = [...new Set(posts.map(post => post.data.category))].filter(Boolean).sort();
 ---
 
 <Layout
   title="Blog - Michigan Spots | Discover Michigan's Hidden Gems"
-  description="Explore Michigan through our blog. Travel guides, local business spotlights, and community stories from across the Great Lakes State."
-  keywords="Michigan blog, Michigan travel, local business Michigan, Michigan hidden gems"
+  description="Explore Michigan through our curated travel guides, adventure stories, and local insights. Your gateway to Pure Michigan's best-kept secrets."
+  keywords="Michigan blog, Michigan travel guides, Pure Michigan, Michigan adventures, travel blog"
 >
-  <div class="container mx-auto px-4 py-20">
-    <!-- Header -->
-    <div class="text-center mb-12">
-      <h1 class="font-display text-5xl md:text-6xl font-bold text-ink-primary mb-4">
-        Michigan Spots Blog
-      </h1>
-      <p class="text-xl text-ink-secondary max-w-3xl mx-auto">
-        Discover hidden gems, explore local businesses, and dive into Michigan's vibrant communities
-      </p>
+  <div class="min-h-screen bg-parchment dark:bg-ink-faded transition-colors duration-300">
+    <!-- Floating Dark Mode Toggle -->
+    <div class="fixed top-24 right-8 z-40">
+      <DarkModeToggle client:load />
     </div>
 
-    <!-- Categories -->
-    {categories.length > 0 && (
-      <div class="mb-12 flex flex-wrap justify-center gap-3">
-        <a
-          href="/blog"
-          class="px-4 py-2 rounded-full bg-copper-orange text-parchment-light font-medium hover:bg-sunset-red transition-colors"
-        >
-          All Posts
-        </a>
-        {categories.map((category: any) => (
-          <a
-            href={`/blog/category/${category.slug}`}
-            class="px-4 py-2 rounded-full border-2 border-ink-faded/30 text-ink-primary hover:border-copper-orange hover:text-copper-orange transition-colors"
-          >
-            {category.icon && <span class="mr-2">{category.icon}</span>}
-            {category.name}
-          </a>
-        ))}
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 pt-24 pb-12">
+      {featuredPost && <BlogHero featuredPost={featuredPost} client:load />}
+    </section>
+
+    <!-- Decorative divider -->
+    <div class="container mx-auto px-4">
+      <div class="h-px bg-gradient-to-r from-transparent via-copper-orange to-transparent opacity-30"></div>
+    </div>
+
+    <!-- Category Filters -->
+    <section class="container mx-auto px-4">
+      <div class="text-center mb-8 mt-16">
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-ink-primary dark:text-parchment-light mb-3">
+          Explore By Category
+        </h2>
+        <p class="text-ink-secondary dark:text-parchment/70 text-lg">
+          Find the perfect Michigan adventure for you
+        </p>
       </div>
-    )}
+
+      <CategoryFilter
+        categories={categories}
+        activeCategory=""
+        onCategoryChange={(cat) => {
+          if (cat) {
+            window.location.href = `/blog/category/${cat.toLowerCase().replace(/\s+/g, '-')}`;
+          }
+        }}
+        client:load
+      />
+    </section>
 
     <!-- Blog Posts Grid -->
-    {posts.length === 0 ? (
-      <Card className="text-center py-12">
-        <p class="text-ink-secondary text-lg">No blog posts yet. Check back soon!</p>
-      </Card>
-    ) : (
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post: any) => (
-          <a href={`/blog/${post.slug}`} class="group">
-            <Card className="h-full hover:border-copper-orange transition-all hover:shadow-lg">
-              {post.featured_image_url && (
-                <img
-                  src={post.featured_image_url}
-                  alt={post.title}
-                  class="w-full h-48 object-cover rounded-t-sm mb-4 -mt-4 -mx-4"
-                />
-              )}
-
-              {post.category && (
-                <span class="inline-block px-3 py-1 bg-lakes-blue/10 text-lakes-blue text-sm font-medium rounded-full mb-3">
-                  {post.category}
-                </span>
-              )}
-
-              <h2 class="font-heading text-2xl font-bold text-ink-primary mb-3 group-hover:text-copper-orange transition-colors">
-                {post.title}
-              </h2>
-
-              <p class="text-ink-secondary mb-4 line-clamp-3">
-                {post.excerpt}
-              </p>
-
-              <div class="flex items-center justify-between text-sm text-ink-faded pt-4 border-t border-ink-faded/20">
-                <div class="flex items-center space-x-4">
-                  <span class="flex items-center">
-                    <User class="w-4 h-4 mr-1" />
-                    {post.author_name}
-                  </span>
-                  <span class="flex items-center">
-                    <Calendar class="w-4 h-4 mr-1" />
-                    {new Date(post.published_at).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-                <ArrowRight class="w-5 h-5 text-copper-orange group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Card>
-          </a>
+    <section class="container mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {remainingPosts.map((post) => (
+          <BlogCard post={post} />
         ))}
       </div>
-    )}
 
-    <!-- Pagination (if needed) -->
-    {total > 20 && (
-      <div class="mt-12 flex justify-center">
-        <Card className="inline-flex items-center space-x-4">
-          <button class="px-4 py-2 text-ink-secondary hover:text-copper-orange transition-colors">
-            Previous
-          </button>
-          <span class="text-ink-secondary">Page 1 of {Math.ceil(total / 20)}</span>
-          <button class="px-4 py-2 text-ink-secondary hover:text-copper-orange transition-colors">
-            Next
-          </button>
-        </Card>
+      {remainingPosts.length === 0 && (
+        <div class="text-center py-20">
+          <p class="text-2xl text-ink-secondary dark:text-parchment/70">
+            No posts found. Check back soon for new Michigan adventures!
+          </p>
+        </div>
+      )}
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="container mx-auto px-4 py-20">
+      <NewsletterSubscribe client:load />
+    </section>
+
+    <!-- Stats/Info Section -->
+    <section class="container mx-auto px-4 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div class="p-8 bg-gradient-to-br from-forest-green/10 to-lakes-blue/10 dark:from-forest-green/20 dark:to-lakes-blue/20 rounded-2xl">
+          <div class="text-4xl font-bold text-copper-orange mb-2">{posts.length}+</div>
+          <div class="text-lg font-semibold text-ink-primary dark:text-parchment-light">Articles</div>
+          <p class="text-ink-secondary dark:text-parchment/70 mt-2">Curated Michigan travel guides</p>
+        </div>
+        <div class="p-8 bg-gradient-to-br from-copper-orange/10 to-gold/10 dark:from-copper-orange/20 dark:to-gold/20 rounded-2xl">
+          <div class="text-4xl font-bold text-lakes-blue mb-2">{categories.length}</div>
+          <div class="text-lg font-semibold text-ink-primary dark:text-parchment-light">Categories</div>
+          <p class="text-ink-secondary dark:text-parchment/70 mt-2">From adventures to food & drink</p>
+        </div>
+        <div class="p-8 bg-gradient-to-br from-lakes-blue/10 to-forest-green/10 dark:from-lakes-blue/20 dark:to-forest-green/20 rounded-2xl">
+          <div class="text-4xl font-bold text-forest-green mb-2">Weekly</div>
+          <div class="text-lg font-semibold text-ink-primary dark:text-parchment-light">Updates</div>
+          <p class="text-ink-secondary dark:text-parchment/70 mt-2">Fresh content every week</p>
+        </div>
       </div>
-    )}
+    </section>
+
+    <!-- Back to Top Button -->
+    <BackToTop client:load />
   </div>
 </Layout>
+
+<style>
+  /* Custom animations */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-up-delay {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-delay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  :global(.animate-fade-in) {
+    animation: fade-in 0.6s ease-out;
+  }
+
+  :global(.animate-slide-up) {
+    animation: slide-up 0.8s ease-out;
+  }
+
+  :global(.animate-slide-up-delay) {
+    animation: slide-up-delay 0.8s ease-out 0.2s backwards;
+  }
+
+  :global(.animate-fade-in-delay) {
+    animation: fade-in-delay 0.6s ease-out 0.4s backwards;
+  }
+
+  /* Dark mode background gradient */
+  :global(.dark) {
+    background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+  }
+
+  /* Smooth transitions for dark mode */
+  * {
+    transition-property: background-color, border-color, color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  /* Prevent transition on page load */
+  :global(.no-transition) {
+    transition: none !important;
+  }
+</style>
+
+<script>
+  // Prevent transition flash on page load
+  document.documentElement.classList.add('no-transition');
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.documentElement.classList.remove('no-transition');
+    }, 100);
+  });
+</script>

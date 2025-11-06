@@ -3,6 +3,7 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
+import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   output: 'server', // Server-side rendering mode
@@ -38,6 +39,7 @@ export default defineConfig({
   integrations: [
     react(),
     tailwind(),
+    mdx(),
     sitemap({
       filter: (page) => !page.includes('/partnership-acceptance'),
       serialize(item) {
@@ -57,6 +59,16 @@ export default defineConfig({
         // Key pages
         if (url.endsWith('/about')) {
           return { ...item, url, priority: 1.0, changefreq: 'daily' };
+        }
+
+        // Blog pages - high priority for content
+        if (url.includes('/blog/') && !url.includes('/category/') && !url.includes('/tag/')) {
+          return { ...item, url, priority: 0.9, changefreq: 'weekly' };
+        }
+
+        // Blog index and category/tag pages
+        if (url.endsWith('/blog') || url.includes('/blog/category/') || url.includes('/blog/tag/')) {
+          return { ...item, url, priority: 0.8, changefreq: 'daily' };
         }
 
         // Partnership pages

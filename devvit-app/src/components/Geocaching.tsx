@@ -30,6 +30,9 @@ export const Geocaching = ({ username, postId, isDark, onBack }: GeocachingProps
   const [error, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [permissionState, setPermissionState] = useState<'prompt' | 'granted' | 'denied' | 'unknown'>('unknown');
+  const [isGeolocationAvailable, setIsGeolocationAvailable] = useState(true);
+  const [geolocationBlockedReason, setGeolocationBlockedReason] = useState<string | null>(null);
 
   // Filters
   const [filterType, setFilterType] = useState<FilterType>('all');
@@ -43,11 +46,59 @@ export const Geocaching = ({ username, postId, isDark, onBack }: GeocachingProps
 
   useEffect(() => {
     loadUserStats();
+    checkGeolocationCapability();
   }, [username]);
 
   useEffect(() => {
     applyFilters();
   }, [caches, filterType, minDifficulty, maxDifficulty, minTerrain, maxTerrain]);
+
+  const checkGeolocationCapability = async () => {
+    try {
+      // Check if geolocation API exists
+      if (!navigator.geolocation) {
+        setIsGeolocationAvailable(false);
+        setGeolocationBlockedReason('not_supported');
+        console.log('Geolocation not supported');
+        return;
+      }
+
+      // Check if we're in a secure context (HTTPS required for geolocation)
+      if (typeof window.isSecureContext !== 'undefined' && !window.isSecureContext) {
+        setIsGeolocationAvailable(false);
+        setGeolocationBlockedReason('insecure_context');
+        console.log('Insecure context - geolocation requires HTTPS');
+        return;
+      }
+
+      // Try to check permission status using Permissions API
+      if ('permissions' in navigator) {
+        try {
+          const result = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+          console.log('Initial permission state:', result.state);
+          setPermissionState(result.state);
+
+          // Listen for permission state changes
+          result.addEventListener('change', () => {
+            console.log('Permission state changed:', result.state);
+            setPermissionState(result.state);
+          });
+        } catch (permErr) {
+          // Permissions API might not support geolocation query in some contexts
+          // This can happen if geolocation is blocked by iframe permission policy
+          console.log('Permissions API error (might be iframe policy block):', permErr);
+          setGeolocationBlockedReason('policy_blocked');
+        }
+      }
+
+      setIsGeolocationAvailable(true);
+      console.log('Geolocation capability check complete');
+    } catch (err) {
+      console.error('Error checking geolocation capability:', err);
+      // Assume available and let actual usage show the error
+      setIsGeolocationAvailable(true);
+    }
+  };
 
   const loadUserStats = async () => {
     try {
@@ -73,31 +124,39 @@ export const Geocaching = ({ username, postId, isDark, onBack }: GeocachingProps
     setError(null);
 
     try {
-      // Check if geolocation is available
+      // Check if geolocation is fundamentally blocked
       if (!navigator.geolocation) {
-        throw new Error('Geolocation is not supported by your browser');
+        throw new Error('GEOLOCATION_NOT_SUPPORTED');
       }
 
-      // Get user location
+      console.log('Requesting location permission...');
+
+      // Directly request location - this SHOULD trigger browser permission prompt
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
-          resolve,
+          (pos) => {
+            console.log('Location obtained successfully:', pos.coords.latitude, pos.coords.longitude);
+            resolve(pos);
+          },
           (error) => {
+            console.error('Geolocation error:', error.code, error.message);
+
             // Handle specific geolocation errors
-            let message = 'Location access denied';
-            if (error.code === error.PERMISSION_DENIED) {
-              message = 'Location permission denied. Please enable location access in your browser settings, then try "Search All Michigan" instead.';
-            } else if (error.code === error.POSITION_UNAVAILABLE) {
-              message = 'Location information unavailable. Try "Search All Michigan" instead.';
-            } else if (error.code === error.TIMEOUT) {
-              message = 'Location request timed out. Try "Search All Michigan" instead.';
+            if (error.code === 1) { // PERMISSION_DENIED
+              setPermissionState('denied');
+              reject(new Error('PERMISSION_DENIED'));
+            } else if (error.code === 2) { // POSITION_UNAVAILABLE
+              reject(new Error('POSITION_UNAVAILABLE'));
+            } else if (error.code === 3) { // TIMEOUT
+              reject(new Error('TIMEOUT'));
+            } else {
+              reject(new Error('UNKNOWN_ERROR'));
             }
-            reject(new Error(message));
           },
           {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
+            enableHighAccuracy: false, // Use false for faster response and less battery drain
+            timeout: 15000,
+            maximumAge: 60000, // Allow 60 second cached position
           }
         );
       });
@@ -105,6 +164,9 @@ export const Geocaching = ({ username, postId, isDark, onBack }: GeocachingProps
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       setUserLocation({ latitude: lat, longitude: lon });
+      setPermissionState('granted');
+
+      console.log('Searching for geocaches near:', lat, lon);
 
       // Search for nearby caches
       const response = await fetch(
@@ -112,14 +174,32 @@ export const Geocaching = ({ username, postId, isDark, onBack }: GeocachingProps
       );
 
       if (!response.ok) {
-        throw new Error('Failed to search geocaches');
+        throw new Error('FETCH_FAILED');
       }
 
       const result = await response.json();
       setCaches(result.caches || []);
+      setError(null); // Clear any previous errors
+      console.log('Found', result.caches?.length || 0, 'geocaches');
     } catch (err: any) {
-      console.error('Search error:', err);
-      setError(err.message || 'Unable to search for geocaches. Please enable location services or try "Search All Michigan".');
+      console.error('Search error:', err.message || err);
+
+      // Provide specific error messages based on error type
+      let errorMessage = 'Unable to search nearby. Try "All Michigan" to see all geocaches.';
+
+      if (err.message === 'PERMISSION_DENIED') {
+        errorMessage = 'PERMISSION_DENIED'; // Special flag for UI
+      } else if (err.message === 'GEOLOCATION_NOT_SUPPORTED') {
+        errorMessage = 'Location is not available on this device. Use "All Michigan" instead.';
+      } else if (err.message === 'POSITION_UNAVAILABLE') {
+        errorMessage = 'Location could not be determined. Try "All Michigan" instead.';
+      } else if (err.message === 'TIMEOUT') {
+        errorMessage = 'Location request timed out. Try again or use "All Michigan".';
+      } else if (err.message === 'FETCH_FAILED') {
+        errorMessage = 'Failed to search geocaches. Please try again.';
+      }
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -213,6 +293,78 @@ export const Geocaching = ({ username, postId, isDark, onBack }: GeocachingProps
   // List View
   const renderListView = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Geolocation Blocked by Policy */}
+      {geolocationBlockedReason === 'policy_blocked' && (
+        <div style={{
+          padding: '16px',
+          borderRadius: '12px',
+          background: `${theme.colors.amber.primary}15`,
+          border: `2px solid ${theme.colors.amber.primary}`,
+        }}>
+          <div style={{ fontSize: '32px', marginBottom: '8px', textAlign: 'center' }}>⚠️</div>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', color: theme.colors.amber.dark, marginBottom: '8px', textAlign: 'center' }}>
+            Location Not Available in Reddit App
+          </h3>
+          <p style={{ fontSize: '13px', color: theme.colors.ink.primary, marginBottom: '12px', textAlign: 'center' }}>
+            Location features work best on:
+          </p>
+          <ul style={{ fontSize: '12px', color: theme.colors.ink.secondary, paddingLeft: '20px', marginBottom: '12px', textAlign: 'left' }}>
+            <li><strong>Reddit website</strong> - Open reddit.com in Chrome/Safari</li>
+            <li><strong>Mobile browser</strong> - Use your phone's web browser instead of the Reddit app</li>
+          </ul>
+          <p style={{ fontSize: '13px', color: theme.colors.ink.secondary, textAlign: 'center', fontStyle: 'italic' }}>
+            Use "All Michigan" to browse all geocaches without location
+          </p>
+        </div>
+      )}
+
+      {/* Insecure Context */}
+      {geolocationBlockedReason === 'insecure_context' && (
+        <div style={{
+          padding: '16px',
+          borderRadius: '12px',
+          background: `${theme.colors.coral.primary}15`,
+          border: `2px solid ${theme.colors.coral.primary}`,
+        }}>
+          <div style={{ fontSize: '32px', marginBottom: '8px', textAlign: 'center' }}>🔒</div>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', color: theme.colors.coral.dark, marginBottom: '8px', textAlign: 'center' }}>
+            Secure Connection Required
+          </h3>
+          <p style={{ fontSize: '13px', color: theme.colors.ink.primary, textAlign: 'center', marginBottom: '12px' }}>
+            Location access requires HTTPS. Please access this game through the official Reddit website or app.
+          </p>
+          <p style={{ fontSize: '13px', color: theme.colors.ink.secondary, textAlign: 'center', fontStyle: 'italic' }}>
+            Use "All Michigan" to browse all geocaches without location
+          </p>
+        </div>
+      )}
+
+      {/* Permission Denied by User */}
+      {error === 'PERMISSION_DENIED' && (
+        <div style={{
+          padding: '16px',
+          borderRadius: '12px',
+          background: `${theme.colors.coral.primary}15`,
+          border: `2px solid ${theme.colors.coral.primary}`,
+        }}>
+          <div style={{ fontSize: '32px', marginBottom: '8px', textAlign: 'center' }}>📍</div>
+          <h3 style={{ fontSize: '16px', fontWeight: '700', color: theme.colors.coral.dark, marginBottom: '8px', textAlign: 'center' }}>
+            Location Permission Needed
+          </h3>
+          <p style={{ fontSize: '13px', color: theme.colors.ink.primary, marginBottom: '12px', textAlign: 'center' }}>
+            To find nearby geocaches, please allow location access:
+          </p>
+          <ol style={{ fontSize: '12px', color: theme.colors.ink.secondary, paddingLeft: '20px', marginBottom: '12px', textAlign: 'left' }}>
+            <li><strong>On Desktop:</strong> Click the lock/info icon (🔒) in the address bar, find "Location", and select "Allow"</li>
+            <li><strong>On Mobile:</strong> Go to browser Settings → Site Settings → Location → Allow for reddit.com</li>
+            <li>Refresh the page and click "Search Nearby" again</li>
+          </ol>
+          <p style={{ fontSize: '13px', color: theme.colors.ink.secondary, textAlign: 'center', fontStyle: 'italic' }}>
+            Or use "All Michigan" to browse all geocaches without location
+          </p>
+        </div>
+      )}
+
       {/* Search Actions */}
       <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
         <button

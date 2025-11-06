@@ -13,6 +13,7 @@
 
 [![Live Platform](https://img.shields.io/badge/🌐_LIVE_PLATFORM-michiganspots.com-FF5D01?style=for-the-badge&labelColor=2C1810)](https://michiganspots.com)
 [![Reddit Community Games](https://img.shields.io/badge/REDDIT_GAMES_2025-$45K_Prize_Pool-FF4500?style=for-the-badge&logo=reddit&logoColor=white&labelColor=2C1810)](https://communitygames2025.devpost.com/)
+[![Devpost Submission](https://img.shields.io/badge/DEVPOST_SUBMISSION-Michigan_Spots-003E54?style=for-the-badge&logo=devpost&logoColor=white&labelColor=2C1810)](https://devpost.com/software/michigan-spots)
 
 <br/>
 

@@ -34,6 +34,7 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
   const [selectedGeocache, setSelectedGeocache] = useState<Geocache | null>(null);
   const [userLocation, setUserLocation] = useState<{latitude: number; longitude: number} | null>(null);
   const [geocacheBonus, setGeocacheBonus] = useState(0);
+  const [permissionState, setPermissionState] = useState<'prompt' | 'granted' | 'denied' | 'unknown'>('unknown');
 
   const theme = getTheme(isDark);
 
@@ -127,29 +128,36 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
     try {
       // Check if geolocation is available
       if (!navigator.geolocation) {
-        throw new Error('Geolocation is not supported by your browser');
+        throw new Error('GEOLOCATION_NOT_SUPPORTED');
       }
 
-      // Get user's location
+      console.log('Photo Hunt: Requesting location permission...');
+
+      // Directly request location - this SHOULD trigger browser permission prompt
       const location = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
-          resolve,
+          (pos) => {
+            console.log('Photo Hunt: Location obtained successfully');
+            resolve(pos);
+          },
           (error) => {
-            // Handle specific geolocation errors
-            let message = 'Location access denied';
-            if (error.code === error.PERMISSION_DENIED) {
-              message = 'Location permission denied. Geocache search unavailable.';
-            } else if (error.code === error.POSITION_UNAVAILABLE) {
-              message = 'Location information unavailable. Geocache search unavailable.';
-            } else if (error.code === error.TIMEOUT) {
-              message = 'Location request timed out. Geocache search unavailable.';
+            console.error('Photo Hunt: Geolocation error:', error.code, error.message);
+
+            if (error.code === 1) { // PERMISSION_DENIED
+              setPermissionState('denied');
+              reject(new Error('PERMISSION_DENIED'));
+            } else if (error.code === 2) { // POSITION_UNAVAILABLE
+              reject(new Error('POSITION_UNAVAILABLE'));
+            } else if (error.code === 3) { // TIMEOUT
+              reject(new Error('TIMEOUT'));
+            } else {
+              reject(new Error('UNKNOWN_ERROR'));
             }
-            reject(new Error(message));
           },
           {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
+            enableHighAccuracy: false, // Use false for faster response
+            timeout: 15000,
+            maximumAge: 60000, // Allow 60 second cached position
           }
         );
       });
@@ -157,6 +165,9 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
       const lat = location.coords.latitude;
       const lon = location.coords.longitude;
       setUserLocation({ latitude: lat, longitude: lon });
+      setPermissionState('granted');
+
+      console.log('Photo Hunt: Searching for geocaches');
 
       // Search for nearby geocaches
       const response = await fetch(
@@ -164,14 +175,31 @@ export const PhotoHunt = ({ username, postId, isDark, onComplete, onBack }: Phot
       );
 
       if (!response.ok) {
-        throw new Error('Failed to search geocaches');
+        throw new Error('FETCH_FAILED');
       }
 
       const result = await response.json();
       setNearbyGeocaches(result.caches || []);
+      setError(null);
+      console.log('Photo Hunt: Found', result.caches?.length || 0, 'geocaches');
     } catch (err: any) {
-      console.error('Geocache search error:', err);
-      setError(err.message || 'Unable to find nearby geocaches. Please enable location services.');
+      console.error('Photo Hunt: Search error:', err.message || err);
+
+      let errorMessage = 'Unable to find nearby geocaches';
+
+      if (err.message === 'PERMISSION_DENIED') {
+        errorMessage = 'Location access blocked. Please allow location access in your browser/app settings.';
+      } else if (err.message === 'GEOLOCATION_NOT_SUPPORTED') {
+        errorMessage = 'Location is not available on this device.';
+      } else if (err.message === 'POSITION_UNAVAILABLE') {
+        errorMessage = 'Location could not be determined.';
+      } else if (err.message === 'TIMEOUT') {
+        errorMessage = 'Location request timed out. Please try again.';
+      } else if (err.message === 'FETCH_FAILED') {
+        errorMessage = 'Failed to search geocaches. Please try again.';
+      }
+
+      setError(errorMessage);
     } finally {
       setIsSearchingCaches(false);
     }

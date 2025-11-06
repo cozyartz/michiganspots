@@ -1,0 +1,79 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Enable local development mode
+local_backend:
+  url: http://localhost:8081/api/v1
+
+# Media files will be stored in the public folder
+media_folder: "public/images/blog"
+public_folder: "/images/blog"
+
+# Site URL
+site_url: https://michiganspots.com
+display_url: https://michiganspots.com
+
+# Logo
+logo_url: https://michiganspots.com/mispots_opt.png
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    extension: "mdx"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Publish Date", name: "publishedAt", widget: "datetime" }
+      - { label: "Updated Date", name: "updatedAt", widget: "datetime", required: false }
+      - {
+          label: "Status",
+          name: "status",
+          widget: "select",
+          options: ["draft", "published", "scheduled"],
+          default: "draft"
+        }
+      - {
+          label: "Category",
+          name: "category",
+          widget: "select",
+          options:
+            [
+              "Guides",
+              "Weekend Guides",
+              "Adventure Guides",
+              "Food & Drink",
+              "Family Activities",
+              "Photography",
+              "Michigan Travel",
+              "Local Business Spotlight",
+              "Community Events",
+              "Challenge Guides",
+              "Michigan History",
+              "Partner Stories"
+            ]
+        }
+      - {
+          label: "Tags",
+          name: "tags",
+          widget: "list",
+          required: false,
+          default: []
+        }
+      - { label: "Author Name", name: "authorName", widget: "string", default: "Michigan Spots Team" }
+      - { label: "Author Email", name: "authorEmail", widget: "string", default: "admin@michiganspots.com" }
+      - { label: "Featured Image", name: "featuredImage", widget: "image", required: false }
+      - { label: "Featured Image Alt Text", name: "featuredImageAlt", widget: "string", required: false }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Keywords", name: "keywords", widget: "list", required: false }
+      - { label: "Has Affiliate Links", name: "hasAffiliateLinks", widget: "boolean", default: false }
+      - { label: "Show Affiliate Disclosure", name: "affiliateDisclosure", widget: "boolean", default: true }
+      - { label: "NeuronWriter Query ID", name: "neuronwriterQueryId", widget: "string", required: false }
+      - { label: "NeuronWriter Project ID", name: "neuronwriterProjectId", widget: "string", required: false }
+      - { label: "NeuronWriter Score", name: "neuronwriterScore", widget: "number", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }

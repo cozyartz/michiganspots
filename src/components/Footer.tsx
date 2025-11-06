@@ -1,5 +1,6 @@
 import { Compass, MapPin, Trophy, Users, Github } from 'lucide-react';
 import { cookieManager } from '../utils/cookieManager';
+import { AffiliateDisclosure } from './AffiliateDisclosure';
 
 export function Footer() {
   const handleCookieSettings = () => {
@@ -55,6 +56,11 @@ export function Footer() {
               <li>
                 <a href="/about" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
                   About the Game
+                </a>
+              </li>
+              <li>
+                <a href="/gear" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  Gear & Resources
                 </a>
               </li>
               <li>
@@ -120,13 +126,16 @@ export function Footer() {
         </div>
 
         <div className="border-t border-ink-faded mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
             <p className="text-ink-secondary text-sm">
               &copy; {new Date().getFullYear()} Michigan Spots by Cozyartz Media Group. All rights reserved.
             </p>
             <p className="text-ink-faded text-xs">
               Part of Reddit Community Games 2025
             </p>
+          </div>
+          <div className="text-center">
+            <AffiliateDisclosure variant="footer" />
           </div>
         </div>
       </div>
