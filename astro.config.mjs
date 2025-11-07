@@ -16,6 +16,8 @@ export default defineConfig({
         '/_astro/*',
         '/#',
         '/sitemap.xml',
+        '/sitemap-index.xml',
+        '/rss.xml',
         '/http:/*',
         '/.DS_Store',
         '/MiSpot_logo.png',
@@ -27,7 +29,9 @@ export default defineConfig({
         '/r-michiganspots-community-guidelines.html',
         '/robots.txt',
         '/site.webmanifest',
-        '/.well-known/*'
+        '/.well-known/*',
+        '/_headers',
+        '/_redirects'
       ]
     }
   }),

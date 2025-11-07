@@ -1,10 +1,11 @@
 # robots.txt for Michigan Spots
 # https://michiganspots.com
-# Last updated: 2025-10-18
+# Last updated: 2025-11-07
 
 # Sitemaps
-Sitemap: https://michiganspots.com/sitemap.xml
 Sitemap: https://michiganspots.com/sitemap-index.xml
+Sitemap: https://michiganspots.com/sitemap.xml
+Sitemap: https://michiganspots.com/rss.xml
 
 # Allow all search engines
 User-agent: *
@@ -37,7 +38,12 @@ Allow: /
 # OpenAI GPT
 User-agent: GPTBot
 Allow: /
-Crawl-delay: 2
+Crawl-delay: 1
+
+# OpenAI SearchGPT
+User-agent: OAI-SearchBot
+Allow: /
+Crawl-delay: 1
 
 # Common Crawl
 User-agent: CCBot
@@ -47,15 +53,30 @@ Crawl-delay: 2
 # Anthropic Claude
 User-agent: anthropic-ai
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
+
+# Anthropic ClaudeBot
+User-agent: ClaudeBot
+Allow: /
+Crawl-delay: 0
 
 # Google Bard/Gemini
 User-agent: Google-Extended
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
+
+# Google Gemini API
+User-agent: Gemini-Bot
+Allow: /
+Crawl-delay: 0
 
 # Perplexity AI
 User-agent: PerplexityBot
+Allow: /
+Crawl-delay: 1
+
+# Perplexity Search
+User-agent: PerplexitySearchBot
 Allow: /
 Crawl-delay: 1
 
@@ -66,6 +87,31 @@ Crawl-delay: 2
 
 # AI2 Bot
 User-agent: AI2Bot
+Allow: /
+Crawl-delay: 2
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+Crawl-delay: 1
+
+# Meta AI Search
+User-agent: meta-externalagent
+Allow: /
+Crawl-delay: 1
+
+# Mistral AI
+User-agent: MistralAI
+Allow: /
+Crawl-delay: 2
+
+# You.com Search
+User-agent: YouBot
+Allow: /
+Crawl-delay: 1
+
+# Diffbot
+User-agent: Diffbot
 Allow: /
 Crawl-delay: 2
 

@@ -1,0 +1,159 @@
+# Cloudflare Pages Headers for Michigan Spots
+# https://michiganspots.com
+# Last updated: 2025-11-07
+
+# Global headers for all pages
+/*
+  # Security Headers
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(self), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+  # Content Security Policy (adjust as needed for your scripts/styles)
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com https://cloudflareinsights.com; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+
+  # Performance & Caching
+  Cache-Control: public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400
+
+  # CORS - Allow specific origins if needed
+  Access-Control-Allow-Origin: https://michiganspots.com
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization
+
+  # SEO & Link Headers
+  Link: <https://michiganspots.com>; rel="canonical"
+  Link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin
+  Link: <https://www.googletagmanager.com>; rel=dns-prefetch
+
+  # Vary header for proper caching
+  Vary: Accept-Encoding, User-Agent
+
+# Static assets - aggressive caching
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/textures/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.png
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.webp
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.ico
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.ttf
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=utf-8
+
+*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=utf-8
+
+# Special files - moderate caching
+/robots.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+  Content-Type: application/xml; charset=utf-8
+
+/sitemap-index.xml
+  Cache-Control: public, max-age=3600
+  Content-Type: application/xml; charset=utf-8
+
+/humans.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+
+/llms.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+
+/site.webmanifest
+  Cache-Control: public, max-age=86400
+  Content-Type: application/manifest+json; charset=utf-8
+
+# API routes - no caching, security focused
+/api/*
+  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+  Pragma: no-cache
+  Expires: 0
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+
+# Admin routes - extra security
+/admin/*
+  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+  Pragma: no-cache
+  Expires: 0
+  X-Frame-Options: DENY
+  X-Robots-Tag: noindex, nofollow
+
+# Partner dashboard - extra security
+/partner/*
+  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+  Pragma: no-cache
+  Expires: 0
+  X-Frame-Options: SAMEORIGIN
+  X-Robots-Tag: noindex, nofollow
+
+# Blog posts - optimized caching with freshness
+/blog/*
+  Cache-Control: public, max-age=7200, s-maxage=14400, stale-while-revalidate=86400
+  Link: <https://michiganspots.com/blog>; rel="up"
+
+# Homepage - balanced caching
+/
+  Cache-Control: public, max-age=1800, s-maxage=3600, stale-while-revalidate=86400
+
+# Legal pages - longer caching
+/terms
+  Cache-Control: public, max-age=86400, s-maxage=172800
+
+/privacy
+  Cache-Control: public, max-age=86400, s-maxage=172800
+
+/cookies
+  Cache-Control: public, max-age=86400, s-maxage=172800
+
+/community-guidelines
+  Cache-Control: public, max-age=86400, s-maxage=172800

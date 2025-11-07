@@ -39,12 +39,18 @@ const {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://cloudflareinsights.com" crossorigin />
 
     <!-- Resource Hints -->
     <link rel="preload" as="image" href="/MiSpot_logo.png" type="image/png" />
+    <link rel="modulepreload" href="/_astro/hoisted.js" as="script" />
 
     <!-- Humans.txt -->
     <link type="text/plain" rel="author" href="/humans.txt" />
+
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="Michigan Spots Blog" href="/rss.xml" />
 
     <meta name="generator" content={Astro.generator} />
 
