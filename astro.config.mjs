@@ -39,7 +39,12 @@ export default defineConfig({
   integrations: [
     react(),
     tailwind(),
-    mdx(),
+    mdx({
+      remarkPlugins: [],
+      rehypePlugins: [],
+      // Make components available to all MDX files
+      extendMarkdownConfig: true,
+    }),
     sitemap({
       filter: (page) => !page.includes('/partnership-acceptance'),
       serialize(item) {

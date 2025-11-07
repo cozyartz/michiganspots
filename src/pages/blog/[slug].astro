@@ -10,6 +10,7 @@ import { NewsletterSubscribe } from '../../components/NewsletterSubscribe';
 import { BackToTop } from '../../components/BackToTop';
 import { DarkModeToggle } from '../../components/DarkModeToggle';
 import { Tag } from 'lucide-react';
+import MDXComponents from '../../components/MDXComponents';
 
 // Generate static paths for all blog posts
 export const getStaticPaths = (async () => {
@@ -208,7 +209,7 @@ const breadcrumbData = {
 
         <!-- Article Body with Enhanced Prose Styling -->
         <div class="prose prose-lg max-w-none">
-          <Content />
+          <Content components={MDXComponents} />
         </div>
 
         <!-- Affiliate Disclosure -->
