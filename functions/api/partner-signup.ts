@@ -35,6 +35,22 @@ interface Env {
   DB: D1Database;
   STRIPE_SECRET_KEY: string;
   PUBLIC_SITE_URL: string;
+  // Spot Partner price IDs
+  STRIPE_PRICE_SPOT_MONTHLY: string;
+  STRIPE_PRICE_SPOT_QUARTERLY: string;
+  STRIPE_PRICE_SPOT_YEARLY: string;
+  // Featured Partner price IDs
+  STRIPE_PRICE_FEATURED_QUARTERLY: string;
+  STRIPE_PRICE_FEATURED_YEARLY: string;
+  // Premium Sponsor price IDs
+  STRIPE_PRICE_PREMIUM_QUARTERLY: string;
+  STRIPE_PRICE_PREMIUM_YEARLY: string;
+  // Title Sponsor price IDs
+  STRIPE_PRICE_TITLE_QUARTERLY: string;
+  STRIPE_PRICE_TITLE_YEARLY: string;
+  // Chamber & Tourism price IDs
+  STRIPE_PRICE_CHAMBER_QUARTERLY: string;
+  STRIPE_PRICE_CHAMBER_YEARLY: string;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -154,8 +170,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     // Create Stripe checkout session
     const stripe = await createStripeCheckout(
-      context.env.STRIPE_SECRET_KEY,
-      context.env.PUBLIC_SITE_URL || 'https://michiganspots.com',
+      context.env,
       {
         partnerSignupId: partnerSignupId as number,
         email,
@@ -208,10 +223,38 @@ function getServiceAmount(serviceType: string): number {
   return pricing[serviceType] || 0;
 }
 
+// Helper function to get Stripe Price ID
+function getPriceId(env: Env, tier: string, duration: string): string | null {
+  const priceMap: Record<string, Record<string, string>> = {
+    spot_partner: {
+      monthly: env.STRIPE_PRICE_SPOT_MONTHLY,
+      quarterly: env.STRIPE_PRICE_SPOT_QUARTERLY,
+      yearly: env.STRIPE_PRICE_SPOT_YEARLY
+    },
+    featured_partner: {
+      quarterly: env.STRIPE_PRICE_FEATURED_QUARTERLY,
+      yearly: env.STRIPE_PRICE_FEATURED_YEARLY
+    },
+    premium_sponsor: {
+      quarterly: env.STRIPE_PRICE_PREMIUM_QUARTERLY,
+      yearly: env.STRIPE_PRICE_PREMIUM_YEARLY
+    },
+    title_sponsor: {
+      quarterly: env.STRIPE_PRICE_TITLE_QUARTERLY,
+      yearly: env.STRIPE_PRICE_TITLE_YEARLY
+    },
+    chamber_tourism: {
+      quarterly: env.STRIPE_PRICE_CHAMBER_QUARTERLY,
+      yearly: env.STRIPE_PRICE_CHAMBER_YEARLY
+    }
+  };
+
+  return priceMap[tier]?.[duration] || null;
+}
+
 // Helper function to create Stripe checkout session
 async function createStripeCheckout(
-  stripeKey: string,
-  siteUrl: string,
+  env: Env,
   data: {
     partnerSignupId: number;
     email: string;
@@ -225,50 +268,51 @@ async function createStripeCheckout(
   }
 ): Promise<{ success: boolean; checkoutUrl?: string }> {
   try {
-    // Create line items for Stripe
-    const lineItems: any[] = [];
+    const stripeKey = env.STRIPE_SECRET_KEY;
+    const siteUrl = env.PUBLIC_SITE_URL || 'https://michiganspots.com';
 
-    // Main tier item
-    lineItems.push({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: `${getTierDisplayName(data.tier)} - ${data.duration}`,
-          description: `Michigan Spots Partnership - ${data.organizationName}`,
-        },
-        unit_amount: data.tierAmount * 100, // Stripe uses cents
-      },
-      quantity: 1,
-    });
+    // Get the Price ID for the subscription
+    const priceId = getPriceId(env, data.tier, data.duration);
 
-    // Prize package addon if any
-    if (data.prizeAddonFee > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'Prize Package Add-On',
-            description: 'Priority placement, prize management, and platform bonus matching',
-          },
-          unit_amount: data.prizeAddonFee * 100,
-        },
-        quantity: 1,
-      });
+    if (!priceId) {
+      console.error(`No price ID found for tier: ${data.tier}, duration: ${data.duration}`);
+      return { success: false };
     }
 
-    // Web/dev services if any
+    // Build checkout session parameters
+    const sessionParams = new URLSearchParams({
+      'mode': 'subscription',
+      'success_url': `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      'cancel_url': `${siteUrl}/partnerships?canceled=true`,
+      'customer_email': data.email,
+      'line_items[0][price]': priceId,
+      'line_items[0][quantity]': '1',
+      'metadata[partner_signup_id]': data.partnerSignupId.toString(),
+      'metadata[tier]': data.tier,
+      'metadata[duration]': data.duration,
+      'metadata[organization_name]': data.organizationName,
+    });
+
+    // Add one-time line items for add-ons if present
+    let lineItemIndex = 1;
+
+    // Prize package addon (one-time payment)
+    if (data.prizeAddonFee > 0) {
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][currency]`, 'usd');
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][product_data][name]`, 'Prize Package Add-On');
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][product_data][description]`, 'Priority placement, prize management, and platform bonus matching');
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][unit_amount]`, (data.prizeAddonFee * 100).toString());
+      sessionParams.append(`line_items[${lineItemIndex}][quantity]`, '1');
+      lineItemIndex++;
+    }
+
+    // Web/dev services (one-time payment)
     if (data.webdevTotalFee > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'Web/Dev Services',
-            description: 'Professional web development services',
-          },
-          unit_amount: data.webdevTotalFee * 100,
-        },
-        quantity: 1,
-      });
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][currency]`, 'usd');
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][product_data][name]`, 'Web/Dev Services');
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][product_data][description]`, 'Professional web development services');
+      sessionParams.append(`line_items[${lineItemIndex}][price_data][unit_amount]`, (data.webdevTotalFee * 100).toString());
+      sessionParams.append(`line_items[${lineItemIndex}][quantity]`, '1');
     }
 
     // Create Stripe checkout session
@@ -278,23 +322,12 @@ async function createStripeCheckout(
         'Authorization': `Bearer ${stripeKey}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        'mode': 'payment',
-        'success_url': `${siteUrl}/partner/success?session_id={CHECKOUT_SESSION_ID}`,
-        'cancel_url': `${siteUrl}/partnerships?canceled=true`,
-        'customer_email': data.email,
-        'line_items[0][price_data][currency]': 'usd',
-        'line_items[0][price_data][product_data][name]': `${getTierDisplayName(data.tier)} - ${data.duration}`,
-        'line_items[0][price_data][unit_amount]': (data.tierAmount * 100).toString(),
-        'line_items[0][quantity]': '1',
-        'metadata[partner_signup_id]': data.partnerSignupId.toString(),
-        'metadata[tier]': data.tier,
-        'metadata[duration]': data.duration,
-      }).toString(),
+      body: sessionParams.toString(),
     });
 
     if (!checkoutSession.ok) {
-      console.error('Stripe error:', await checkoutSession.text());
+      const errorText = await checkoutSession.text();
+      console.error('Stripe error:', errorText);
       return { success: false };
     }
 
@@ -312,7 +345,7 @@ async function createStripeCheckout(
 
 // Helper to get display name for tier
 function getTierDisplayName(tier: string): string {
-  const names = {
+  const names: Record<string, string> = {
     spot_partner: 'Spot Partner',
     featured_partner: 'Featured Partner',
     premium_sponsor: 'Premium Sponsor',
