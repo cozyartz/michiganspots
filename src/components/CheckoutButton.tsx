@@ -6,9 +6,8 @@ interface CheckoutButtonProps {
   email: string;
   name: string;
   organizationName: string;
-  partnershipType: 'chamber' | 'business' | 'community';
-  partnershipTier: string;
-  priceId: string;
+  tier: 'spot_partner' | 'featured_partner' | 'premium_sponsor' | 'title_sponsor' | 'chamber_tourism';
+  duration: 'monthly' | 'quarterly' | 'yearly';
   city?: string;
   phone?: string;
   disabled?: boolean;
@@ -19,9 +18,8 @@ export function CheckoutButton({
   email,
   name,
   organizationName,
-  partnershipType,
-  partnershipTier,
-  priceId,
+  tier,
+  duration,
   city,
   phone,
   disabled,
@@ -49,9 +47,8 @@ export function CheckoutButton({
           email,
           name,
           organizationName,
-          partnershipType,
-          partnershipTier,
-          priceId,
+          tier,
+          duration,
           city,
           phone
         }),

@@ -182,11 +182,11 @@ async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) 
     .run();
 
   // Create partnership activation
-  const partnershipType = session.metadata?.partnership_type;
-  const partnershipTier = session.metadata?.partnership_tier;
+  const tier = session.metadata?.tier;
+  const duration = session.metadata?.duration;
   const organizationName = session.metadata?.organization_name;
 
-  if (partnershipType && partnershipTier) {
+  if (tier && duration) {
     const payment = await db
       .prepare('SELECT id, is_recurring FROM partner_payments WHERE stripe_customer_id = ? ORDER BY id DESC LIMIT 1')
       .bind(customerId)
@@ -209,8 +209,8 @@ async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) 
         .bind(
           email,
           organizationName,
-          partnershipType,
-          partnershipTier,
+          tier,
+          duration,
           payment.id,
           customerId,
           startsAt.toISOString(),
@@ -242,7 +242,8 @@ async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) 
           // Format data for worker API
           const workerData = formatPartnerDataForWorker({
             ...signupData,
-            tier: partnershipTier,
+            tier: tier,
+            duration: duration,
             organization_name: organizationName
           });
 
@@ -304,8 +305,8 @@ async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) 
             email: customer.email as string,
             organizationName: customer.organization_name as string,
             contactName: customer.name as string,
-            partnershipType,
-            partnershipTier,
+            partnershipType: tier,
+            partnershipTier: duration,
             amount: session.amount_total,
             transactionId: paymentIntentId || session.id,
             sessionId: session.id,

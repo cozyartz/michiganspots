@@ -7,8 +7,8 @@ interface CheckoutRequest {
   email: string;
   name: string;
   organizationName: string;
-  partnershipType: 'chamber' | 'business' | 'community';
-  partnershipTier: string;
+  tier: 'spot_partner' | 'featured_partner' | 'premium_sponsor' | 'title_sponsor' | 'chamber_tourism';
+  duration: 'monthly' | 'quarterly' | 'yearly';
   city?: string;
   phone?: string;
   intakeFormId?: string; // If coming from intake form
@@ -18,42 +18,53 @@ interface Env {
   DB: D1Database;
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
+  STRIPE_PUBLISHABLE_KEY: string;
   SITE_URL: string;
-  // Chamber partnership price IDs
-  STRIPE_PRICE_CHAMBER_LAUNCH: string;
-  STRIPE_PRICE_CHAMBER_CITY: string;
-  STRIPE_PRICE_CHAMBER_REGIONAL: string;
-  // Business partnership price IDs
-  STRIPE_PRICE_BUSINESS_SINGLE: string;
-  STRIPE_PRICE_BUSINESS_SEASONAL: string;
-  STRIPE_PRICE_BUSINESS_MULTI_LOCATION: string;
-  STRIPE_PRICE_BUSINESS_EVENT: string;
-  // Community partnership price IDs
-  STRIPE_PRICE_COMMUNITY_MINIMAL: string;
-  STRIPE_PRICE_COMMUNITY_MODEST: string;
+  // Spot Partner price IDs
+  STRIPE_PRICE_SPOT_MONTHLY: string;
+  STRIPE_PRICE_SPOT_QUARTERLY: string;
+  STRIPE_PRICE_SPOT_YEARLY: string;
+  // Featured Partner price IDs
+  STRIPE_PRICE_FEATURED_QUARTERLY: string;
+  STRIPE_PRICE_FEATURED_YEARLY: string;
+  // Premium Sponsor price IDs
+  STRIPE_PRICE_PREMIUM_QUARTERLY: string;
+  STRIPE_PRICE_PREMIUM_YEARLY: string;
+  // Title Sponsor price IDs
+  STRIPE_PRICE_TITLE_QUARTERLY: string;
+  STRIPE_PRICE_TITLE_YEARLY: string;
+  // Chamber & Tourism price IDs
+  STRIPE_PRICE_CHAMBER_QUARTERLY: string;
+  STRIPE_PRICE_CHAMBER_YEARLY: string;
 }
 
 // Price ID mapping - reads from environment variables
-function getPriceId(env: Env, partnershipType: string, partnershipTier: string): string | null {
+function getPriceId(env: Env, tier: string, duration: string): string | null {
   const priceMap: Record<string, Record<string, string>> = {
-    chamber: {
-      launch: env.STRIPE_PRICE_CHAMBER_LAUNCH,
-      city: env.STRIPE_PRICE_CHAMBER_CITY,
-      regional: env.STRIPE_PRICE_CHAMBER_REGIONAL
+    spot_partner: {
+      monthly: env.STRIPE_PRICE_SPOT_MONTHLY,
+      quarterly: env.STRIPE_PRICE_SPOT_QUARTERLY,
+      yearly: env.STRIPE_PRICE_SPOT_YEARLY
     },
-    business: {
-      single: env.STRIPE_PRICE_BUSINESS_SINGLE,
-      seasonal: env.STRIPE_PRICE_BUSINESS_SEASONAL,
-      multi_location: env.STRIPE_PRICE_BUSINESS_MULTI_LOCATION,
-      event: env.STRIPE_PRICE_BUSINESS_EVENT
+    featured_partner: {
+      quarterly: env.STRIPE_PRICE_FEATURED_QUARTERLY,
+      yearly: env.STRIPE_PRICE_FEATURED_YEARLY
     },
-    community: {
-      minimal: env.STRIPE_PRICE_COMMUNITY_MINIMAL,
-      modest: env.STRIPE_PRICE_COMMUNITY_MODEST
+    premium_sponsor: {
+      quarterly: env.STRIPE_PRICE_PREMIUM_QUARTERLY,
+      yearly: env.STRIPE_PRICE_PREMIUM_YEARLY
+    },
+    title_sponsor: {
+      quarterly: env.STRIPE_PRICE_TITLE_QUARTERLY,
+      yearly: env.STRIPE_PRICE_TITLE_YEARLY
+    },
+    chamber_tourism: {
+      quarterly: env.STRIPE_PRICE_CHAMBER_QUARTERLY,
+      yearly: env.STRIPE_PRICE_CHAMBER_YEARLY
     }
   };
 
-  return priceMap[partnershipType]?.[partnershipTier] || null;
+  return priceMap[tier]?.[duration] || null;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -63,15 +74,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       email,
       name,
       organizationName,
-      partnershipType,
-      partnershipTier,
+      tier,
+      duration,
       city,
       phone,
       intakeFormId
     } = body;
 
     // Validation
-    if (!email || !name || !organizationName || !partnershipType || !partnershipTier) {
+    if (!email || !name || !organizationName || !tier || !duration) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
@@ -79,11 +90,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     // Get price ID from environment variables
-    const priceId = getPriceId(context.env, partnershipType, partnershipTier);
+    const priceId = getPriceId(context.env, tier, duration);
 
     if (!priceId) {
       return new Response(
-        JSON.stringify({ error: 'Invalid partnership type or tier. Please contact support.' }),
+        JSON.stringify({ error: 'Invalid partnership tier or duration. Please contact support.' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -119,8 +130,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           email: email,
           name: name,
           'metadata[organization_name]': organizationName,
-          'metadata[partnership_type]': partnershipType,
-          'metadata[partnership_tier]': partnershipTier,
+          'metadata[tier]': tier,
+          'metadata[duration]': duration,
           ...(phone && { phone: phone }),
           ...(city && { 'metadata[city]': city })
         })
@@ -146,25 +157,25 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           customerId,
           phone || null,
           city || null,
-          JSON.stringify({ partnership_type: partnershipType, partnership_tier: partnershipTier }),
+          JSON.stringify({ tier, duration }),
           new Date().toISOString()
         )
         .run();
     }
 
-    // Create Checkout Session
+    // Create Checkout Session - all tiers now use subscription mode
     const sessionParams = new URLSearchParams({
       'customer': customerId,
-      'mode': partnershipType === 'chamber' ? 'subscription' : 'payment',
+      'mode': 'subscription',
       'line_items[0][price]': priceId,
       'line_items[0][quantity]': '1',
       'success_url': `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       'cancel_url': `${siteUrl}/partnerships`,
-      'client_reference_id': `${partnershipType}_${partnershipTier}_${Date.now()}`,
+      'client_reference_id': `${tier}_${duration}_${Date.now()}`,
       'metadata[email]': email,
       'metadata[organization_name]': organizationName,
-      'metadata[partnership_type]': partnershipType,
-      'metadata[partnership_tier]': partnershipTier,
+      'metadata[tier]': tier,
+      'metadata[duration]': duration,
       ...(intakeFormId && { 'metadata[intake_form_id]': intakeFormId })
     });
 
@@ -193,13 +204,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         email,
         name,
         organizationName,
-        partnershipType,
-        partnershipTier,
+        tier,
+        duration,
         customerId,
         priceId,
         0, // Will be updated by webhook
         'pending',
-        partnershipType === 'chamber' ? 1 : 0,
+        1, // All partnerships are now subscriptions
         JSON.stringify({ session_id: session.id }),
         intakeFormId || null,
         new Date().toISOString()
