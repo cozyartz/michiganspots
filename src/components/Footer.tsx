@@ -10,7 +10,7 @@ export function Footer() {
   return (
     <footer className="bg-parchment-dark treasure-border border-t-2 mt-20">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Compass className="w-6 h-6 text-copper-orange" />
@@ -59,6 +59,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <a href="/blog" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  Blog
+                </a>
+              </li>
+              <li>
                 <a href="/gear" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
                   Gear & Resources
                 </a>
@@ -68,9 +73,30 @@ export function Footer() {
                   Community Guidelines
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-heading font-bold text-ink-primary mb-4">Partnerships</h3>
+            <ul className="space-y-2">
               <li>
                 <a href="/partnerships" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
-                  Chamber Partnerships
+                  All Partnership Options
+                </a>
+              </li>
+              <li>
+                <a href="/chamber-partnerships" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  For Chambers of Commerce
+                </a>
+              </li>
+              <li>
+                <a href="/business-partnerships" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  For Local Businesses
+                </a>
+              </li>
+              <li>
+                <a href="/business-intake" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  Become a Partner
                 </a>
               </li>
             </ul>
