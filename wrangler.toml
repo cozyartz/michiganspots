@@ -43,6 +43,13 @@ STRIPE_PRICE_TITLE_YEARLY = "price_1SQd0XRBOZWADDgwVWUZHrm4"
 STRIPE_PRICE_CHAMBER_QUARTERLY = "price_1SQd0sRBOZWADDgwCKQ0aIUf"
 STRIPE_PRICE_CHAMBER_YEARLY = "price_1SQd0tRBOZWADDgwKd1RoR6Q"
 
+# Directory Advertising Tiers - Business Directory (Not game-related)
+# Created: November 2025
+# Note: FREE tier has no Stripe price (it's free)
+STRIPE_PRICE_DIRECTORY_STARTER_MONTHLY = "price_1SR0QERBOZWADDgwvWIoqgLE"
+STRIPE_PRICE_DIRECTORY_GROWTH_MONTHLY = "price_1SR0SURBOZWADDgwrwOFHuQ8"
+STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
+
 # NOTE: Add these as secrets via Cloudflare Dashboard or wrangler:
 # npx wrangler secret put STRIPE_SECRET_KEY --env production
 # npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
@@ -81,6 +88,11 @@ STRIPE_PRICE_TITLE_YEARLY = "price_1SQd0XRBOZWADDgwVWUZHrm4"
 # Chamber Partnership
 STRIPE_PRICE_CHAMBER_QUARTERLY = "price_1SQd0sRBOZWADDgwCKQ0aIUf"
 STRIPE_PRICE_CHAMBER_YEARLY = "price_1SQd0tRBOZWADDgwKd1RoR6Q"
+
+# Directory Advertising Tiers - Business Directory (Not game-related)
+STRIPE_PRICE_DIRECTORY_STARTER_MONTHLY = "price_1SR0QERBOZWADDgwvWIoqgLE"
+STRIPE_PRICE_DIRECTORY_GROWTH_MONTHLY = "price_1SR0SURBOZWADDgwrwOFHuQ8"
+STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 
 [[env.production.d1_databases]]
 binding = "DB"

@@ -1,0 +1,383 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Check, Sparkles, TrendingUp, Star, Zap } from 'lucide-react';
+
+const pricingTiers = [
+  {
+    name: 'FREE',
+    price: 0,
+    period: 'forever',
+    description: 'Perfect for getting started',
+    color: 'from-gray-500 to-gray-600',
+    features: [
+      'Basic business listing',
+      'Standard search visibility',
+      'Contact information display',
+      'Up to 3 photos',
+      'Monthly analytics report',
+      'Email support',
+    ],
+    notIncluded: [
+      'AI-generated description',
+      'Priority search placement',
+      'AI insights & recommendations',
+      'Competitor analysis',
+    ],
+  },
+  {
+    name: 'STARTER',
+    price: 49,
+    period: 'month',
+    description: 'AI-enhanced visibility',
+    color: 'from-blue-500 to-cyan-500',
+    popular: false,
+    features: [
+      'Everything in FREE',
+      'AI-generated business description',
+      'AI keyword optimization',
+      'Up to 8 photos',
+      '+30% search ranking boost',
+      'Priority in AI chat',
+      'Weekly analytics reports',
+      'Competitor analysis',
+      'Monthly AI insights report',
+      'Priority email support',
+    ],
+    notIncluded: [
+      'Featured badge in search',
+      'Daily AI intelligence',
+      'API access',
+    ],
+  },
+  {
+    name: 'GROWTH',
+    price: 99,
+    period: 'month',
+    description: 'Maximum local visibility',
+    color: 'from-purple-500 to-pink-500',
+    popular: true,
+    features: [
+      'Everything in STARTER',
+      'Featured badge in search results',
+      '+60% search ranking boost',
+      'Up to 15 photos',
+      'Top placement in AI recommendations',
+      'Weekly AI insights report',
+      'Real-time trend alerts',
+      'Enhanced business analytics',
+      'Review response suggestions',
+      'Priority phone & email support',
+    ],
+    notIncluded: [
+      'API access',
+      'Custom integration',
+    ],
+  },
+  {
+    name: 'PRO',
+    price: 199,
+    period: 'month',
+    description: 'Full AI intelligence suite',
+    color: 'from-gold to-copper-orange',
+    popular: false,
+    features: [
+      'Everything in GROWTH',
+      '+100% search ranking boost',
+      'Up to 30 photos',
+      'Daily AI intelligence dashboard',
+      'Custom AI insights',
+      'API access for integration',
+      'White-label AI assistant option',
+      'Dedicated account manager',
+      'Custom reporting',
+      'Multi-location support',
+      '24/7 priority support',
+    ],
+    notIncluded: [],
+  },
+];
+---
+
+<Layout
+  title="Business Directory Pricing - Michigan Spots"
+  description="Choose the perfect plan to showcase your Michigan business. Start FREE, upgrade anytime. AI-powered visibility starting at just $49/month."
+  keywords="Michigan business listing pricing, business directory cost, local business marketing Michigan"
+>
+  <!-- Hero Section -->
+  <section class="py-20 px-4 bg-gradient-to-br from-lakes-blue via-copper-orange to-forest-green text-white">
+    <div class="container mx-auto max-w-6xl text-center">
+      <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+        <Sparkles className="text-gold" size={20} />
+        <span class="font-semibold">Launch Special Pricing</span>
+      </div>
+
+      <h1 class="font-display text-5xl md:text-6xl font-bold mb-6">
+        Simple, Transparent Pricing
+      </h1>
+
+      <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-95">
+        Start FREE, upgrade when you're ready. No contracts, cancel anytime.
+        <br />
+        <span class="text-gold font-semibold">Launch pricing - lock in these rates forever!</span>
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div class="flex items-center gap-2 text-white/90">
+          <Check size={20} />
+          <span>No credit card required</span>
+        </div>
+        <div class="hidden sm:block w-px h-6 bg-white/30" />
+        <div class="flex items-center gap-2 text-white/90">
+          <Check size={20} />
+          <span>Cancel anytime</span>
+        </div>
+        <div class="hidden sm:block w-px h-6 bg-white/30" />
+        <div class="flex items-center gap-2 text-white/90">
+          <Check size={20} />
+          <span>Upgrade/downgrade instantly</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Cards -->
+  <section class="py-20 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-7xl">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {pricingTiers.map((tier) => (
+          <div class={`relative parchment-card p-8 hover:shadow-2xl transition-all duration-300 ${tier.popular ? 'ring-4 ring-copper-orange transform scale-105' : ''}`}>
+            {/* Popular Badge */}
+            {tier.popular && (
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-copper-orange to-gold text-white rounded-full text-sm font-bold shadow-lg">
+                MOST POPULAR
+              </div>
+            )}
+
+            {/* Tier Header */}
+            <div class="text-center mb-6">
+              <div class={`w-16 h-16 bg-gradient-to-br ${tier.color} rounded-2xl mx-auto mb-4 flex items-center justify-center`}>
+                {tier.name === 'FREE' && <Star className="text-white" size={32} />}
+                {tier.name === 'STARTER' && <Sparkles className="text-white" size={32} />}
+                {tier.name === 'GROWTH' && <TrendingUp className="text-white" size={32} />}
+                {tier.name === 'PRO' && <Zap className="text-white" size={32} />}
+              </div>
+
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">
+                {tier.name}
+              </h3>
+              <p class="text-sm text-ink-secondary mb-4">{tier.description}</p>
+
+              <div class="mb-2">
+                <span class="text-5xl font-bold text-ink-primary">${tier.price}</span>
+                {tier.period && <span class="text-ink-secondary">/{tier.period}</span>}
+              </div>
+            </div>
+
+            {/* Features List */}
+            <ul class="space-y-3 mb-8">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-2 text-sm">
+                  <Check size={18} class="text-forest-green flex-shrink-0 mt-0.5" />
+                  <span class="text-ink-primary">{feature}</span>
+                </li>
+              ))}
+
+              {tier.notIncluded.map((feature) => (
+                <li class="flex items-start gap-2 text-sm opacity-40">
+                  <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span class="line-through">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* CTA Button */}
+            <a
+              href={tier.name === 'FREE' ? '/directory/claim' : `/directory/claim?tier=${tier.name.toLowerCase()}`}
+              class={`block w-full text-center py-4 rounded-xl font-bold transition-all ${
+                tier.popular
+                  ? 'bg-gradient-to-r from-copper-orange to-gold text-white hover:shadow-xl hover:scale-105'
+                  : tier.name === 'FREE'
+                  ? 'bg-white border-2 border-lakes-blue text-lakes-blue hover:bg-lakes-blue hover:text-white'
+                  : 'bg-gradient-to-r from-lakes-blue to-copper-orange text-white hover:shadow-xl'
+              }`}
+            >
+              {tier.name === 'FREE' ? 'Get Started FREE' : `Start ${tier.name} Plan`}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Comparison -->
+  <section class="py-20 px-4 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <h2 class="font-display text-4xl font-bold text-ink-primary text-center mb-12">
+        What Makes Our Directory Different?
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center p-8">
+          <div class="w-16 h-16 bg-lakes-blue/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <Sparkles className="text-lakes-blue" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            AI-Powered Intelligence
+          </h3>
+          <p class="text-ink-secondary">
+            Our AI doesn't just list your business—it actively promotes it through smart recommendations,
+            natural language search, and automated insights.
+          </p>
+        </div>
+
+        <div class="text-center p-8">
+          <div class="w-16 h-16 bg-copper-orange/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <TrendingUp className="text-copper-orange" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Real Performance Tracking
+          </h3>
+          <p class="text-ink-secondary">
+            See exactly how customers find you, what they search for, and which features drive
+            the most engagement. Data-driven growth.
+          </p>
+        </div>
+
+        <div class="text-center p-8">
+          <div class="w-16 h-16 bg-forest-green/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <Star className="text-forest-green" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Michigan-Focused Community
+          </h3>
+          <p class="text-ink-secondary">
+            Not a massive national directory—we're laser-focused on Michigan businesses and Michigan customers.
+            Better targeting, better results.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-20 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="font-display text-4xl font-bold text-ink-primary text-center mb-12">
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-6">
+        <details class="parchment-card p-6 group">
+          <summary class="font-heading text-lg font-bold text-ink-primary cursor-pointer list-none flex items-center justify-between">
+            <span>Can I start for free and upgrade later?</span>
+            <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-ink-secondary">
+            Absolutely! Start with a FREE listing to test the platform. Upgrade to a paid tier anytime to unlock
+            AI-powered features, better search visibility, and advanced analytics. No commitment required.
+          </p>
+        </details>
+
+        <details class="parchment-card p-6 group">
+          <summary class="font-heading text-lg font-bold text-ink-primary cursor-pointer list-none flex items-center justify-between">
+            <span>How does the AI actually help my business?</span>
+            <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-ink-secondary">
+            Our AI writes compelling business descriptions, optimizes your listing for search, and recommends your
+            business to relevant customers through our AI chat assistant. It also provides weekly insights about
+            search trends, competitor activity, and growth opportunities specific to your business.
+          </p>
+        </details>
+
+        <details class="parchment-card p-6 group">
+          <summary class="font-heading text-lg font-bold text-ink-primary cursor-pointer list-none flex items-center justify-between">
+            <span>Can I cancel anytime?</span>
+            <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-ink-secondary">
+            Yes! All paid plans are month-to-month with no long-term contracts. Cancel anytime from your dashboard.
+            Your listing will remain active through the end of your billing period, then automatically downgrade to FREE.
+          </p>
+        </details>
+
+        <details class="parchment-card p-6 group">
+          <summary class="font-heading text-lg font-bold text-ink-primary cursor-pointer list-none flex items-center justify-between">
+            <span>What's included in the launch pricing?</span>
+            <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-ink-secondary">
+            We're launching with special introductory pricing to build our Michigan business community. Lock in these
+            rates now and they'll never increase—even as we add more features and raise prices for new members later.
+          </p>
+        </details>
+
+        <details class="parchment-card p-6 group">
+          <summary class="font-heading text-lg font-bold text-ink-primary cursor-pointer list-none flex items-center justify-between">
+            <span>Do you offer discounts for annual payment?</span>
+            <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <p class="mt-4 text-ink-secondary">
+            Coming soon! We're building annual billing options with 2 months FREE (save 16%). Want to be notified when
+            annual plans launch? Email us at support@michiganspots.com.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 px-4 bg-gradient-to-r from-lakes-blue to-copper-orange text-white">
+    <div class="container mx-auto max-w-4xl text-center">
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+        Ready to Get Discovered?
+      </h2>
+      <p class="text-xl mb-8 opacity-95">
+        Join Michigan's fastest-growing business directory. Start free, upgrade when ready.
+      </p>
+      <a
+        href="/directory/claim"
+        class="inline-block px-12 py-5 bg-white text-lakes-blue rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all"
+      >
+        Claim Your FREE Listing Now
+      </a>
+      <p class="mt-6 text-sm opacity-75">
+        Takes less than 2 minutes • No credit card required
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+  }
+
+  details[open] summary ~ * {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

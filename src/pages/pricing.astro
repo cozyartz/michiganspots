@@ -1,0 +1,617 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Check, Sparkles, TrendingUp, Star, Zap, MapPin, Target } from 'lucide-react';
+
+// Two distinct pricing categories
+const directoryPricing = [
+  {
+    name: 'FREE',
+    price: 0,
+    period: 'forever',
+    description: 'Perfect for getting started',
+    color: 'from-gray-500 to-gray-600',
+    features: [
+      'Basic business listing',
+      'Standard search visibility',
+      'Contact information display',
+      'Up to 3 photos',
+      'Monthly analytics report',
+      'Email support',
+    ],
+    notIncluded: [
+      'AI-generated description',
+      'Priority search placement',
+      'AI insights & recommendations',
+      'Competitor analysis',
+    ],
+  },
+  {
+    name: 'STARTER',
+    price: 49,
+    period: 'month',
+    description: 'AI-enhanced visibility',
+    color: 'from-blue-500 to-cyan-500',
+    popular: false,
+    stripeKey: 'DIRECTORY_STARTER',
+    features: [
+      'Everything in FREE',
+      'AI-generated business description',
+      'AI keyword optimization',
+      'Up to 8 photos',
+      '+30% search ranking boost',
+      'Priority in AI chat',
+      'Weekly analytics reports',
+      'Competitor analysis',
+      'Monthly AI insights report',
+      'Priority email support',
+    ],
+    notIncluded: [
+      'Featured badge in search',
+      'Daily AI intelligence',
+      'API access',
+    ],
+  },
+  {
+    name: 'GROWTH',
+    price: 99,
+    period: 'month',
+    description: 'Maximum local visibility',
+    color: 'from-purple-500 to-pink-500',
+    popular: true,
+    stripeKey: 'DIRECTORY_GROWTH',
+    features: [
+      'Everything in STARTER',
+      'Featured badge in search results',
+      '+60% search ranking boost',
+      'Up to 15 photos',
+      'Top placement in AI recommendations',
+      'Weekly AI insights report',
+      'Real-time trend alerts',
+      'Enhanced business analytics',
+      'Review response suggestions',
+      'Priority phone & email support',
+    ],
+    notIncluded: [
+      'API access',
+      'Custom integration',
+    ],
+  },
+  {
+    name: 'PRO',
+    price: 199,
+    period: 'month',
+    description: 'Full AI intelligence suite',
+    color: 'from-gold to-copper-orange',
+    popular: false,
+    stripeKey: 'DIRECTORY_PRO',
+    features: [
+      'Everything in GROWTH',
+      '+100% search ranking boost',
+      'Up to 30 photos',
+      'Daily AI intelligence dashboard',
+      'Custom AI insights',
+      'API access for integration',
+      'White-label AI assistant option',
+      'Dedicated account manager',
+      'Custom reporting',
+      'Multi-location support',
+      '24/7 priority support',
+    ],
+    notIncluded: [],
+  },
+];
+
+const spotsPricing = [
+  {
+    name: 'SPOT PARTNER',
+    priceMonthly: 99,
+    priceQuarterly: 249,
+    priceYearly: 899,
+    description: 'Great for small businesses',
+    color: 'from-lakes-blue to-cyan-600',
+    stripeKey: 'SPOT',
+    features: [
+      '1 challenge per month in the game',
+      'Basic business profile on map',
+      'Monthly analytics & foot traffic reports',
+      'Player engagement metrics',
+      'Social media mentions',
+      'Email support',
+    ],
+  },
+  {
+    name: 'FEATURED PARTNER',
+    priceQuarterly: 699,
+    priceYearly: 2499,
+    description: 'Popular choice for growth',
+    color: 'from-purple-500 to-pink-500',
+    popular: true,
+    stripeKey: 'FEATURED',
+    features: [
+      '2-3 challenges per month',
+      'Enhanced profile with photos & videos',
+      'Featured placement in game',
+      'Weekly analytics reports',
+      'Quarterly strategy calls',
+      'Priority support',
+      'Social media promotion',
+    ],
+  },
+  {
+    name: 'PREMIUM SPONSOR',
+    priceQuarterly: 1499,
+    priceYearly: 4999,
+    description: 'Maximum game visibility',
+    color: 'from-copper-orange to-gold',
+    stripeKey: 'PREMIUM',
+    features: [
+      'Unlimited challenges',
+      'Premium branding in game',
+      'Web/dev services included',
+      'Dedicated account manager',
+      'Custom challenge creation',
+      'Advanced analytics dashboard',
+      'Quarterly business reviews',
+      'Marketing campaign support',
+    ],
+  },
+  {
+    name: 'TITLE SPONSOR',
+    priceQuarterly: 3999,
+    priceYearly: 13999,
+    description: 'Full platform co-branding',
+    color: 'from-gold to-amber-600',
+    stripeKey: 'TITLE',
+    features: [
+      'Everything in Premium',
+      'Platform co-branding rights',
+      'Exclusive category sponsorship',
+      'Custom development projects',
+      'White-glove service',
+      'Quarterly executive briefings',
+      'Multi-city campaigns',
+      'Full marketing suite',
+    ],
+  },
+];
+---
+
+<Layout
+  title="Pricing - Michigan Spots"
+  description="Choose your Michigan Spots plan. Directory advertising starts at FREE. Treasure hunt game partnerships start at $99/month."
+  keywords="Michigan business advertising pricing, Michigan Spots pricing, business directory cost Michigan"
+>
+  <!-- Hero Section -->
+  <section class="py-20 px-4 bg-gradient-to-br from-lakes-blue via-copper-orange to-forest-green text-white">
+    <div class="container mx-auto max-w-6xl text-center">
+      <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+        <Sparkles className="text-gold" size={20} />
+        <span class="font-semibold">Two Ways to Grow Your Business</span>
+      </div>
+
+      <h1 class="font-display text-5xl md:text-6xl font-bold mb-6">
+        Simple, Transparent Pricing
+      </h1>
+
+      <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-95">
+        Choose business directory advertising OR treasure hunt game partnerships—or both!
+      </p>
+    </div>
+  </section>
+
+  <!-- Category Selector -->
+  <section class="py-12 px-4 bg-parchment-light border-b-2 border-parchment-mid sticky top-0 z-40">
+    <div class="container mx-auto max-w-4xl">
+      <div class="grid md:grid-cols-2 gap-4">
+        <button
+          id="showDirectory"
+          class="category-tab active px-8 py-4 rounded-xl font-bold text-lg transition-all"
+        >
+          <div class="flex items-center justify-center gap-3">
+            <TrendingUp size={24} />
+            <div class="text-left">
+              <div>Business Directory</div>
+              <div class="text-sm font-normal opacity-75">Advertising & Visibility</div>
+            </div>
+          </div>
+        </button>
+        <button
+          id="showSpots"
+          class="category-tab px-8 py-4 rounded-xl font-bold text-lg transition-all"
+        >
+          <div class="flex items-center justify-center gap-3">
+            <MapPin size={24} />
+            <div class="text-left">
+              <div>Spots Partnerships</div>
+              <div class="text-sm font-normal opacity-75">Treasure Hunt Game</div>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Directory Pricing Section -->
+  <section id="directorySection" class="pricing-section py-20 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-7xl">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-4">
+          Business Directory Advertising
+        </h2>
+        <p class="text-xl text-ink-secondary max-w-3xl mx-auto">
+          Get discovered by customers searching for businesses like yours.
+          <br />
+          <strong class="text-copper-orange">AI-powered search • No game participation required</strong>
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        {directoryPricing.map((tier) => (
+          <div class={`relative parchment-card p-8 hover:shadow-2xl transition-all duration-300 ${tier.popular ? 'ring-4 ring-copper-orange transform scale-105' : ''}`}>
+            {tier.popular && (
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-copper-orange to-gold text-white rounded-full text-sm font-bold shadow-lg">
+                MOST POPULAR
+              </div>
+            )}
+
+            <div class="text-center mb-6">
+              <div class={`w-16 h-16 bg-gradient-to-br ${tier.color} rounded-2xl mx-auto mb-4 flex items-center justify-center`}>
+                {tier.name === 'FREE' && <Star className="text-white" size={32} />}
+                {tier.name === 'STARTER' && <Sparkles className="text-white" size={32} />}
+                {tier.name === 'GROWTH' && <TrendingUp className="text-white" size={32} />}
+                {tier.name === 'PRO' && <Zap className="text-white" size={32} />}
+              </div>
+
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">
+                {tier.name}
+              </h3>
+              <p class="text-sm text-ink-secondary mb-4">{tier.description}</p>
+
+              <div class="mb-2">
+                <span class="text-5xl font-bold text-ink-primary">${tier.price}</span>
+                {tier.period && <span class="text-ink-secondary">/{tier.period}</span>}
+              </div>
+            </div>
+
+            <ul class="space-y-3 mb-8">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-2 text-sm">
+                  <Check size={18} class="text-forest-green flex-shrink-0 mt-0.5" />
+                  <span class="text-ink-primary">{feature}</span>
+                </li>
+              ))}
+              {tier.notIncluded && tier.notIncluded.map((feature) => (
+                <li class="flex items-start gap-2 text-sm opacity-40">
+                  <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span class="line-through">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={tier.name === 'FREE' ? '/directory/claim' : `/directory/claim?tier=${tier.name.toLowerCase()}`}
+              class={`block w-full text-center py-4 rounded-xl font-bold transition-all ${
+                tier.popular
+                  ? 'bg-gradient-to-r from-copper-orange to-gold text-white hover:shadow-xl hover:scale-105'
+                  : tier.name === 'FREE'
+                  ? 'bg-white border-2 border-lakes-blue text-lakes-blue hover:bg-lakes-blue hover:text-white'
+                  : 'bg-gradient-to-r from-lakes-blue to-copper-orange text-white hover:shadow-xl'
+              }`}
+            >
+              {tier.name === 'FREE' ? 'Get Started FREE' : `Start ${tier.name} Plan`}
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <!-- Directory Benefits -->
+      <div class="grid md:grid-cols-3 gap-8 mt-16">
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-lakes-blue/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <Sparkles className="text-lakes-blue" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            AI-Powered Search
+          </h3>
+          <p class="text-ink-secondary text-sm">
+            Customers find you through natural language search. No game required.
+          </p>
+        </div>
+
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-copper-orange/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <TrendingUp className="text-copper-orange" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Always-On Visibility
+          </h3>
+          <p class="text-ink-secondary text-sm">
+            Your business shows up 24/7 in search results and recommendations.
+          </p>
+        </div>
+
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-forest-green/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <Target className="text-forest-green" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Simple & Affordable
+          </h3>
+          <p class="text-ink-secondary text-sm">
+            Start FREE forever. Upgrade only when you're ready to grow.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Spots Pricing Section -->
+  <section id="spotsSection" class="pricing-section hidden py-20 px-4 bg-white">
+    <div class="container mx-auto max-w-7xl">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-4">
+          Treasure Hunt Game Partnerships
+        </h2>
+        <p class="text-xl text-ink-secondary max-w-3xl mx-auto">
+          Create GPS-verified challenges that drive foot traffic and engagement.
+          <br />
+          <strong class="text-lakes-blue">Game-based discovery • Gamified customer acquisition</strong>
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        {spotsPricing.map((tier) => (
+          <div class={`relative parchment-card p-8 hover:shadow-2xl transition-all duration-300 ${tier.popular ? 'ring-4 ring-lakes-blue transform scale-105' : ''}`}>
+            {tier.popular && (
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-full text-sm font-bold shadow-lg">
+                MOST POPULAR
+              </div>
+            )}
+
+            <div class="text-center mb-6">
+              <div class={`w-16 h-16 bg-gradient-to-br ${tier.color} rounded-2xl mx-auto mb-4 flex items-center justify-center`}>
+                <MapPin className="text-white" size={32} />
+              </div>
+
+              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">
+                {tier.name}
+              </h3>
+              <p class="text-sm text-ink-secondary mb-4">{tier.description}</p>
+
+              <div class="space-y-2">
+                {tier.priceMonthly && (
+                  <div>
+                    <span class="text-3xl font-bold text-ink-primary">${tier.priceMonthly}</span>
+                    <span class="text-ink-secondary">/month</span>
+                  </div>
+                )}
+                {tier.priceQuarterly && (
+                  <div>
+                    <span class="text-3xl font-bold text-ink-primary">${tier.priceQuarterly}</span>
+                    <span class="text-ink-secondary">/quarter</span>
+                  </div>
+                )}
+                {tier.priceYearly && (
+                  <div class="text-sm text-forest-green font-semibold">
+                    ${tier.priceYearly}/year (save 2 months!)
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <ul class="space-y-3 mb-8">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-2 text-sm">
+                  <Check size={18} class="text-forest-green flex-shrink-0 mt-0.5" />
+                  <span class="text-ink-primary">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={`/business-intake?tier=${tier.stripeKey.toLowerCase()}`}
+              class={`block w-full text-center py-4 rounded-xl font-bold transition-all ${
+                tier.popular
+                  ? 'bg-gradient-to-r from-lakes-blue to-copper-orange text-white hover:shadow-xl hover:scale-105'
+                  : 'bg-gradient-to-r from-lakes-blue to-forest-green text-white hover:shadow-xl'
+              }`}
+            >
+              Get Started
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <!-- Spots Benefits -->
+      <div class="grid md:grid-cols-3 gap-8 mt-16">
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-lakes-blue/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <MapPin className="text-lakes-blue" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            GPS-Verified Traffic
+          </h3>
+          <p class="text-ink-secondary text-sm">
+            Players must physically visit your location to complete challenges.
+          </p>
+        </div>
+
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-copper-orange/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <Target className="text-copper-orange" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Gamified Engagement
+          </h3>
+          <p class="text-ink-secondary text-sm">
+            Turn discovery into a game. Players earn badges and compete on leaderboards.
+          </p>
+        </div>
+
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-forest-green/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <TrendingUp className="text-forest-green" size={32} />
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Measurable ROI
+          </h3>
+          <p class="text-ink-secondary text-sm">
+            Track exact foot traffic, challenge completions, and player engagement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="py-20 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="font-display text-4xl font-bold text-ink-primary text-center mb-12">
+        Which Option Is Right for You?
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Directory Card -->
+        <div class="parchment-card p-8 border-4 border-copper-orange">
+          <div class="flex items-center gap-3 mb-6">
+            <TrendingUp className="text-copper-orange" size={32} />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">
+              Business Directory
+            </h3>
+          </div>
+
+          <p class="text-ink-secondary mb-6">
+            Best for businesses that want simple, affordable online visibility without game participation.
+          </p>
+
+          <div class="space-y-3 mb-6">
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Customers find you through AI-powered search</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Always-on advertising presence</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">No challenge creation required</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Start FREE, scale when ready</span>
+            </div>
+          </div>
+
+          <button onclick="document.getElementById('showDirectory').click()"
+            class="w-full py-3 bg-gradient-to-r from-copper-orange to-gold text-white rounded-xl font-bold hover:shadow-xl transition-all">
+            View Directory Pricing
+          </button>
+        </div>
+
+        <!-- Spots Card -->
+        <div class="parchment-card p-8 border-4 border-lakes-blue">
+          <div class="flex items-center gap-3 mb-6">
+            <MapPin className="text-lakes-blue" size={32} />
+            <h3 class="font-heading text-2xl font-bold text-ink-primary">
+              Spots Partnership
+            </h3>
+          </div>
+
+          <p class="text-ink-secondary mb-6">
+            Best for businesses that want to drive verified foot traffic through gamified challenges.
+          </p>
+
+          <div class="space-y-3 mb-6">
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">GPS-verified customer visits</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Monthly challenges drive engagement</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Players compete for badges & prizes</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+              <span class="text-sm">Detailed analytics & reporting</span>
+            </div>
+          </div>
+
+          <button onclick="document.getElementById('showSpots').click()"
+            class="w-full py-3 bg-gradient-to-r from-lakes-blue to-forest-green text-white rounded-xl font-bold hover:shadow-xl transition-all">
+            View Spots Pricing
+          </button>
+        </div>
+      </div>
+
+      <!-- Both Option -->
+      <div class="mt-8 p-8 bg-gradient-to-r from-lakes-blue/10 to-copper-orange/10 rounded-2xl border-2 border-lakes-blue/30">
+        <div class="text-center">
+          <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+            💡 Pro Tip: Get Both for Maximum Impact
+          </h3>
+          <p class="text-lg text-ink-secondary mb-6">
+            Many businesses combine Directory advertising with Spots partnerships for complete coverage:
+            <br />
+            <strong>Always-on visibility PLUS game-driven foot traffic</strong>
+          </p>
+          <a href="/partnerships"
+            class="inline-block px-8 py-4 bg-gradient-to-r from-lakes-blue via-copper-orange to-forest-green text-white rounded-xl font-bold hover:shadow-xl transition-all">
+            Explore Partnership Options
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const directoryBtn = document.getElementById('showDirectory');
+  const spotsBtn = document.getElementById('showSpots');
+  const directorySection = document.getElementById('directorySection');
+  const spotsSection = document.getElementById('spotsSection');
+
+  directoryBtn?.addEventListener('click', () => {
+    directorySection?.classList.remove('hidden');
+    spotsSection?.classList.add('hidden');
+    directoryBtn.classList.add('active');
+    spotsBtn?.classList.remove('active');
+  });
+
+  spotsBtn?.addEventListener('click', () => {
+    spotsSection?.classList.remove('hidden');
+    directorySection?.classList.add('hidden');
+    spotsBtn.classList.add('active');
+    directoryBtn?.classList.remove('active');
+  });
+</script>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+  }
+
+  .category-tab {
+    background: white;
+    border: 2px solid #D4C4A8;
+    color: #2C1810;
+  }
+
+  .category-tab.active {
+    background: linear-gradient(to right, #2E5077, #D97642);
+    color: white;
+    border-color: #2E5077;
+    box-shadow: 0 10px 25px rgba(46, 80, 119, 0.3);
+  }
+
+  .pricing-section {
+    min-height: 600px;
+  }
+</style>

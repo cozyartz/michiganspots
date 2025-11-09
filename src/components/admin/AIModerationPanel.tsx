@@ -207,8 +207,8 @@ export function AIModerationPanel() {
             <div className="text-3xl font-bold text-forest-green mb-1">{data.stats.sentimentPositive}</div>
             <div className="text-sm text-ink-secondary">Positive</div>
             <div className="w-full bg-parchment-light rounded-full h-2 mt-2">
-              <div 
-                className="bg-forest-green h-2 rounded-full" 
+              <div
+                className="bg-forest-green h-2 rounded-full"
                 style={{ width: `${(data.stats.sentimentPositive / data.stats.totalAnalyzed) * 100}%` }}
               ></div>
             </div>
@@ -217,8 +217,8 @@ export function AIModerationPanel() {
             <div className="text-3xl font-bold text-ink-secondary mb-1">{data.stats.sentimentNeutral}</div>
             <div className="text-sm text-ink-secondary">Neutral</div>
             <div className="w-full bg-parchment-light rounded-full h-2 mt-2">
-              <div 
-                className="bg-ink-secondary h-2 rounded-full" 
+              <div
+                className="bg-ink-secondary h-2 rounded-full"
                 style={{ width: `${(data.stats.sentimentNeutral / data.stats.totalAnalyzed) * 100}%` }}
               ></div>
             </div>
@@ -227,8 +227,8 @@ export function AIModerationPanel() {
             <div className="text-3xl font-bold text-coral-primary mb-1">{data.stats.sentimentNegative}</div>
             <div className="text-sm text-ink-secondary">Negative</div>
             <div className="w-full bg-parchment-light rounded-full h-2 mt-2">
-              <div 
-                className="bg-coral-primary h-2 rounded-full" 
+              <div
+                className="bg-coral-primary h-2 rounded-full"
                 style={{ width: `${(data.stats.sentimentNegative / data.stats.totalAnalyzed) * 100}%` }}
               ></div>
             </div>
@@ -248,31 +248,28 @@ export function AIModerationPanel() {
           <div className="flex gap-2">
             <button
               onClick={() => setActiveFilter('all')}
-              className={`px-3 py-1 text-sm font-bold rounded ${
-                activeFilter === 'all'
-                  ? 'bg-cyan-primary text-white'
-                  : 'bg-parchment-light text-ink-secondary hover:text-ink-primary'
-              }`}
+              className={`px-3 py-1 text-sm font-bold rounded ${activeFilter === 'all'
+                ? 'bg-cyan-primary text-white'
+                : 'bg-parchment-light text-ink-secondary hover:text-ink-primary'
+                }`}
             >
               All
             </button>
             <button
               onClick={() => setActiveFilter('flagged')}
-              className={`px-3 py-1 text-sm font-bold rounded ${
-                activeFilter === 'flagged'
-                  ? 'bg-coral-primary text-white'
-                  : 'bg-parchment-light text-ink-secondary hover:text-ink-primary'
-              }`}
+              className={`px-3 py-1 text-sm font-bold rounded ${activeFilter === 'flagged'
+                ? 'bg-coral-primary text-white'
+                : 'bg-parchment-light text-ink-secondary hover:text-ink-primary'
+                }`}
             >
               Flagged
             </button>
             <button
               onClick={() => setActiveFilter('approved')}
-              className={`px-3 py-1 text-sm font-bold rounded ${
-                activeFilter === 'approved'
-                  ? 'bg-forest-green text-white'
-                  : 'bg-parchment-light text-ink-secondary hover:text-ink-primary'
-              }`}
+              className={`px-3 py-1 text-sm font-bold rounded ${activeFilter === 'approved'
+                ? 'bg-forest-green text-white'
+                : 'bg-parchment-light text-ink-secondary hover:text-ink-primary'
+                }`}
             >
               Approved
             </button>
@@ -290,18 +287,16 @@ export function AIModerationPanel() {
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 text-xs font-bold rounded ${
-                    item.type === 'content' ? 'bg-cyan-primary/20 text-cyan-primary' :
+                  <span className={`px-2 py-1 text-xs font-bold rounded ${item.type === 'content' ? 'bg-cyan-primary/20 text-cyan-primary' :
                     item.type === 'sentiment' ? 'bg-coral-primary/20 text-coral-primary' :
-                    'bg-amber-primary/20 text-amber-primary'
-                  }`}>
+                      'bg-amber-primary/20 text-amber-primary'
+                    }`}>
                     {item.type.toUpperCase()}
                   </span>
-                  <span className={`px-2 py-1 text-xs font-bold rounded ${
-                    item.action === 'approved' ? 'bg-forest-green/20 text-forest-green' :
+                  <span className={`px-2 py-1 text-xs font-bold rounded ${item.action === 'approved' ? 'bg-forest-green/20 text-forest-green' :
                     item.action === 'flagged' || item.action === 'removed' ? 'bg-coral-primary/20 text-coral-primary' :
-                    'bg-amber-primary/20 text-amber-primary'
-                  }`}>
+                      'bg-amber-primary/20 text-amber-primary'
+                    }`}>
                     {item.action === 'approved' && <CheckCircle className="w-3 h-3 inline mr-1" />}
                     {(item.action === 'flagged' || item.action === 'removed') && <XCircle className="w-3 h-3 inline mr-1" />}
                     {item.action === 'pending' && <Clock className="w-3 h-3 inline mr-1" />}

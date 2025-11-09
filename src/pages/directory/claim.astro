@@ -1,0 +1,404 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Building2, Mail, Phone, MapPin, Globe, Sparkles } from 'lucide-react';
+---
+
+<Layout
+  title="Claim Your Business Listing - Michigan Spots Directory"
+  description="Claim and verify your Michigan business listing. Start FREE and unlock AI-powered features to boost your local visibility."
+  keywords="claim business Michigan, free business listing, verify business Michigan"
+>
+  <!-- Hero -->
+  <section class="py-16 px-4 bg-gradient-to-br from-lakes-blue to-copper-orange text-white">
+    <div class="container mx-auto max-w-4xl text-center">
+      <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+        <Sparkles className="text-gold" size={20} />
+        <span class="font-semibold">FREE Business Listing</span>
+      </div>
+
+      <h1 class="font-display text-5xl md:text-6xl font-bold mb-6">
+        Claim Your Business
+      </h1>
+
+      <p class="text-xl md:text-2xl opacity-95">
+        Get discovered by thousands of Michigan customers.
+        <br />
+        Start FREE, no credit card required.
+      </p>
+    </div>
+  </section>
+
+  <!-- Claim Form -->
+  <section class="py-16 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-2xl">
+      <div class="parchment-card p-8 md:p-12">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-2 text-center">
+          Start Your FREE Listing
+        </h2>
+        <p class="text-ink-secondary mb-8 text-center">
+          Takes less than 2 minutes. We'll verify your business and activate your listing within 24 hours.
+        </p>
+
+        <form id="claimForm" class="space-y-6">
+          <!-- Business Name -->
+          <div>
+            <label class="block text-sm font-semibold text-ink-primary mb-2">
+              Business Name *
+            </label>
+            <div class="relative">
+              <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-lakes-blue" size={20} />
+              <input
+                type="text"
+                name="businessName"
+                required
+                placeholder="Your Business Name"
+                class="w-full pl-12 pr-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div>
+            <label class="block text-sm font-semibold text-ink-primary mb-2">
+              Business Category *
+            </label>
+            <select
+              name="category"
+              required
+              class="w-full px-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+            >
+              <option value="">Select a category...</option>
+              <option value="restaurants">Restaurants & Dining</option>
+              <option value="coffee">Coffee & Cafes</option>
+              <option value="shopping">Shopping & Retail</option>
+              <option value="arts">Arts & Entertainment</option>
+              <option value="services">Professional Services</option>
+              <option value="health">Health & Wellness</option>
+              <option value="automotive">Automotive</option>
+              <option value="home">Home & Garden</option>
+              <option value="tourism">Tourism & Attractions</option>
+              <option value="construction">Construction & Trades</option>
+              <option value="education">Education</option>
+              <option value="real-estate">Real Estate</option>
+            </select>
+          </div>
+
+          <!-- City -->
+          <div>
+            <label class="block text-sm font-semibold text-ink-primary mb-2">
+              City *
+            </label>
+            <div class="relative">
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-copper-orange" size={20} />
+              <input
+                type="text"
+                name="city"
+                required
+                placeholder="Detroit, Grand Rapids, Ann Arbor, etc."
+                class="w-full pl-12 pr-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label class="block text-sm font-semibold text-ink-primary mb-2">
+              Street Address *
+            </label>
+            <input
+              type="text"
+              name="address"
+              required
+              placeholder="123 Main Street"
+              class="w-full px-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+            />
+          </div>
+
+          <!-- Contact Info Row -->
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-ink-primary mb-2">
+                Phone *
+              </label>
+              <div class="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-forest-green" size={20} />
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  placeholder="(555) 123-4567"
+                  class="w-full pl-12 pr-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-ink-primary mb-2">
+                Email *
+              </label>
+              <div class="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-lakes-blue" size={20} />
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="contact@yourbusiness.com"
+                  class="w-full pl-12 pr-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Website (Optional) -->
+          <div>
+            <label class="block text-sm font-semibold text-ink-primary mb-2">
+              Website (Optional)
+            </label>
+            <div class="relative">
+              <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-copper-orange" size={20} />
+              <input
+                type="url"
+                name="website"
+                placeholder="https://yourbusiness.com"
+                class="w-full pl-12 pr-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-sm font-semibold text-ink-primary mb-2">
+              Brief Description *
+            </label>
+            <textarea
+              name="description"
+              required
+              rows="4"
+              placeholder="Tell us about your business, what makes you unique, and why customers love you..."
+              class="w-full px-4 py-3 border-2 border-parchment-mid rounded-xl focus:border-lakes-blue focus:outline-none resize-none"
+            ></textarea>
+            <p class="text-xs text-ink-secondary mt-2">
+              <span class="inline-flex items-center gap-1">
+                <Sparkles size={12} className="text-copper-orange" />
+                <span>Our AI will enhance this description to make it more compelling!</span>
+              </span>
+            </p>
+          </div>
+
+          <!-- Tier Selection -->
+          <div class="p-6 bg-gradient-to-r from-lakes-blue/5 to-copper-orange/5 rounded-xl border-2 border-lakes-blue/20">
+            <label class="block text-sm font-semibold text-ink-primary mb-3">
+              Choose Your Plan
+            </label>
+            <div class="space-y-3">
+              <label class="flex items-start gap-3 p-4 bg-white rounded-lg border-2 border-parchment-mid cursor-pointer hover:border-lakes-blue transition-colors">
+                <input
+                  type="radio"
+                  name="tier"
+                  value="free"
+                  checked
+                  class="mt-1"
+                />
+                <div class="flex-1">
+                  <div class="font-semibold text-ink-primary">FREE Forever</div>
+                  <div class="text-sm text-ink-secondary">Basic listing with standard visibility</div>
+                </div>
+                <div class="font-bold text-lg text-ink-primary">$0</div>
+              </label>
+
+              <label class="flex items-start gap-3 p-4 bg-white rounded-lg border-2 border-parchment-mid cursor-pointer hover:border-lakes-blue transition-colors">
+                <input
+                  type="radio"
+                  name="tier"
+                  value="starter"
+                  class="mt-1"
+                />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-ink-primary">STARTER</span>
+                    <span class="px-2 py-0.5 bg-lakes-blue text-white text-xs font-bold rounded-full">AI-ENHANCED</span>
+                  </div>
+                  <div class="text-sm text-ink-secondary">AI description + 30% ranking boost</div>
+                </div>
+                <div class="font-bold text-lg text-ink-primary">$49<span class="text-sm font-normal">/mo</span></div>
+              </label>
+
+              <label class="flex items-start gap-3 p-4 bg-white rounded-lg border-2 border-copper-orange cursor-pointer hover:shadow-lg transition-all">
+                <input
+                  type="radio"
+                  name="tier"
+                  value="growth"
+                  class="mt-1"
+                />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-ink-primary">GROWTH</span>
+                    <span class="px-2 py-0.5 bg-copper-orange text-white text-xs font-bold rounded-full">POPULAR</span>
+                  </div>
+                  <div class="text-sm text-ink-secondary">Featured badge + 60% ranking boost</div>
+                </div>
+                <div class="font-bold text-lg text-ink-primary">$99<span class="text-sm font-normal">/mo</span></div>
+              </label>
+            </div>
+            <p class="text-xs text-ink-secondary mt-4">
+              <a href="/directory/pricing" class="text-lakes-blue hover:underline">View full pricing comparison →</a>
+            </p>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full py-4 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all"
+          >
+            Claim My Business Listing
+          </button>
+
+          <p class="text-xs text-center text-ink-secondary">
+            By claiming your listing, you agree to our <a href="/terms" class="text-lakes-blue hover:underline">Terms of Service</a> and <a href="/privacy" class="text-lakes-blue hover:underline">Privacy Policy</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="py-16 px-4 bg-white">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="font-heading text-3xl font-bold text-ink-primary text-center mb-12">
+        What Happens Next?
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-lakes-blue/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <span class="text-3xl font-bold text-lakes-blue">1</span>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            We Verify Your Business
+          </h3>
+          <p class="text-ink-secondary">
+            Our team reviews your submission and verifies your business ownership within 24 hours.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-copper-orange/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <span class="text-3xl font-bold text-copper-orange">2</span>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            AI Enhances Your Listing
+          </h3>
+          <p class="text-ink-secondary">
+            Our AI optimizes your description, extracts keywords, and prepares your listing for maximum visibility.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 bg-forest-green/10 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <span class="text-3xl font-bold text-forest-green">3</span>
+          </div>
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            You Go Live!
+          </h3>
+          <p class="text-ink-secondary">
+            Your business appears in search results, AI recommendations, and starts getting discovered.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('claimForm');
+  const submitBtn = form?.querySelector('button[type="submit"]');
+
+  if (form && submitBtn) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Disable submit button to prevent double submission
+      submitBtn.setAttribute('disabled', 'true');
+      submitBtn.textContent = 'Processing...';
+
+      const formData = new FormData(form as HTMLFormElement);
+      const data = Object.fromEntries(formData.entries());
+
+      const selectedTier = data.tier as string;
+
+      try {
+        // If FREE tier, just save to database (no Stripe checkout needed)
+        if (selectedTier === 'free') {
+          const response = await fetch('/api/directory/claim', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+
+          if (response.ok) {
+            window.location.href = '/directory/claim-success?tier=free';
+          } else {
+            const error = await response.json();
+            alert(error.error || 'There was an error submitting your claim. Please try again.');
+            submitBtn.removeAttribute('disabled');
+            submitBtn.textContent = 'Claim My Business Listing';
+          }
+        } else {
+          // Paid tiers: Create Stripe checkout session
+          const checkoutResponse = await fetch('/api/directory-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: data.email,
+              businessName: data.businessName,
+              category: data.category,
+              city: data.city,
+              address: data.address,
+              phone: data.phone,
+              website: data.website || '',
+              description: data.description,
+              tier: selectedTier
+            }),
+          });
+
+          if (checkoutResponse.ok) {
+            const result = await checkoutResponse.json();
+
+            if (result.needsSetup) {
+              // Stripe products not yet created
+              alert('Directory subscriptions are being set up. Please use the FREE tier for now or contact support.');
+              submitBtn.removeAttribute('disabled');
+              submitBtn.textContent = 'Claim My Business Listing';
+            } else if (result.url) {
+              // Redirect to Stripe Checkout
+              window.location.href = result.url;
+            } else {
+              throw new Error('No checkout URL returned');
+            }
+          } else {
+            const error = await checkoutResponse.json();
+            if (error.needsSetup) {
+              alert('Directory subscriptions are being set up. Please use the FREE tier for now or contact support at support@michiganspots.com');
+            } else {
+              alert(error.error || 'There was an error creating your checkout session. Please try again.');
+            }
+            submitBtn.removeAttribute('disabled');
+            submitBtn.textContent = 'Claim My Business Listing';
+          }
+        }
+      } catch (error) {
+        console.error('Claim submission error:', error);
+        alert('There was an error submitting your claim. Please try again.');
+        submitBtn.removeAttribute('disabled');
+        submitBtn.textContent = 'Claim My Business Listing';
+      }
+    });
+  }
+</script>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AISearchBar } from '../components/directory/AISearchBar';
+import { DirectoryHero } from '../components/directory/DirectoryHero';
+import { CategoryGrid } from '../components/directory/CategoryGrid';
+import { FeaturedBusinesses } from '../components/directory/FeaturedBusinesses';
+import { AIChatAssistant } from '../components/directory/AIChatAssistant';
+
+const pageTitle = "Michigan Business Directory - AI-Powered Local Discovery";
+const pageDescription = "Discover Michigan's best businesses with AI-powered search. Find restaurants, shops, services, and attractions across the Great Lakes State.";
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords="Michigan business directory, AI business search, local businesses Michigan, find businesses Michigan, Detroit businesses, Grand Rapids shops, Ann Arbor restaurants"
+>
+  <!-- Hero Section -->
+  <DirectoryHero client:load />
+
+  <!-- AI Search Bar -->
+  <section class="py-12 px-4 bg-gradient-to-b from-parchment-light to-white">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-copper-orange/10 rounded-full border border-copper-orange/30 mb-4">
+          <svg class="w-5 h-5 text-copper-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="text-sm font-semibold text-copper-orange">AI-Powered Search</span>
+        </div>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-ink-primary mb-4">
+          Find Exactly What You're Looking For
+        </h2>
+        <p class="text-lg text-ink-secondary max-w-2xl mx-auto">
+          Our AI understands natural language. Try searching like: "dog-friendly cafes with outdoor seating in Ann Arbor"
+          or "best pizza near Comerica Park"
+        </p>
+      </div>
+
+      <AISearchBar client:load />
+
+      <!-- Quick Stats -->
+      <div class="grid md:grid-cols-3 gap-6 mt-12">
+        <div class="text-center p-6 parchment-card">
+          <div class="text-4xl font-bold text-lakes-blue mb-2">2,400+</div>
+          <div class="text-ink-secondary">Michigan Businesses</div>
+        </div>
+        <div class="text-center p-6 parchment-card">
+          <div class="text-4xl font-bold text-copper-orange mb-2">150+</div>
+          <div class="text-ink-secondary">Cities Covered</div>
+        </div>
+        <div class="text-center p-6 parchment-card">
+          <div class="text-4xl font-bold text-forest-green mb-2">98%</div>
+          <div class="text-ink-secondary">AI Accuracy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse by Category -->
+  <section class="py-16 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-7xl">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-ink-primary mb-4">
+          Browse by Category
+        </h2>
+        <p class="text-lg text-ink-secondary">
+          Explore Michigan businesses organized by what you're looking for
+        </p>
+      </div>
+
+      <CategoryGrid client:visible />
+    </div>
+  </section>
+
+  <!-- Featured Businesses -->
+  <section class="py-16 px-4 bg-white">
+    <div class="container mx-auto max-w-7xl">
+      <div class="flex items-center justify-between mb-12">
+        <div>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-ink-primary mb-4">
+            Featured Michigan Businesses
+          </h2>
+          <p class="text-lg text-ink-secondary">
+            AI-verified businesses with outstanding quality scores
+          </p>
+        </div>
+        <a
+          href="/directory/search"
+          class="hidden md:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-lg font-semibold hover:shadow-lg transition-all"
+        >
+          <span>View All</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <FeaturedBusinesses client:visible />
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 px-4 bg-gradient-to-b from-parchment-light to-parchment-mid">
+    <div class="container mx-auto max-w-6xl">
+      <div class="text-center mb-12">
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-ink-primary mb-4">
+          Powered by AI Intelligence
+        </h2>
+        <p class="text-lg text-ink-secondary">
+          Our directory uses cutting-edge AI to help you discover the perfect businesses
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="parchment-card p-8">
+          <div class="w-16 h-16 bg-lakes-blue/10 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-lakes-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Natural Language Search
+          </h3>
+          <p class="text-ink-secondary">
+            Search like you talk. Our AI understands context, intent, and specific preferences to find exactly what you need.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="parchment-card p-8">
+          <div class="w-16 h-16 bg-copper-orange/10 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-copper-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            Smart Recommendations
+          </h3>
+          <p class="text-ink-secondary">
+            Get personalized suggestions based on your preferences, location, and what similar users loved.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="parchment-card p-8">
+          <div class="w-16 h-16 bg-forest-green/10 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-ink-primary mb-3">
+            AI-Verified Quality
+          </h3>
+          <p class="text-ink-secondary">
+            Every business gets an AI quality score based on reviews, engagement, and community feedback.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business Owner CTA -->
+  <section class="py-16 px-4 bg-gradient-to-r from-lakes-blue to-copper-orange">
+    <div class="container mx-auto max-w-4xl text-center text-white">
+      <h2 class="font-display text-3xl md:text-4xl font-bold mb-6">
+        Own a Michigan Business?
+      </h2>
+      <p class="text-xl mb-8 opacity-90">
+        Get discovered by thousands of Michigan residents and visitors.
+        Start with a FREE listing and upgrade to unlock AI-powered growth tools.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/directory/claim"
+          class="px-8 py-4 bg-white text-lakes-blue rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all"
+        >
+          Claim Your FREE Listing
+        </a>
+        <a
+          href="/directory/pricing"
+          class="px-8 py-4 border-2 border-white text-white rounded-xl font-bold hover:bg-white/10 transition-all"
+        >
+          View Pricing
+        </a>
+      </div>
+      <p class="mt-6 text-sm opacity-75">
+        No credit card required • AI-enhanced listings start at just $49/month
+      </p>
+    </div>
+  </section>
+
+  <!-- Popular Cities -->
+  <section class="py-16 px-4 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-ink-primary mb-8 text-center">
+        Explore Businesses by City
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {['Detroit', 'Grand Rapids', 'Ann Arbor', 'Lansing', 'Battle Creek', 'Kalamazoo',
+          'Traverse City', 'Marquette', 'Saginaw', 'Flint', 'Holland', 'Muskegon'].map(city => (
+          <a
+            href={`/directory/city/${city.toLowerCase().replace(' ', '-')}`}
+            class="p-4 parchment-card text-center hover:shadow-lg hover:scale-105 transition-all"
+          >
+            <svg class="w-8 h-8 mx-auto mb-2 text-lakes-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span class="font-semibold text-ink-primary">{city}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Chat Assistant (Floating) -->
+  <AIChatAssistant client:load />
+</Layout>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+  }
+
+  .parchment-card:hover {
+    border-color: #2E5077;
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Check, Sparkles, Mail, Clock } from 'lucide-react';
+
+const tier = Astro.url.searchParams.get('tier') || 'unknown';
+const isFree = tier === 'free';
+---
+
+<Layout
+  title="Claim Successful - Michigan Spots Directory"
+  description="Your business listing has been submitted successfully."
+>
+  <section class="py-20 px-4 bg-gradient-to-br from-forest-green via-lakes-blue to-copper-orange text-white min-h-screen flex items-center">
+    <div class="container mx-auto max-w-3xl">
+      <div class="parchment-card p-12 text-center">
+        <!-- Success Icon -->
+        <div class="w-24 h-24 bg-gradient-to-br from-forest-green to-lakes-blue rounded-full mx-auto mb-8 flex items-center justify-center">
+          <Check className="text-white" size={48} />
+        </div>
+
+        <h1 class="font-display text-4xl md:text-5xl font-bold text-ink-primary mb-6">
+          {isFree ? 'Listing Submitted!' : 'Payment Successful!'}
+        </h1>
+
+        {isFree ? (
+          <p class="text-xl text-ink-secondary mb-8">
+            Your FREE business listing has been submitted for review.
+            We'll verify your information and activate your listing within 24 hours.
+          </p>
+        ) : (
+          <p class="text-xl text-ink-secondary mb-8">
+            Your payment has been processed and your {tier.toUpperCase()} tier subscription is now active!
+            We'll enhance your listing with AI and activate it within 24 hours.
+          </p>
+        )}
+
+        <!-- What Happens Next -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12 text-left">
+          <div class="bg-white/50 p-6 rounded-xl">
+            <div class="w-12 h-12 bg-lakes-blue/10 rounded-full flex items-center justify-center mb-4">
+              <Mail className="text-lakes-blue" size={24} />
+            </div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+              Check Your Email
+            </h3>
+            <p class="text-sm text-ink-secondary">
+              We've sent a confirmation with next steps to your email address.
+            </p>
+          </div>
+
+          <div class="bg-white/50 p-6 rounded-xl">
+            <div class="w-12 h-12 bg-copper-orange/10 rounded-full flex items-center justify-center mb-4">
+              <Clock className="text-copper-orange" size={24} />
+            </div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+              We'll Review
+            </h3>
+            <p class="text-sm text-ink-secondary">
+              Our team will verify your business information within 24 hours.
+            </p>
+          </div>
+
+          <div class="bg-white/50 p-6 rounded-xl">
+            <div class="w-12 h-12 bg-forest-green/10 rounded-full flex items-center justify-center mb-4">
+              <Sparkles className="text-forest-green" size={24} />
+            </div>
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+              You Go Live!
+            </h3>
+            <p class="text-sm text-ink-secondary">
+              {isFree
+                ? 'Your listing will appear in search results.'
+                : 'Our AI will optimize your listing for maximum visibility.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Premium Features for Paid Tiers */}
+        {!isFree && (
+          <div class="mb-8 p-6 bg-gradient-to-r from-lakes-blue/10 to-copper-orange/10 rounded-xl border-2 border-lakes-blue/30">
+            <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+              What You Get with {tier.toUpperCase()}
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4 text-left">
+              <div class="flex items-start gap-3">
+                <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+                <span class="text-sm text-ink-primary">AI-generated business description</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+                <span class="text-sm text-ink-primary">Priority search placement</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+                <span class="text-sm text-ink-primary">Weekly analytics reports</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
+                <span class="text-sm text-ink-primary">AI chat priority recommendations</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/directory"
+            class="px-8 py-4 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-xl font-bold hover:shadow-xl transition-all"
+          >
+            Browse Directory
+          </a>
+          <a
+            href="/"
+            class="px-8 py-4 border-2 border-lakes-blue text-lakes-blue rounded-xl font-bold hover:bg-lakes-blue hover:text-white transition-all"
+          >
+            Back to Home
+          </a>
+        </div>
+
+        {/* Support Contact */}
+        <p class="mt-8 text-sm text-ink-secondary">
+          Questions? Email us at <a href="mailto:support@michiganspots.com" class="text-lakes-blue hover:underline font-semibold">support@michiganspots.com</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+  }
+</style>
