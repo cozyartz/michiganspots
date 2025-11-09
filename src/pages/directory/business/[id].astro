@@ -1,0 +1,165 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { BusinessProfile } from '../../../components/directory/BusinessProfile';
+
+const { id } = Astro.params;
+
+// Fetch business data server-side for SEO
+let business: any = null;
+let error: string | null = null;
+
+try {
+  const runtime = Astro.locals.runtime as {
+    env: { DB: D1Database };
+  };
+
+  if (runtime?.env?.DB) {
+    const result = await runtime.env.DB.prepare(
+      `SELECT
+        id,
+        business_name as name,
+        business_category as category,
+        city,
+        address,
+        phone,
+        email,
+        website,
+        short_description as description,
+        quality_score as ai_quality_score,
+        ai_description as ai_generated_description,
+        ai_keywords,
+        ai_highlights,
+        directory_tier as tier,
+        is_ai_verified as is_verified,
+        is_claimed,
+        hours_of_operation as hours,
+        created_at
+      FROM business_directory
+      WHERE id = ?
+      LIMIT 1`
+    )
+      .bind(id)
+      .first();
+
+    business = result;
+  }
+} catch (e) {
+  error = e instanceof Error ? e.message : 'Failed to load business';
+}
+
+// Handle 404
+if (!business) {
+  return Astro.redirect('/directory?error=business-not-found');
+}
+
+const pageTitle = `${business.name} - ${business.city}, MI | Michigan Business Directory`;
+const pageDescription = business.ai_generated_description || business.description || `Find ${business.name} in ${business.city}, Michigan. ${business.category} business with contact information, hours, and more.`;
+const keywords = [
+  business.name,
+  business.category,
+  business.city,
+  'Michigan',
+  'business directory',
+  ...(business.ai_keywords ? business.ai_keywords.split(',').map((k: string) => k.trim()) : []),
+].join(', ');
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={keywords}
+>
+  <!-- Back Navigation -->
+  <section class="py-6 px-4 bg-parchment-light border-b-2 border-parchment-mid">
+    <div class="container mx-auto max-w-6xl">
+      <a
+        href="/directory/search"
+        class="inline-flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors font-semibold"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Search Results
+      </a>
+    </div>
+  </section>
+
+  <!-- Business Profile Component -->
+  <BusinessProfile client:load businessId={id} initialData={business} />
+
+  <!-- SEO Content -->
+  <section class="py-12 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+        About {business.name}
+      </h2>
+
+      <div class="prose prose-lg text-ink-secondary">
+        <p>
+          {business.ai_generated_description || business.description || `${business.name} is a ${business.category.toLowerCase()} business located in ${business.city}, Michigan.`}
+        </p>
+
+        {business.ai_keywords && (
+          <div class="mt-6">
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+              Related Services & Keywords
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              {business.ai_keywords.split(',').map((keyword: string) => (
+                <span class="px-3 py-1 bg-copper-orange/10 text-copper-orange text-sm rounded-full">
+                  {keyword.trim()}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div class="mt-6">
+          <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+            Location & Contact
+          </h3>
+          <p>
+            You can find {business.name} at {business.address} in {business.city}, Michigan.
+            {business.phone && ` Contact them at ${business.phone}`}
+            {business.website && ` or visit their website for more information`}.
+          </p>
+        </div>
+
+        {business.hours && (
+          <div class="mt-6">
+            <h3 class="font-heading text-lg font-bold text-ink-primary mb-2">
+              Hours of Operation
+            </h3>
+            <p>{business.hours}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Businesses -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <h3 class="font-heading text-2xl font-bold text-ink-primary mb-6">
+        Similar Businesses in {business.city}
+      </h3>
+      <p class="text-ink-secondary mb-4">
+        Explore more {business.category.toLowerCase()} businesses in the {business.city} area.
+      </p>
+      <div class="flex gap-4">
+        <a
+          href={`/directory/search?category=${encodeURIComponent(business.category)}&city=${encodeURIComponent(business.city)}`}
+          class="px-6 py-3 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-xl font-bold hover:shadow-lg transition-all"
+        >
+          View All {business.category} in {business.city}
+        </a>
+        <a
+          href={`/directory/category/${business.category.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-')}`}
+          class="px-6 py-3 border-2 border-lakes-blue text-lakes-blue rounded-xl font-bold hover:bg-lakes-blue/10 transition-all"
+        >
+          Browse {business.category}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

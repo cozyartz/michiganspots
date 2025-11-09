@@ -57,6 +57,9 @@ export function Header() {
             <a href="/blog" className="font-heading text-ink-primary hover:text-cyan-primary transition-colors">
               Blog
             </a>
+            <a href="/directory" className="font-heading text-ink-primary hover:text-cyan-primary transition-colors">
+              Business Directory
+            </a>
             {!loading && (
               <>
                 {user ? (
@@ -157,6 +160,9 @@ export function Header() {
               </a>
               <a href="/blog" className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors">
                 Blog
+              </a>
+              <a href="/directory" className="block font-heading text-ink-primary hover:text-cyan-primary transition-colors">
+                Business Directory
               </a>
               {!loading && (
                 <>

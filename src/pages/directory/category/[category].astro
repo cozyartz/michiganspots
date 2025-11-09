@@ -1,0 +1,217 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { SearchResults } from '../../../components/directory/SearchResults';
+
+const { category } = Astro.params;
+
+// Category mapping (URL slug to display name)
+const categoryMap: Record<string, string> = {
+  'restaurants': 'Restaurants',
+  'coffee-shops': 'Coffee Shops',
+  'shopping': 'Shopping',
+  'arts-culture': 'Arts & Culture',
+  'services': 'Services',
+  'health-wellness': 'Health & Wellness',
+  'automotive': 'Automotive',
+  'home-garden': 'Home & Garden',
+  'tourism': 'Tourism',
+  'construction': 'Construction',
+  'education': 'Education',
+  'real-estate': 'Real Estate',
+};
+
+// Get display name
+const displayCategory = categoryMap[category || ''];
+
+// Handle 404 for invalid categories
+if (!displayCategory) {
+  return Astro.redirect('/directory?error=category-not-found');
+}
+
+// Category descriptions for SEO
+const categoryDescriptions: Record<string, string> = {
+  'Restaurants': 'Discover Michigan\'s best restaurants, from fine dining to casual eateries. Find family-friendly spots, date night destinations, and local favorites across the Great Lakes State.',
+  'Coffee Shops': 'Explore cozy coffee shops and cafes throughout Michigan. From artisan roasters to neighborhood favorites, find your perfect cup of coffee.',
+  'Shopping': 'Browse unique boutiques, local shops, and retail stores across Michigan. Support local businesses while finding the perfect gifts, clothing, and specialty items.',
+  'Arts & Culture': 'Experience Michigan\'s vibrant arts scene. Discover galleries, theaters, museums, and cultural attractions that make our state unique.',
+  'Services': 'Find professional services you can trust. Connect with Michigan businesses offering everything from home services to professional consulting.',
+  'Health & Wellness': 'Prioritize your wellbeing with Michigan\'s health and wellness providers. Find gyms, spas, wellness centers, and healthcare services.',
+  'Automotive': 'Keep your vehicle running smoothly with Michigan\'s automotive experts. Find repair shops, dealerships, detailing services, and more.',
+  'Home & Garden': 'Transform your living space with Michigan\'s home and garden businesses. Find landscapers, contractors, furniture stores, and home improvement experts.',
+  'Tourism': 'Plan your Michigan adventure. Discover attractions, hotels, tour operators, and everything you need for an unforgettable visit.',
+  'Construction': 'Build your dream with Michigan\'s construction professionals. Find contractors, builders, and specialty trade services.',
+  'Education': 'Invest in learning with Michigan\'s educational institutions and training programs. Find schools, tutors, and educational resources.',
+  'Real Estate': 'Navigate Michigan\'s real estate market. Connect with agents, property managers, and real estate services to find your perfect home or investment.',
+};
+
+const description = categoryDescriptions[displayCategory] || `Find the best ${displayCategory.toLowerCase()} businesses in Michigan.`;
+
+const pageTitle = `${displayCategory} in Michigan - AI-Powered Business Directory`;
+
+// Category icons mapping
+const categoryIcons: Record<string, string> = {
+  'Restaurants': '🍽️',
+  'Coffee Shops': '☕',
+  'Shopping': '🛍️',
+  'Arts & Culture': '🎨',
+  'Services': '⚙️',
+  'Health & Wellness': '💪',
+  'Automotive': '🚗',
+  'Home & Garden': '🏡',
+  'Tourism': '✈️',
+  'Construction': '🏗️',
+  'Education': '📚',
+  'Real Estate': '🏘️',
+};
+
+const icon = categoryIcons[displayCategory] || '📍';
+---
+
+<Layout
+  title={pageTitle}
+  description={description}
+  keywords={`${displayCategory}, Michigan ${displayCategory.toLowerCase()}, ${displayCategory.toLowerCase()} near me, best ${displayCategory.toLowerCase()} Michigan`}
+>
+  <!-- Category Hero -->
+  <section class="py-16 md:py-24 px-4 bg-gradient-to-br from-lakes-blue/10 via-copper-orange/10 to-forest-green/10">
+    <div class="container mx-auto max-w-6xl">
+      <div class="flex items-center gap-4 mb-4">
+        <a
+          href="/directory"
+          class="inline-flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors font-semibold"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          All Categories
+        </a>
+      </div>
+
+      <div class="text-center">
+        <div class="text-6xl mb-4">{icon}</div>
+        <h1 class="font-display text-4xl md:text-6xl font-bold text-ink-primary mb-6">
+          {displayCategory} in Michigan
+        </h1>
+        <p class="text-xl text-ink-secondary max-w-3xl mx-auto">
+          {description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Results (filtered by category) -->
+  <SearchResults
+    client:load
+    initialCategory={displayCategory}
+  />
+
+  <!-- SEO Content Section -->
+  <section class="py-16 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="font-heading text-3xl font-bold text-ink-primary mb-6">
+        Why Choose {displayCategory} in Michigan?
+      </h2>
+
+      <div class="prose prose-lg text-ink-secondary">
+        <p class="mb-4">
+          Michigan is home to exceptional {displayCategory.toLowerCase()} that serve communities across the
+          Great Lakes State. Whether you're in Detroit, Grand Rapids, Ann Arbor, or any Michigan city,
+          you'll find quality {displayCategory.toLowerCase()} that meet your needs.
+        </p>
+
+        <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4 mt-8">
+          AI-Powered Business Discovery
+        </h3>
+        <p class="mb-4">
+          Our directory uses advanced AI technology to help you find the best {displayCategory.toLowerCase()}.
+          Every business is rated with an AI quality score based on:
+        </p>
+        <ul class="list-disc list-inside mb-6 space-y-2">
+          <li>Business information completeness and accuracy</li>
+          <li>Customer reviews and sentiment analysis</li>
+          <li>Community engagement and responsiveness</li>
+          <li>Verification status and credibility</li>
+        </ul>
+
+        <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4 mt-8">
+          Popular Cities for {displayCategory}
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 not-prose">
+          {['Detroit', 'Grand Rapids', 'Ann Arbor', 'Lansing', 'Traverse City', 'Kalamazoo'].map(city => (
+            <a
+              href={`/directory/search?category=${encodeURIComponent(displayCategory)}&city=${encodeURIComponent(city)}`}
+              class="p-4 bg-white border-2 border-parchment-mid rounded-xl hover:border-lakes-blue hover:shadow-lg transition-all text-center"
+            >
+              <span class="font-semibold text-ink-primary">{city}</span>
+              <div class="text-sm text-ink-secondary mt-1">{displayCategory}</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Categories -->
+  <section class="py-16 px-4 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <h3 class="font-heading text-2xl font-bold text-ink-primary mb-8 text-center">
+        Explore More Categories
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {Object.entries(categoryMap)
+          .filter(([slug]) => slug !== category)
+          .slice(0, 8)
+          .map(([slug, name]) => (
+            <a
+              href={`/directory/category/${slug}`}
+              class="p-6 parchment-card text-center hover:shadow-xl hover:scale-105 transition-all group"
+            >
+              <div class="text-3xl mb-2">{categoryIcons[name]}</div>
+              <span class="font-semibold text-ink-primary group-hover:text-lakes-blue transition-colors">
+                {name}
+              </span>
+            </a>
+          ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4 bg-gradient-to-r from-lakes-blue to-copper-orange">
+    <div class="container mx-auto max-w-4xl text-center text-white">
+      <h3 class="font-display text-3xl md:text-4xl font-bold mb-6">
+        Own a {displayCategory} Business?
+      </h3>
+      <p class="text-xl mb-8 opacity-90">
+        Get discovered by thousands of Michigan residents searching for {displayCategory.toLowerCase()}.
+        Start with a FREE listing today.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/directory/claim"
+          class="px-8 py-4 bg-white text-lakes-blue rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all"
+        >
+          Claim Your FREE Listing
+        </a>
+        <a
+          href="/pricing#directory"
+          class="px-8 py-4 border-2 border-white text-white rounded-xl font-bold hover:bg-white/10 transition-all"
+        >
+          View Pricing
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+    border-radius: 0.75rem;
+  }
+
+  .parchment-card:hover {
+    border-color: #2E5077;
+  }
+</style>

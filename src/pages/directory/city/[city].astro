@@ -1,0 +1,261 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { SearchResults } from '../../../components/directory/SearchResults';
+
+const { city } = Astro.params;
+
+// City mapping (URL slug to display name)
+const cityMap: Record<string, string> = {
+  'detroit': 'Detroit',
+  'grand-rapids': 'Grand Rapids',
+  'ann-arbor': 'Ann Arbor',
+  'lansing': 'Lansing',
+  'battle-creek': 'Battle Creek',
+  'kalamazoo': 'Kalamazoo',
+  'traverse-city': 'Traverse City',
+  'marquette': 'Marquette',
+  'saginaw': 'Saginaw',
+  'flint': 'Flint',
+  'holland': 'Holland',
+  'muskegon': 'Muskegon',
+};
+
+// Get display name
+const displayCity = cityMap[city || ''];
+
+// Handle 404 for invalid cities
+if (!displayCity) {
+  return Astro.redirect('/directory?error=city-not-found');
+}
+
+// City descriptions for SEO
+const cityDescriptions: Record<string, string> = {
+  'Detroit': 'Explore Detroit\'s vibrant business scene in Michigan\'s largest city. From Downtown Detroit to Midtown, discover restaurants, shops, services, and attractions that make the Motor City unique.',
+  'Grand Rapids': 'Discover Grand Rapids businesses in West Michigan\'s hub. Experience craft breweries, art galleries, restaurants, and local shops that define Beer City USA.',
+  'Ann Arbor': 'Browse Ann Arbor\'s diverse businesses in this university town. Find bookstores, cafes, restaurants, and unique shops that make Tree Town special.',
+  'Lansing': 'Explore Michigan\'s capital city businesses. Discover restaurants, services, shops, and attractions in Lansing and East Lansing.',
+  'Battle Creek': 'Find businesses in Cereal City. Explore restaurants, shops, and services in this historic Battle Creek community.',
+  'Kalamazoo': 'Discover Kalamazoo businesses in Southwest Michigan. Browse breweries, restaurants, arts venues, and local shops in this vibrant city.',
+  'Traverse City': 'Explore Traverse City businesses in Northern Michigan. Find wineries, restaurants, outdoor outfitters, and Cherry Capital attractions.',
+  'Marquette': 'Browse businesses in Michigan\'s Upper Peninsula hub. Discover Marquette\'s restaurants, outdoor gear shops, and Lake Superior charm.',
+  'Saginaw': 'Find Saginaw businesses in Michigan\'s Great Lakes Bay Region. Explore local restaurants, services, and shops.',
+  'Flint': 'Discover Flint businesses in Vehicle City. Browse restaurants, auto services, and local shops serving the Flint community.',
+  'Holland': 'Explore Holland businesses in West Michigan. Find Dutch-inspired shops, restaurants, and services in this lakeside community.',
+  'Muskegon': 'Browse Muskegon businesses along Lake Michigan. Discover restaurants, marinas, shops, and attractions in this waterfront city.',
+};
+
+const description = cityDescriptions[displayCity] || `Find the best businesses in ${displayCity}, Michigan.`;
+
+const pageTitle = `${displayCity} Businesses - Michigan Business Directory`;
+
+// City facts for additional content
+const cityFacts: Record<string, { population: string; region: string; highlights: string[] }> = {
+  'Detroit': {
+    population: '670,000+',
+    region: 'Southeast Michigan',
+    highlights: ['Automotive Heritage', 'Motown Music', 'Sports Teams', 'Renaissance']
+  },
+  'Grand Rapids': {
+    population: '200,000+',
+    region: 'West Michigan',
+    highlights: ['Craft Breweries', 'Art Prize', 'Furniture City', 'Medical Innovation']
+  },
+  'Ann Arbor': {
+    population: '120,000+',
+    region: 'Southeast Michigan',
+    highlights: ['University of Michigan', 'Tech Hub', 'Cultural Events', 'Research Center']
+  },
+  'Lansing': {
+    population: '115,000+',
+    region: 'Mid-Michigan',
+    highlights: ['State Capital', 'Government Hub', 'MSU Nearby', 'River Trail']
+  },
+  'Traverse City': {
+    population: '15,000+',
+    region: 'Northern Michigan',
+    highlights: ['Cherry Capital', 'Wine Country', 'Outdoor Recreation', 'Tourism Hub']
+  },
+  'Kalamazoo': {
+    population: '75,000+',
+    region: 'Southwest Michigan',
+    highlights: ['Higher Education', 'Craft Beer', 'Arts Scene', 'Medical Center']
+  },
+};
+
+const facts = cityFacts[displayCity] || { population: 'N/A', region: 'Michigan', highlights: [] };
+---
+
+<Layout
+  title={pageTitle}
+  description={description}
+  keywords={`${displayCity} businesses, ${displayCity} Michigan, businesses in ${displayCity}, ${displayCity} directory, local ${displayCity}`}
+>
+  <!-- City Hero -->
+  <section class="py-16 md:py-24 px-4 bg-gradient-to-br from-lakes-blue/10 via-copper-orange/10 to-forest-green/10">
+    <div class="container mx-auto max-w-6xl">
+      <div class="flex items-center gap-4 mb-4">
+        <a
+          href="/directory"
+          class="inline-flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors font-semibold"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          All Cities
+        </a>
+      </div>
+
+      <div class="text-center">
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <svg class="w-16 h-16 text-lakes-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <h1 class="font-display text-4xl md:text-6xl font-bold text-ink-primary mb-6">
+          Businesses in {displayCity}
+        </h1>
+        <p class="text-xl text-ink-secondary max-w-3xl mx-auto mb-8">
+          {description}
+        </p>
+
+        {/* City Stats */}
+        {facts.population !== 'N/A' && (
+          <div class="flex flex-wrap justify-center gap-6 mt-8">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-lakes-blue">{facts.population}</div>
+              <div class="text-sm text-ink-secondary">Population</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-copper-orange">{facts.region}</div>
+              <div class="text-sm text-ink-secondary">Region</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Results (filtered by city) -->
+  <SearchResults
+    client:load
+    initialCity={displayCity}
+  />
+
+  <!-- City Highlights -->
+  {facts.highlights.length > 0 && (
+    <section class="py-16 px-4 bg-parchment-light">
+      <div class="container mx-auto max-w-6xl">
+        <h2 class="font-heading text-3xl font-bold text-ink-primary mb-8 text-center">
+          What Makes {displayCity} Special
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {facts.highlights.map(highlight => (
+            <div class="parchment-card p-6 text-center">
+              <div class="text-4xl mb-3">✨</div>
+              <h3 class="font-heading text-lg font-bold text-ink-primary">
+                {highlight}
+              </h3>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Browse by Category in This City -->
+  <section class="py-16 px-4 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <h3 class="font-heading text-2xl font-bold text-ink-primary mb-8 text-center">
+        Browse by Category in {displayCity}
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[
+          { name: 'Restaurants', icon: '🍽️', slug: 'restaurants' },
+          { name: 'Coffee Shops', icon: '☕', slug: 'coffee-shops' },
+          { name: 'Shopping', icon: '🛍️', slug: 'shopping' },
+          { name: 'Arts & Culture', icon: '🎨', slug: 'arts-culture' },
+          { name: 'Services', icon: '⚙️', slug: 'services' },
+          { name: 'Health & Wellness', icon: '💪', slug: 'health-wellness' },
+          { name: 'Automotive', icon: '🚗', slug: 'automotive' },
+          { name: 'Tourism', icon: '✈️', slug: 'tourism' },
+        ].map(category => (
+          <a
+            href={`/directory/search?category=${encodeURIComponent(category.name)}&city=${encodeURIComponent(displayCity)}`}
+            class="p-6 parchment-card text-center hover:shadow-xl hover:scale-105 transition-all group"
+          >
+            <div class="text-3xl mb-2">{category.icon}</div>
+            <span class="font-semibold text-ink-primary group-hover:text-lakes-blue transition-colors text-sm">
+              {category.name}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Nearby Cities -->
+  <section class="py-16 px-4 bg-parchment-light">
+    <div class="container mx-auto max-w-6xl">
+      <h3 class="font-heading text-2xl font-bold text-ink-primary mb-8 text-center">
+        Explore Nearby Cities
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {Object.entries(cityMap)
+          .filter(([slug]) => slug !== city)
+          .slice(0, 6)
+          .map(([slug, name]) => (
+            <a
+              href={`/directory/city/${slug}`}
+              class="p-4 bg-white border-2 border-parchment-mid rounded-xl hover:border-lakes-blue hover:shadow-lg transition-all text-center group"
+            >
+              <svg class="w-8 h-8 mx-auto mb-2 text-lakes-blue group-hover:text-copper-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span class="font-semibold text-ink-primary text-sm">{name}</span>
+            </a>
+          ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4 bg-gradient-to-r from-lakes-blue to-copper-orange">
+    <div class="container mx-auto max-w-4xl text-center text-white">
+      <h3 class="font-display text-3xl md:text-4xl font-bold mb-6">
+        Own a Business in {displayCity}?
+      </h3>
+      <p class="text-xl mb-8 opacity-90">
+        Get discovered by local customers and visitors searching for businesses in {displayCity}.
+        Start with a FREE listing today.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/directory/claim"
+          class="px-8 py-4 bg-white text-lakes-blue rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all"
+        >
+          Claim Your FREE Listing
+        </a>
+        <a
+          href="/pricing#directory"
+          class="px-8 py-4 border-2 border-white text-white rounded-xl font-bold hover:bg-white/10 transition-all"
+        >
+          View Pricing
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+    border-radius: 0.75rem;
+  }
+
+  .parchment-card:hover {
+    border-color: #2E5077;
+  }
+</style>

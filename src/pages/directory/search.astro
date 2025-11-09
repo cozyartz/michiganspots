@@ -1,0 +1,112 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SearchResults } from '../../components/directory/SearchResults';
+import { AISearchBar } from '../../components/directory/AISearchBar';
+
+const url = new URL(Astro.request.url);
+const query = url.searchParams.get('q') || '';
+const category = url.searchParams.get('category') || '';
+const city = url.searchParams.get('city') || '';
+
+const pageTitle = query
+  ? `Search Results for "${query}" - Michigan Business Directory`
+  : 'Search Michigan Businesses - AI-Powered Directory';
+
+const pageDescription = query
+  ? `Find the best ${query} in Michigan with AI-powered search and recommendations`
+  : 'Discover Michigan\'s best businesses with AI-powered search, filters, and intelligent recommendations';
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={`Michigan businesses, ${query}, ${category}, ${city}, AI search, business directory`}
+>
+  <!-- Search Header -->
+  <section class="py-12 px-4 bg-gradient-to-br from-lakes-blue/10 to-copper-orange/10">
+    <div class="container mx-auto max-w-6xl">
+      <div class="mb-8">
+        <a
+          href="/directory"
+          class="inline-flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors mb-4"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Directory
+        </a>
+
+        {query && (
+          <h1 class="font-display text-3xl md:text-5xl font-bold text-ink-primary mb-4">
+            Search Results for "{query}"
+          </h1>
+        )}
+        {!query && (
+          <h1 class="font-display text-3xl md:text-5xl font-bold text-ink-primary mb-4">
+            Discover Michigan Businesses
+          </h1>
+        )}
+      </div>
+
+      <!-- Search Bar -->
+      <AISearchBar client:load />
+    </div>
+  </section>
+
+  <!-- Search Results Component -->
+  <SearchResults
+    client:load
+    initialQuery={query}
+    initialCategory={category}
+    initialCity={city}
+  />
+
+  <!-- SEO Content for Popular Searches -->
+  {query && (
+    <section class="py-12 px-4 bg-parchment-light">
+      <div class="container mx-auto max-w-4xl">
+        <h2 class="font-heading text-2xl font-bold text-ink-primary mb-4">
+          About {query} in Michigan
+        </h2>
+        <p class="text-ink-secondary leading-relaxed">
+          Our AI-powered directory helps you discover the best {query} across Michigan.
+          We analyze thousands of businesses to bring you verified, high-quality recommendations
+          with real-time availability, reviews, and detailed business information. Whether you're
+          in Detroit, Grand Rapids, Ann Arbor, or anywhere else in the Great Lakes State, find
+          exactly what you're looking for with intelligent search and filtering.
+        </p>
+      </div>
+    </section>
+  )}
+
+  <!-- Related Categories -->
+  <section class="py-12 px-4 bg-white">
+    <div class="container mx-auto max-w-6xl">
+      <h3 class="font-heading text-xl font-bold text-ink-primary mb-6">
+        Explore More Categories
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {['Restaurants', 'Coffee Shops', 'Shopping', 'Arts & Culture', 'Health & Wellness', 'Automotive'].map(cat => (
+          <a
+            href={`/directory/category/${cat.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-')}`}
+            class="p-4 parchment-card text-center hover:shadow-lg hover:scale-105 transition-all"
+          >
+            <span class="font-semibold text-ink-primary text-sm">{cat}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+    border-radius: 0.75rem;
+  }
+
+  .parchment-card:hover {
+    border-color: #2E5077;
+  }
+</style>
