@@ -4,13 +4,10 @@
  * This function should be triggered by Cloudflare Cron Triggers.
  *
  * To set up:
- * 1. Add cron trigger in wrangler.toml:
- *    [triggers]
- *    crons = ["0 */6 * * *"]  # Run every 6 hours
- *
- * 2. Or use Cloudflare Dashboard:
- *    - Go to Workers & Pages > michiganspot > Triggers > Cron Triggers
- *    - Add schedule: "0 */6 * * *" (every 6 hours)
+ * Use Cloudflare Dashboard:
+ * - Go to Workers & Pages > michiganspot > Triggers > Cron Triggers
+ * - Add schedule: 0 (star)/6 (star) (star) (star) (star) - every 6 hours
+ * - Replace (star) with the asterisk symbol
  *    - Point to: /api/directory-enrichment-cron
  *
  * This cron job will:

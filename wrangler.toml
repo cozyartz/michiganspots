@@ -55,6 +55,7 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 # npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
 # npx wrangler secret put EVALIDATE_API_KEY --env production
 # npx wrangler secret put CRON_SECRET --env production
+# npx wrangler secret put SEED_API_SECRET --env production
 #
 # For Cloudflare Pages deployment, add these secrets in the Cloudflare Dashboard:
 # 1. Go to Workers & Pages > michiganspot > Settings > Environment Variables
@@ -63,12 +64,19 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 #    - STRIPE_WEBHOOK_SECRET (from Stripe Dashboard)
 #    - EVALIDATE_API_KEY (from https://evalidate.andrea-b56.workers.dev)
 #    - CRON_SECRET (any random string for cron job security)
+#    - SEED_API_SECRET (any random string for business auto-seeding API security)
 #
 # 3. Set up Cron Trigger for business AI processing:
 #    - Go to Workers & Pages > michiganspot > Settings > Triggers > Cron Triggers
 #    - Add trigger: "0 */6 * * *" (runs every 6 hours)
 #    - This will automatically call /api/directory-enrichment-cron
 #    - The cron job processes businesses with Cloudflare AI (quality scores, descriptions, keywords)
+#
+# 4. Business Auto-Seeding API:
+#    - Endpoint: POST /api/directory/seed-business
+#    - Requires header: x-seed-api-secret with SEED_API_SECRET value
+#    - Supports single and bulk business imports with intelligent duplicate detection
+#    - See BUSINESS_SEEDING_GUIDE.md for full documentation
 
 [env.production]
 [env.production.vars]
