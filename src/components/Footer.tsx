@@ -80,6 +80,11 @@ export function Footer() {
             <h3 className="font-heading font-bold text-ink-primary mb-4">Partnerships</h3>
             <ul className="space-y-2">
               <li>
+                <a href="/pricing" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
+                  Pricing & Plans
+                </a>
+              </li>
+              <li>
                 <a href="/partnerships" className="text-ink-secondary hover:text-copper-orange transition-colors text-sm">
                   All Partnership Options
                 </a>
