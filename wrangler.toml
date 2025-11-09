@@ -54,7 +54,6 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 # npx wrangler secret put STRIPE_SECRET_KEY --env production
 # npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
 # npx wrangler secret put EVALIDATE_API_KEY --env production
-# npx wrangler secret put CLODURA_API_KEY --env production
 # npx wrangler secret put CRON_SECRET --env production
 #
 # For Cloudflare Pages deployment, add these secrets in the Cloudflare Dashboard:
@@ -63,14 +62,13 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 #    - STRIPE_SECRET_KEY (from Stripe Dashboard)
 #    - STRIPE_WEBHOOK_SECRET (from Stripe Dashboard)
 #    - EVALIDATE_API_KEY (from https://evalidate.andrea-b56.workers.dev)
-#    - CLODURA_API_KEY (from Clodura.ai API settings)
 #    - CRON_SECRET (any random string for cron job security)
 #
-# 3. Set up Cron Trigger for business enrichment:
+# 3. Set up Cron Trigger for business AI processing:
 #    - Go to Workers & Pages > michiganspot > Settings > Triggers > Cron Triggers
 #    - Add trigger: "0 */6 * * *" (runs every 6 hours)
 #    - This will automatically call /api/directory-enrichment-cron
-#    - The cron job enriches businesses with Clodura data and AI processing
+#    - The cron job processes businesses with Cloudflare AI (quality scores, descriptions, keywords)
 
 [env.production]
 [env.production.vars]

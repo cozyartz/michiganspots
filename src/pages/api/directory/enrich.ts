@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
-import { createCloduraService } from '../../../lib/clodura-api-service';
+import { CloudflareAIService } from '../../../lib/ai/cloudflare-ai-service';
 
 /**
- * API endpoint to enrich business listings with Clodura data
+ * API endpoint to enrich business listings with AI-generated content
  *
  * Usage:
  * POST /api/directory/enrich
@@ -20,7 +20,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const runtime = locals.runtime as {
       env: {
         DB: D1Database;
-        CLODURA_API_KEY?: string;
+        AI?: any;
       };
     };
 
@@ -39,14 +39,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const db = runtime.env.DB;
 
-    // Check for Clodura API key
-    const cloduraApiKey = runtime.env.CLODURA_API_KEY;
-    if (!cloduraApiKey) {
+    // Check for AI availability
+    if (!runtime.env.AI) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'Clodura API key not configured',
-          message: 'Add CLODURA_API_KEY to environment variables',
+          error: 'AI service not available',
+          message: 'Cloudflare AI binding not configured',
         }),
         {
           status: 500,
@@ -55,7 +54,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    const cloduraService = createCloduraService(cloduraApiKey);
+    const aiService = new CloudflareAIService(runtime.env.AI);
 
     // Handle single business enrichment
     if (businessId) {
@@ -77,12 +76,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
         );
       }
 
-      // Check if already enriched (unless force is true)
-      if (!force && business.clodura_metadata) {
+      // Check if already AI processed (unless force is true)
+      if (!force && business.ai_processing_status === 'completed') {
         return new Response(
           JSON.stringify({
             success: true,
-            message: 'Business already enriched (use force=true to re-enrich)',
+            message: 'Business already AI-processed (use force=true to re-process)',
             business,
           }),
           {
@@ -92,92 +91,89 @@ export const POST: APIRoute = async ({ request, locals }) => {
         );
       }
 
-      // Enrich with Clodura
-      const enrichResult = await cloduraService.enrichBusiness(business.name as string, business.city as string);
+      // Generate AI enrichment
+      try {
+        const qualityScore = await aiService.calculateQualityScore(business);
+        const enrichedData = await aiService.enrichBusinessData(business);
 
-      if (!enrichResult.success || !enrichResult.data || enrichResult.data.length === 0) {
+        // Update business with AI-generated data
+        const updateResult = await db
+          .prepare(
+            `UPDATE business_directory
+             SET
+               quality_score = ?,
+               ai_description = ?,
+               ai_keywords = ?,
+               ai_highlights = ?,
+               ai_processing_status = 'completed',
+               last_ai_update = CURRENT_TIMESTAMP,
+               updated_at = CURRENT_TIMESTAMP
+             WHERE id = ?`
+          )
+          .bind(
+            qualityScore,
+            enrichedData.description,
+            enrichedData.keywords?.join(', '),
+            JSON.stringify(enrichedData.highlights || []),
+            businessId
+          )
+          .run();
+
+        if (!updateResult.success) {
+          throw new Error('Failed to update business with AI data');
+        }
+
+        // Fetch updated business
+        const updatedBusiness = await db
+          .prepare('SELECT * FROM business_directory WHERE id = ? LIMIT 1')
+          .bind(businessId)
+          .first();
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: 'Business AI-enriched successfully',
+            business: updatedBusiness,
+            qualityScore,
+            enrichedData,
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      } catch (aiError) {
+        // Mark as error in database
+        await db
+          .prepare(
+            `UPDATE business_directory
+             SET ai_processing_status = 'error'
+             WHERE id = ?`
+          )
+          .bind(businessId)
+          .run();
+
         return new Response(
           JSON.stringify({
             success: false,
-            error: 'Failed to enrich business with Clodura',
-            message: enrichResult.error || 'No data found',
+            error: 'AI processing failed',
+            message: aiError instanceof Error ? aiError.message : 'Unknown error',
           }),
           {
-            status: 404,
+            status: 500,
             headers: { 'Content-Type': 'application/json' },
           }
         );
       }
-
-      const cloduraData = enrichResult.data[0];
-
-      // Update business with enriched data
-      const updateResult = await db
-        .prepare(
-          `UPDATE business_directory
-           SET
-             phone = COALESCE(?, phone),
-             website = COALESCE(?, website),
-             description = COALESCE(?, description),
-             social_facebook = COALESCE(?, social_facebook),
-             social_twitter = COALESCE(?, social_twitter),
-             social_linkedin = COALESCE(?, social_linkedin),
-             clodura_metadata = ?,
-             updated_at = CURRENT_TIMESTAMP
-           WHERE id = ?`
-        )
-        .bind(
-          cloduraData.company_phone,
-          cloduraData.company_website,
-          cloduraData.company_description,
-          cloduraData.company_social_facebook,
-          cloduraData.company_social_twitter,
-          cloduraData.company_social_linkedin,
-          JSON.stringify({
-            industry: cloduraData.company_industry,
-            size: cloduraData.company_size,
-            founded: cloduraData.company_founded_year,
-            revenue: cloduraData.company_revenue,
-            employees: cloduraData.company_employees,
-            enriched_at: new Date().toISOString(),
-          }),
-          businessId
-        )
-        .run();
-
-      if (!updateResult.success) {
-        throw new Error('Failed to update business with enriched data');
-      }
-
-      // Fetch updated business
-      const updatedBusiness = await db
-        .prepare('SELECT * FROM business_directory WHERE id = ? LIMIT 1')
-        .bind(businessId)
-        .first();
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'Business enriched successfully',
-          business: updatedBusiness,
-          cloduraData,
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
     }
 
     // Handle bulk enrichment
     if (bulkEnrich) {
-      // Get businesses that need enrichment (no clodura_metadata)
+      // Get businesses that need AI processing
       const businessesResult = await db
         .prepare(
-          `SELECT id, business_name as name, city, business_category as category
-           FROM business_directory
-           WHERE clodura_metadata IS NULL
-             AND ai_processing_status != 'error'
+          `SELECT * FROM business_directory
+           WHERE ai_processing_status = 'pending'
            LIMIT ?`
         )
         .bind(limit)
@@ -187,8 +183,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         return new Response(
           JSON.stringify({
             success: true,
-            message: 'No businesses need enrichment',
-            enriched: 0,
+            message: 'No businesses need AI processing',
+            processed: 0,
           }),
           {
             status: 200,
@@ -198,75 +194,65 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
 
       const businesses = businessesResult.results;
-      const enrichedCount = {
+      const processedCount = {
         success: 0,
         failed: 0,
         total: businesses.length,
       };
 
-      // Enrich each business
+      // Process each business with AI
       for (const business of businesses) {
         try {
-          const enrichResult = await cloduraService.enrichBusiness(
-            business.name as string,
-            business.city as string
-          );
+          const qualityScore = await aiService.calculateQualityScore(business);
+          const enrichedData = await aiService.enrichBusinessData(business);
 
-          if (enrichResult.success && enrichResult.data && enrichResult.data.length > 0) {
-            const cloduraData = enrichResult.data[0];
+          await db
+            .prepare(
+              `UPDATE business_directory
+               SET
+                 quality_score = ?,
+                 ai_description = ?,
+                 ai_keywords = ?,
+                 ai_highlights = ?,
+                 ai_processing_status = 'completed',
+                 last_ai_update = CURRENT_TIMESTAMP,
+                 updated_at = CURRENT_TIMESTAMP
+               WHERE id = ?`
+            )
+            .bind(
+              qualityScore,
+              enrichedData.description,
+              enrichedData.keywords?.join(', '),
+              JSON.stringify(enrichedData.highlights || []),
+              business.id
+            )
+            .run();
 
-            await db
-              .prepare(
-                `UPDATE business_directory
-                 SET
-                   phone = COALESCE(?, phone),
-                   website = COALESCE(?, website),
-                   description = COALESCE(?, description),
-                   social_facebook = COALESCE(?, social_facebook),
-                   social_twitter = COALESCE(?, social_twitter),
-                   social_linkedin = COALESCE(?, social_linkedin),
-                   clodura_metadata = ?,
-                   updated_at = CURRENT_TIMESTAMP
-                 WHERE id = ?`
-              )
-              .bind(
-                cloduraData.company_phone,
-                cloduraData.company_website,
-                cloduraData.company_description,
-                cloduraData.company_social_facebook,
-                cloduraData.company_social_twitter,
-                cloduraData.company_social_linkedin,
-                JSON.stringify({
-                  industry: cloduraData.company_industry,
-                  size: cloduraData.company_size,
-                  founded: cloduraData.company_founded_year,
-                  revenue: cloduraData.company_revenue,
-                  employees: cloduraData.company_employees,
-                  enriched_at: new Date().toISOString(),
-                }),
-                business.id
-              )
-              .run();
+          processedCount.success++;
 
-            enrichedCount.success++;
-          } else {
-            enrichedCount.failed++;
-          }
-
-          // Small delay between requests
-          await new Promise(resolve => setTimeout(resolve, 150));
+          // Small delay between AI calls
+          await new Promise(resolve => setTimeout(resolve, 100));
         } catch (error) {
-          console.error(`Failed to enrich business ${business.id}:`, error);
-          enrichedCount.failed++;
+          console.error(`Failed to AI-process business ${business.id}:`, error);
+          processedCount.failed++;
+
+          // Mark as error
+          await db
+            .prepare(
+              `UPDATE business_directory
+               SET ai_processing_status = 'error'
+               WHERE id = ?`
+            )
+            .bind(business.id)
+            .run();
         }
       }
 
       return new Response(
         JSON.stringify({
           success: true,
-          message: `Bulk enrichment completed`,
-          results: enrichedCount,
-          rateLimitStatus: cloduraService.getRateLimitStatus(),
+          message: `Bulk AI processing completed`,
+          results: processedCount,
         }),
         {
           status: 200,
