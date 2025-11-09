@@ -1,147 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Check, Sparkles, TrendingUp, Star, Zap, MapPin, Target, Building2 } from 'lucide-react';
-
-// Directory Advertising Tiers
-const directoryPricing = [
-  {
-    name: 'FREE',
-    price: 0,
-    period: 'forever',
-    description: 'Perfect for getting started',
-    color: 'from-gray-500 to-gray-600',
-    features: [
-      'Basic business listing',
-      'Standard search visibility',
-      'Contact information display',
-      'Up to 3 photos',
-      'Monthly analytics report',
-      'Email support',
-    ],
-  },
-  {
-    name: 'STARTER',
-    price: 49,
-    period: 'month',
-    description: 'AI-enhanced visibility',
-    color: 'from-blue-500 to-cyan-500',
-    popular: false,
-    stripeKey: 'DIRECTORY_STARTER',
-    features: [
-      'Everything in FREE',
-      'AI-generated business description',
-      'AI keyword optimization',
-      'Up to 8 photos',
-      '+30% search ranking boost',
-      'Weekly analytics reports',
-      'Competitor analysis',
-      'Priority email support',
-    ],
-  },
-  {
-    name: 'GROWTH',
-    price: 99,
-    period: 'month',
-    description: 'Maximum local visibility',
-    color: 'from-purple-500 to-pink-500',
-    popular: true,
-    stripeKey: 'DIRECTORY_GROWTH',
-    features: [
-      'Everything in STARTER',
-      'Featured badge in search',
-      '+60% search ranking boost',
-      'Up to 15 photos',
-      'Top AI recommendations',
-      'Weekly AI insights',
-      'Real-time trend alerts',
-      'Enhanced analytics',
-      'Priority phone support',
-    ],
-  },
-  {
-    name: 'PRO',
-    price: 199,
-    period: 'month',
-    description: 'Full AI intelligence suite',
-    color: 'from-gold to-copper-orange',
-    stripeKey: 'DIRECTORY_PRO',
-    features: [
-      'Everything in GROWTH',
-      '+100% search ranking boost',
-      'Up to 30 photos',
-      'Daily AI intelligence',
-      'API access',
-      'White-label AI assistant',
-      'Dedicated account manager',
-      'Custom reporting',
-      'Multi-location support',
-    ],
-  },
-];
-
-// Game Partnership Tiers
-const gamePricing = [
-  {
-    name: 'SPOT PARTNER',
-    priceMonthly: 99,
-    priceQuarterly: 249,
-    priceYearly: 899,
-    description: 'Great for small businesses',
-    color: 'from-lakes-blue to-cyan-600',
-    stripeKey: 'SPOT',
-    features: [
-      '1 challenge per month',
-      'Basic business profile on map',
-      'Monthly analytics reports',
-      'Player engagement metrics',
-      'Social media mentions',
-      'Email support',
-    ],
-  },
-  {
-    name: 'FEATURED PARTNER',
-    priceQuarterly: 699,
-    priceYearly: 2499,
-    description: 'Popular choice for growth',
-    color: 'from-purple-500 to-pink-500',
-    popular: true,
-    stripeKey: 'FEATURED',
-    features: [
-      '2-3 challenges per month',
-      'Enhanced profile with media',
-      'Featured placement in game',
-      'Weekly analytics reports',
-      'Quarterly strategy calls',
-      'Priority support',
-      'Social media promotion',
-    ],
-  },
-  {
-    name: 'PREMIUM SPONSOR',
-    priceQuarterly: 1499,
-    priceYearly: 4999,
-    description: 'Maximum game visibility',
-    color: 'from-copper-orange to-gold',
-    stripeKey: 'PREMIUM',
-    features: [
-      'Unlimited challenges',
-      'Premium branding in game',
-      'Web/dev services included',
-      'Dedicated account manager',
-      'Custom challenge creation',
-      'Advanced analytics',
-      'Quarterly business reviews',
-    ],
-  },
-];
+import { Sparkles, Star, Zap, MapPin, TrendingUp, Building2 } from 'lucide-react';
+import { PricingTierCard } from '../components/pricing/PricingTierCard';
+import { PricingComparison } from '../components/pricing/PricingComparison';
+import { PricingQuiz } from '../components/pricing/PricingQuiz';
 ---
 
 <Layout
   title="Partnership Options - Michigan Spots"
-  description="Partner with Michigan Spots: Directory advertising from FREE or game partnerships from $99/month. Drive traffic and grow your business."
-  keywords="Michigan business advertising, local business marketing, game partnerships Michigan"
+  description="Find the perfect plan for your Michigan business. Start FREE with directory advertising or drive foot traffic with game partnerships."
+  keywords="Michigan business advertising, local business marketing, game partnerships Michigan, business directory pricing"
 >
-  <!-- Hero Section -->
+  <!-- Hero Section with Quiz CTA -->
   <section class="py-20 px-4 bg-gradient-to-br from-lakes-blue via-copper-orange to-forest-green text-white">
     <div class="container mx-auto max-w-6xl text-center">
       <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full mb-6">
@@ -150,18 +20,37 @@ const gamePricing = [
       </div>
 
       <h1 class="font-display text-5xl md:text-6xl font-bold mb-6">
-        Grow Your Michigan Business
+        Find the Perfect Plan for Your Business
       </h1>
 
       <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-95">
-        Choose directory advertising for always-on visibility, game partnerships for verified foot traffic, or both!
+        Start FREE with directory advertising, or drive verified foot traffic with game partnerships
+      </p>
+
+      <button
+        id="openQuiz"
+        class="inline-flex items-center gap-3 px-8 py-4 bg-white text-ink-primary rounded-xl font-bold hover:shadow-2xl transition-all transform hover:scale-105"
+      >
+        <Sparkles size={24} className="text-copper-orange" />
+        <span>Help Me Choose the Right Plan</span>
+      </button>
+
+      <p class="text-sm mt-4 opacity-80">
+        Take our 30-second quiz to get personalized recommendations
       </p>
     </div>
   </section>
 
   <!-- Directory Advertising Section -->
-  <section class="py-20 px-4 bg-parchment-light">
+  <section id="directory" class="py-20 px-4 bg-parchment-light scroll-mt-20">
     <div class="container mx-auto max-w-7xl">
+      <div class="text-center mb-4">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-forest-green/10 rounded-full mb-4">
+          <Star className="text-forest-green" size={20} />
+          <span class="text-sm font-bold text-forest-green">START HERE - FREE FOREVER</span>
+        </div>
+      </div>
+
       <div class="text-center mb-12">
         <div class="inline-flex items-center gap-3 mb-4">
           <TrendingUp className="text-copper-orange" size={40} />
@@ -170,68 +59,113 @@ const gamePricing = [
           </h2>
         </div>
         <p class="text-xl text-ink-secondary max-w-3xl mx-auto">
-          AI-powered search visibility • No game participation required
+          AI-powered search visibility • Always-on advertising • No game participation required
         </p>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {directoryPricing.map((tier) => (
-          <div class={`relative parchment-card p-8 hover:shadow-2xl transition-all duration-300 ${tier.popular ? 'ring-4 ring-copper-orange transform scale-105' : ''}`}>
-            {tier.popular && (
-              <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-copper-orange to-gold text-white rounded-full text-sm font-bold shadow-lg">
-                MOST POPULAR
-              </div>
-            )}
+        <PricingTierCard
+          name="FREE"
+          price={0}
+          period="forever"
+          description="Perfect for getting started"
+          features={[
+            'Basic business listing',
+            'Standard search visibility',
+            'Contact information display',
+            'Up to 3 photos',
+            'Monthly analytics report',
+            'Email support'
+          ]}
+          icon={Star}
+          color="from-gray-500 to-gray-600"
+          ctaText="Get Started FREE"
+          ctaLink="/directory/claim"
+          client:load
+        />
 
-            <div class="text-center mb-6">
-              <div class={`w-16 h-16 bg-gradient-to-br ${tier.color} rounded-2xl mx-auto mb-4 flex items-center justify-center`}>
-                {tier.name === 'FREE' && <Star className="text-white" size={32} />}
-                {tier.name === 'STARTER' && <Sparkles className="text-white" size={32} />}
-                {tier.name === 'GROWTH' && <TrendingUp className="text-white" size={32} />}
-                {tier.name === 'PRO' && <Zap className="text-white" size={32} />}
-              </div>
+        <PricingTierCard
+          name="STARTER"
+          price={49}
+          period="month"
+          description="AI-enhanced visibility"
+          features={[
+            'Everything in FREE',
+            'AI-generated business description',
+            'AI keyword optimization',
+            'Up to 8 photos',
+            '+30% search ranking boost',
+            'Weekly analytics reports',
+            'Competitor analysis',
+            'Priority email support'
+          ]}
+          icon={Sparkles}
+          color="from-blue-500 to-cyan-500"
+          ctaText="Start Starter Plan"
+          ctaLink="/directory/claim?tier=starter"
+          client:load
+        />
 
-              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">
-                {tier.name}
-              </h3>
-              <p class="text-sm text-ink-secondary mb-4">{tier.description}</p>
+        <PricingTierCard
+          name="GROWTH"
+          price={99}
+          period="month"
+          description="Maximum local visibility"
+          features={[
+            'Everything in STARTER',
+            'Featured badge in search',
+            '+60% search ranking boost',
+            'Up to 15 photos',
+            'Top AI recommendations',
+            'Weekly AI insights',
+            'Real-time trend alerts',
+            'Enhanced analytics',
+            'Priority phone support'
+          ]}
+          icon={TrendingUp}
+          color="from-purple-500 to-pink-500"
+          popular={true}
+          ctaText="Start Growth Plan"
+          ctaLink="/directory/claim?tier=growth"
+          client:load
+        />
 
-              <div class="mb-2">
-                <span class="text-5xl font-bold text-ink-primary">${tier.price}</span>
-                {tier.period && <span class="text-ink-secondary">/{tier.period}</span>}
-              </div>
-            </div>
-
-            <ul class="space-y-3 mb-8">
-              {tier.features.map((feature) => (
-                <li class="flex items-start gap-2 text-sm">
-                  <Check size={18} class="text-forest-green flex-shrink-0 mt-0.5" />
-                  <span class="text-ink-primary">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href={tier.name === 'FREE' ? '/directory/claim' : `/directory/claim?tier=${tier.name.toLowerCase()}`}
-              class={`block w-full text-center py-4 rounded-xl font-bold transition-all ${
-                tier.popular
-                  ? 'bg-gradient-to-r from-copper-orange to-gold text-white hover:shadow-xl hover:scale-105'
-                  : tier.name === 'FREE'
-                  ? 'bg-white border-2 border-lakes-blue text-lakes-blue hover:bg-lakes-blue hover:text-white'
-                  : 'bg-gradient-to-r from-lakes-blue to-copper-orange text-white hover:shadow-xl'
-              }`}
-            >
-              {tier.name === 'FREE' ? 'Get Started FREE' : `Start ${tier.name} Plan`}
-            </a>
-          </div>
-        ))}
+        <PricingTierCard
+          name="PRO"
+          price={199}
+          period="month"
+          description="Full AI intelligence suite"
+          features={[
+            'Everything in GROWTH',
+            '+100% search ranking boost',
+            'Up to 30 photos',
+            'Daily AI intelligence',
+            'API access',
+            'White-label AI assistant',
+            'Dedicated account manager',
+            'Custom reporting',
+            'Multi-location support'
+          ]}
+          icon={Zap}
+          color="from-gold to-copper-orange"
+          ctaText="Start Pro Plan"
+          ctaLink="/directory/claim?tier=pro"
+          client:load
+        />
       </div>
     </div>
   </section>
 
   <!-- Game Partnerships Section -->
-  <section class="py-20 px-4 bg-white">
+  <section id="game" class="py-20 px-4 bg-white scroll-mt-20">
     <div class="container mx-auto max-w-7xl">
+      <div class="text-center mb-4">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-lakes-blue/10 rounded-full mb-4">
+          <MapPin className="text-lakes-blue" size={20} />
+          <span class="text-sm font-bold text-lakes-blue">DRIVE VERIFIED FOOT TRAFFIC</span>
+        </div>
+      </div>
+
       <div class="text-center mb-12">
         <div class="inline-flex items-center gap-3 mb-4">
           <MapPin className="text-lakes-blue" size={40} />
@@ -244,184 +178,184 @@ const gamePricing = [
         </p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-8">
-        {gamePricing.map((tier) => (
-          <div class={`relative parchment-card p-8 hover:shadow-2xl transition-all duration-300 ${tier.popular ? 'ring-4 ring-lakes-blue transform scale-105' : ''}`}>
-            {tier.popular && (
-              <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-full text-sm font-bold shadow-lg">
-                MOST POPULAR
-              </div>
-            )}
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <PricingTierCard
+          name="SPOT PARTNER"
+          price="$99"
+          description="Great for small businesses"
+          features={[
+            '1 challenge per month',
+            'Basic business profile on map',
+            'Monthly analytics reports',
+            'Player engagement metrics',
+            'Social media mentions',
+            'Email support'
+          ]}
+          icon={MapPin}
+          color="from-lakes-blue to-cyan-600"
+          popular={true}
+          ctaText="Get Started"
+          ctaLink="/business-intake?tier=spot"
+          priceOptions={{
+            monthly: 99,
+            quarterly: 249,
+            yearly: 899
+          }}
+          client:load
+        />
 
-            <div class="text-center mb-6">
-              <div class={`w-16 h-16 bg-gradient-to-br ${tier.color} rounded-2xl mx-auto mb-4 flex items-center justify-center`}>
-                <MapPin className="text-white" size={32} />
-              </div>
+        <PricingTierCard
+          name="FEATURED PARTNER"
+          price="$699/quarter"
+          description="Popular choice for growth"
+          features={[
+            '2-3 challenges per month',
+            'Enhanced profile with media',
+            'Featured placement in game',
+            'Weekly analytics reports',
+            'Quarterly strategy calls',
+            'Priority support',
+            'Social media promotion'
+          ]}
+          icon={MapPin}
+          color="from-purple-500 to-pink-500"
+          ctaText="Get Started"
+          ctaLink="/business-intake?tier=featured"
+          priceOptions={{
+            quarterly: 699,
+            yearly: 2499
+          }}
+          client:load
+        />
 
-              <h3 class="font-heading text-2xl font-bold text-ink-primary mb-2">
-                {tier.name}
-              </h3>
-              <p class="text-sm text-ink-secondary mb-4">{tier.description}</p>
+        <PricingTierCard
+          name="PREMIUM SPONSOR"
+          price="$1,499/quarter"
+          description="Maximum game visibility"
+          features={[
+            'Unlimited challenges',
+            'Premium branding in game',
+            'Web/dev services included',
+            'Dedicated account manager',
+            'Custom challenge creation',
+            'Advanced analytics',
+            'Quarterly business reviews'
+          ]}
+          icon={MapPin}
+          color="from-copper-orange to-gold"
+          ctaText="Get Started"
+          ctaLink="/business-intake?tier=premium"
+          priceOptions={{
+            quarterly: 1499,
+            yearly: 4999
+          }}
+          client:load
+        />
 
-              <div class="space-y-2">
-                {tier.priceMonthly && (
-                  <div>
-                    <span class="text-3xl font-bold text-ink-primary">${tier.priceMonthly}</span>
-                    <span class="text-ink-secondary">/month</span>
-                  </div>
-                )}
-                {tier.priceQuarterly && (
-                  <div>
-                    <span class="text-3xl font-bold text-ink-primary">${tier.priceQuarterly}</span>
-                    <span class="text-ink-secondary">/quarter</span>
-                  </div>
-                )}
-                {tier.priceYearly && (
-                  <div class="text-sm text-forest-green font-semibold">
-                    ${tier.priceYearly}/year (save 2 months!)
-                  </div>
-                )}
-              </div>
-            </div>
+        <PricingTierCard
+          name="TITLE SPONSOR"
+          price="$3,999/quarter"
+          description="Full platform co-branding"
+          features={[
+            'Everything in Premium',
+            'Platform co-branding rights',
+            'Exclusive category sponsorship',
+            'Custom development projects',
+            'White-glove service',
+            'Quarterly executive briefings',
+            'Multi-city campaigns',
+            'Full marketing suite'
+          ]}
+          icon={Building2}
+          color="from-gold to-amber-600"
+          ctaText="Contact Us"
+          ctaLink="/business-intake?tier=title"
+          priceOptions={{
+            quarterly: 3999,
+            yearly: 13999
+          }}
+          client:load
+        />
+      </div>
+    </div>
+  </section>
 
-            <ul class="space-y-3 mb-8">
-              {tier.features.map((feature) => (
-                <li class="flex items-start gap-2 text-sm">
-                  <Check size={18} class="text-forest-green flex-shrink-0 mt-0.5" />
-                  <span class="text-ink-primary">{feature}</span>
-                </li>
-              ))}
-            </ul>
+  <!-- Chamber Partnerships Section -->
+  <section id="chamber" class="py-16 px-4 bg-parchment-light scroll-mt-20">
+    <div class="container mx-auto max-w-4xl">
+      <div class="text-center mb-8">
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-ink-primary mb-4">
+          For Chambers of Commerce
+        </h2>
+        <p class="text-lg text-ink-secondary">
+          Support up to 10 member businesses with coordinated challenges
+        </p>
+      </div>
 
-            <a
-              href={`/business-intake?tier=${tier.stripeKey.toLowerCase()}`}
-              class={`block w-full text-center py-4 rounded-xl font-bold transition-all ${
-                tier.popular
-                  ? 'bg-gradient-to-r from-lakes-blue to-copper-orange text-white hover:shadow-xl hover:scale-105'
-                  : 'bg-gradient-to-r from-lakes-blue to-forest-green text-white hover:shadow-xl'
-              }`}
-            >
-              Get Started
-            </a>
-          </div>
-        ))}
+      <div class="max-w-2xl mx-auto">
+        <PricingTierCard
+          name="CHAMBER PARTNERSHIP"
+          price="$899/quarter"
+          description="Empower your member businesses"
+          features={[
+            'Challenges for up to 10 members',
+            'Chamber-branded challenge series',
+            'Member directory integration',
+            'Quarterly analytics & reports',
+            'Event promotion support',
+            'Co-marketing opportunities',
+            'Dedicated chamber portal',
+            'Priority support'
+          ]}
+          icon={Building2}
+          color="from-forest-green to-lakes-blue"
+          ctaText="Contact Us"
+          ctaLink="/chamber-intake"
+          priceOptions={{
+            quarterly: 899,
+            yearly: 2999
+          }}
+          client:load
+        />
       </div>
     </div>
   </section>
 
   <!-- Comparison Section -->
-  <section class="py-20 px-4 bg-parchment-light">
-    <div class="container mx-auto max-w-5xl">
-      <h2 class="font-display text-4xl font-bold text-ink-primary text-center mb-12">
-        Which Option Is Right for You?
-      </h2>
+  <PricingComparison client:load />
 
-      <div class="grid md:grid-cols-2 gap-8">
-        <!-- Directory Card -->
-        <div class="parchment-card p-8 border-4 border-copper-orange">
-          <div class="flex items-center gap-3 mb-6">
-            <TrendingUp className="text-copper-orange" size={32} />
-            <h3 class="font-heading text-2xl font-bold text-ink-primary">
-              Business Directory
-            </h3>
-          </div>
-
-          <p class="text-ink-secondary mb-6">
-            Best for businesses wanting simple, affordable online visibility without game participation.
-          </p>
-
-          <div class="space-y-3 mb-6">
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">AI-powered search visibility</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">Always-on advertising presence</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">No challenge creation required</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">Start FREE, scale when ready</span>
-            </div>
-          </div>
-
-          <a href="/directory/claim"
-            class="block w-full text-center py-3 bg-gradient-to-r from-copper-orange to-gold text-white rounded-xl font-bold hover:shadow-xl transition-all">
-            View Directory Options
-          </a>
-        </div>
-
-        <!-- Game Partnership Card -->
-        <div class="parchment-card p-8 border-4 border-lakes-blue">
-          <div class="flex items-center gap-3 mb-6">
-            <MapPin className="text-lakes-blue" size={32} />
-            <h3 class="font-heading text-2xl font-bold text-ink-primary">
-              Game Partnership
-            </h3>
-          </div>
-
-          <p class="text-ink-secondary mb-6">
-            Best for businesses wanting to drive verified foot traffic through gamified challenges.
-          </p>
-
-          <div class="space-y-3 mb-6">
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">GPS-verified customer visits</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">Monthly challenges drive engagement</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">Players compete for badges & prizes</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <Check size={20} class="text-forest-green flex-shrink-0 mt-0.5" />
-              <span class="text-sm">Detailed analytics & reporting</span>
-            </div>
-          </div>
-
-          <a href="/business-intake"
-            class="block w-full text-center py-3 bg-gradient-to-r from-lakes-blue to-forest-green text-white rounded-xl font-bold hover:shadow-xl transition-all">
-            Become a Game Partner
-          </a>
-        </div>
-      </div>
-
-      <!-- Both Option -->
-      <div class="mt-8 p-8 bg-gradient-to-r from-lakes-blue/10 to-copper-orange/10 rounded-2xl border-2 border-lakes-blue/30">
-        <div class="text-center">
-          <h3 class="font-heading text-2xl font-bold text-ink-primary mb-4 flex items-center justify-center gap-2">
-            <Building2 className="text-copper-orange" size={32} />
-            Get Both for Maximum Impact
-          </h3>
-          <p class="text-lg text-ink-secondary mb-6">
-            Many businesses combine Directory advertising with Game partnerships for complete coverage:
-            <br />
-            <strong class="text-ink-primary">Always-on visibility + Game-driven foot traffic</strong>
-          </p>
-          <p class="text-sm text-ink-secondary mb-6">
-            Example: FREE Directory listing + $99/month Spot Partner = Maximum ROI
-          </p>
-          <a href="/partnerships"
-            class="inline-block px-8 py-4 bg-gradient-to-r from-lakes-blue via-copper-orange to-forest-green text-white rounded-xl font-bold hover:shadow-xl transition-all">
-            Learn More About Partnerships
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Quiz Modal -->
+  <div id="quizModal" class="hidden">
+    <PricingQuiz client:only="react" />
+  </div>
 </Layout>
+
+<script>
+  const openQuizBtn = document.getElementById('openQuiz');
+  const quizModal = document.getElementById('quizModal');
+
+  openQuizBtn?.addEventListener('click', () => {
+    if (quizModal) {
+      quizModal.classList.remove('hidden');
+    }
+  });
+
+  // Close quiz modal when clicking overlay
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.fixed.inset-0') && !target.closest('.bg-parchment-light')) {
+      quizModal?.classList.add('hidden');
+    }
+  });
+</script>
 
 <style>
   .parchment-card {
     background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
     border: 2px solid #D4C4A8;
+  }
+
+  .scroll-mt-20 {
+    scroll-margin-top: 5rem;
   }
 </style>
