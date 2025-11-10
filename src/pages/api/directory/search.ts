@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
 import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
 import { z } from 'zod';
+import { initErrorTracking, captureError, addBreadcrumb, startTransaction } from '../../../lib/error-tracking';
 
 // Validation schema
 const searchParamsSchema = z.object({
@@ -12,10 +13,16 @@ const searchParamsSchema = z.object({
 });
 
 export const GET: APIRoute = async ({ request, locals }) => {
+  // Initialize error tracking
+  const sentry = initErrorTracking(request, locals.runtime?.env || {}, locals.runtime?.ctx);
+  const transaction = startTransaction(sentry, 'http.server', 'GET /api/directory/search');
+
   try {
     // Get client info
     const clientIP = getClientIP(request);
     const userAgent = request.headers.get('User-Agent') || '';
+
+    addBreadcrumb(sentry, 'Directory search request started', { clientIP });
 
     // Bot detection
     const botCheck = detectBot(userAgent, clientIP);
@@ -180,6 +187,15 @@ export const GET: APIRoute = async ({ request, locals }) => {
       throw new Error('Failed to fetch businesses from database');
     }
 
+    addBreadcrumb(sentry, 'Search completed successfully', {
+      resultCount: result.results?.length || 0,
+      query,
+      category,
+      city,
+    });
+
+    transaction?.finish();
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -198,6 +214,15 @@ export const GET: APIRoute = async ({ request, locals }) => {
       }
     );
   } catch (error) {
+    // Capture error in Sentry
+    captureError(sentry, error, {
+      endpoint: '/api/directory/search',
+      method: 'GET',
+      url: request.url,
+    });
+
+    transaction?.finish();
+
     console.error('[Error] Directory search error:', error);
     return new Response(
       JSON.stringify({

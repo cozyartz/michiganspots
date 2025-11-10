@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
 import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
 import { z } from 'zod';
+import { initErrorTracking, captureError, addBreadcrumb, startTransaction } from '../../../lib/error-tracking';
 
 // Validation schema for chat messages
 const messageSchema = z.object({
@@ -15,10 +16,16 @@ const chatRequestSchema = z.object({
 });
 
 export const POST: APIRoute = async ({ request, locals }) => {
+  // Initialize error tracking
+  const sentry = initErrorTracking(request, locals.runtime?.env || {}, locals.runtime?.ctx);
+  const transaction = startTransaction(sentry, 'http.server', 'POST /api/directory/ai-chat');
+
   try {
     // Get client info
     const clientIP = getClientIP(request);
     const userAgent = request.headers.get('User-Agent') || '';
+
+    addBreadcrumb(sentry, 'AI chat request started', { clientIP });
 
     // Bot detection
     const botCheck = detectBot(userAgent, clientIP);
@@ -102,14 +109,27 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
+    addBreadcrumb(sentry, 'Searching for relevant businesses', { query: lastMessage.content });
+
     // Search for relevant businesses based on the user's question
     const relevantBusinesses = await searchBusinesses(db, lastMessage.content);
+
+    addBreadcrumb(sentry, 'Generating AI response', {
+      businessesFound: relevantBusinesses.length,
+      messageCount: messages.length,
+    });
 
     // Generate AI response using Cloudflare AI
     const aiResponse = await generateChatResponse(ai, messages, relevantBusinesses);
 
+    addBreadcrumb(sentry, 'Logging chat interaction');
+
     // Log the interaction
     await logChatInteraction(db, sessionId, lastMessage.content, aiResponse);
+
+    addBreadcrumb(sentry, 'AI chat completed successfully');
+
+    transaction?.finish();
 
     return new Response(
       JSON.stringify({
@@ -126,6 +146,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
     );
   } catch (error) {
+    // Capture error in Sentry
+    captureError(sentry, error, {
+      endpoint: '/api/directory/ai-chat',
+      method: 'POST',
+      url: request.url,
+    });
+
+    transaction?.finish();
+
     console.error('[Error] AI chat error:', error);
     return new Response(
       JSON.stringify({

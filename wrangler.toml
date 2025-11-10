@@ -94,6 +94,7 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 # npx wrangler secret put EVALIDATE_API_KEY --env production
 # npx wrangler secret put CRON_SECRET --env production
 # npx wrangler secret put SEED_API_SECRET --env production
+# npx wrangler secret put SENTRY_DSN --env production
 #
 # For Cloudflare Pages deployment, add these secrets in the Cloudflare Dashboard:
 # 1. Go to Workers & Pages > michiganspot > Settings > Environment Variables
@@ -103,6 +104,9 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 #    - EVALIDATE_API_KEY (from https://evalidate.andrea-b56.workers.dev)
 #    - CRON_SECRET (any random string for cron job security)
 #    - SEED_API_SECRET (any random string for business auto-seeding API security)
+#    - SENTRY_DSN (from Sentry.io - Project Settings > Client Keys (DSN))
+#      Format: https://xxxxx@xxxxx.ingest.sentry.io/xxxxx
+#    - SENTRY_ENVIRONMENT (optional, defaults to "production")
 #
 # 3. Set up Cron Trigger for business AI processing:
 #    - Go to Workers & Pages > michiganspot > Settings > Triggers > Cron Triggers

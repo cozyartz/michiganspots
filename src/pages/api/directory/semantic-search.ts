@@ -3,6 +3,7 @@ import { CloudflareAIService } from '../../../lib/ai/cloudflare-ai-service';
 import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
 import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
 import { z } from 'zod';
+import { initErrorTracking, captureError, addBreadcrumb, startTransaction } from '../../../lib/error-tracking';
 
 /**
  * MichiganGPT Semantic Search API (Vectorize-powered)
@@ -88,10 +89,16 @@ function calculateQualityBoost(business: any): number {
 }
 
 export const GET: APIRoute = async ({ request, locals }) => {
+  // Initialize error tracking
+  const sentry = initErrorTracking(request, locals.runtime?.env || {}, locals.runtime?.ctx);
+  const transaction = startTransaction(sentry, 'http.server', 'GET /api/directory/semantic-search');
+
   try {
     // Get client info
     const clientIP = getClientIP(request);
     const userAgent = request.headers.get('User-Agent') || '';
+
+    addBreadcrumb(sentry, 'Semantic search request started', { clientIP });
 
     // Bot detection
     const botCheck = detectBot(userAgent, clientIP);
@@ -187,9 +194,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
     const ai = runtime.env.AI;
     const vectorize = runtime.env.VECTORIZE;
 
+    addBreadcrumb(sentry, 'Generating query embedding', { query });
+
     // Generate query embedding
     const aiService = new CloudflareAIService(ai, db);
     const queryEmbedding = await aiService.generateQueryEmbedding(query);
+
+    addBreadcrumb(sentry, 'Query embedding generated', { embeddingLength: queryEmbedding.length });
 
     // Query Vectorize for similar vectors
     // Use topK higher than limit to allow for filtering and re-ranking
@@ -342,6 +353,14 @@ export const GET: APIRoute = async ({ request, locals }) => {
       };
     });
 
+    addBreadcrumb(sentry, 'Semantic search completed', {
+      resultCount: formattedBusinesses.length,
+      totalCandidates: vectorResults.matches.length,
+      query,
+    });
+
+    transaction?.finish();
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -367,6 +386,16 @@ export const GET: APIRoute = async ({ request, locals }) => {
       }
     );
   } catch (error) {
+    // Capture error in Sentry
+    captureError(sentry, error, {
+      endpoint: '/api/directory/semantic-search',
+      method: 'GET',
+      url: request.url,
+      query: new URL(request.url).searchParams.get('q'),
+    });
+
+    transaction?.finish();
+
     console.error('[Error] Semantic search error:', error);
     return new Response(
       JSON.stringify({
