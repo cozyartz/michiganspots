@@ -14,8 +14,46 @@ database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
 binding = "R2"
 bucket_name = "michigan-spots-legal-documents"
 
+# Cloudflare AI Binding for vector embeddings and semantic search
+[ai]
+binding = "AI"
+
+# Vectorize index for semantic search (768-dimension BGE embeddings)
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "michiganspots-embeddings"
+
 # NOTE: Cron triggers are configured via Cloudflare Dashboard for Pages Functions
-# Schedule: 0 3 * * * (daily at 3 AM UTC for auto-refund check)
+#
+# Configured Cron Jobs:
+# 1. Business AI Processing: 0 */6 * * * (every 6 hours)
+#    - Endpoint: /api/directory-enrichment-cron
+#    - Purpose: Process businesses with Cloudflare AI (quality scores, descriptions, keywords)
+#
+# 2. Embedding Health Check: 0 2 * * * (daily at 2 AM UTC)
+#    - Endpoint: /api/cron/embedding-health-check
+#    - Purpose: Monitor embedding coverage and auto-regenerate missing embeddings
+#    - Auto-regenerates up to 10 missing embeddings per run
+#
+# 3. Web Scraper: 0 3 * * * (daily at 3 AM UTC)
+#    - Endpoint: /api/cron/web-scraper
+#    - Purpose: Pure HTML web scraper - crawls Michigan business directories
+#    - NO EXTERNAL APIS REQUIRED - 100% self-contained
+#    - Imports: ~10-20 new businesses per day
+#    - Configure targets in: functions/api/cron/scraper-targets.ts
+#
+# 4. Auto-Refund Check: 0 4 * * * (daily at 4 AM UTC)
+#    - Purpose: Process subscription refunds
+#
+# To configure in Cloudflare Dashboard:
+# Workers & Pages > michiganspot > Settings > Triggers > Cron Triggers
+#
+# Required Secrets (add via: npx wrangler secret put SECRET_NAME --env production):
+# - SEED_API_SECRET: Secret for seed-business API authentication
+# - STRIPE_SECRET_KEY: Stripe secret key
+# - STRIPE_WEBHOOK_SECRET: Stripe webhook secret
+# - EVALIDATE_API_KEY: Email validation API key
+# - CRON_SECRET: Cron job security secret
 
 [vars]
 SITE_URL = "http://localhost:4321"
@@ -118,3 +156,10 @@ database_id = "3e7a780d-0058-43af-9e17-96d7925843b3"
 [[env.production.r2_buckets]]
 binding = "R2"
 bucket_name = "michigan-spots-legal-documents"
+
+[env.production.ai]
+binding = "AI"
+
+[[env.production.vectorize]]
+binding = "VECTORIZE"
+index_name = "michiganspots-embeddings"

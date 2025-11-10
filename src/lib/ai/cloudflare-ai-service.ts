@@ -212,6 +212,66 @@ FAQs:`;
   }
 
   /**
+   * Generate vector embedding for business semantic search
+   */
+  async generateBusinessEmbedding(business: any): Promise<number[]> {
+    try {
+      // Combine all relevant business text into embedding input
+      const embeddingText = [
+        business.business_name,
+        business.business_category,
+        business.sub_categories,
+        business.short_description,
+        business.ai_description,
+        business.ai_keywords,
+        business.city,
+        business.tags,
+        business.amenities
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      const response = await this.ai.run(AI_MODELS.TEXT_EMBEDDING, {
+        text: embeddingText
+      });
+
+      // BGE-base-en-v1.5 returns array of shape [1, 768]
+      const embedding = response.data?.[0] || response.data || [];
+
+      if (!Array.isArray(embedding) || embedding.length !== 768) {
+        throw new Error('Invalid embedding dimensions');
+      }
+
+      return embedding;
+    } catch (error) {
+      console.error('Embedding generation error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate embedding for search query
+   */
+  async generateQueryEmbedding(query: string): Promise<number[]> {
+    try {
+      const response = await this.ai.run(AI_MODELS.TEXT_EMBEDDING, {
+        text: query
+      });
+
+      const embedding = response.data?.[0] || response.data || [];
+
+      if (!Array.isArray(embedding) || embedding.length !== 768) {
+        throw new Error('Invalid embedding dimensions');
+      }
+
+      return embedding;
+    } catch (error) {
+      console.error('Query embedding error:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Calculate AI quality score for a business
    */
   async calculateQualityScore(businessId: number): Promise<number> {

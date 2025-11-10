@@ -1,6 +1,57 @@
 - Do not give me .md files that contain instructions of things that you need me to do. I should not need to do much. Instead, always use best coding practices without leaking any secrets.
 - always use the latest cli available.
-- # Reddit API Client Cheat Sheet
+
+# Michigan Spots Project Documentation
+
+## Cloudflare Vectorize Indexes
+
+This Cloudflare account has multiple Vectorize indexes. Here's the breakdown:
+
+### Active Indexes for MichiganSpot
+
+**`michiganspots-embeddings`**
+- **Purpose**: Business semantic search for Michigan Spots directory
+- **Dimensions**: 768 (BGE-base-en-v1.5 embeddings)
+- **Metric**: Cosine similarity
+- **Created**: November 10, 2025
+- **Status**: ✅ ACTIVE - Used by production
+- **Bindings**: `VECTORIZE` in wrangler.toml
+- **APIs Using It**:
+  - `/api/directory/semantic-search` - Semantic business search
+  - `/api/directory/backfill-embeddings` - Embedding generation
+  - `/api/directory-enrichment-cron` - Automated enrichment
+  - `/api/admin/embedding-health` - Health monitoring
+
+### Other Indexes (Different Projects)
+
+**`techflunky-embeddings`**
+- **Purpose**: TechFlunky platform (different project)
+- **Dimensions**: 768
+- **Created**: October 3, 2025
+- **Status**: ⚠️ NOT USED BY THIS PROJECT
+
+**`email-domains`**
+- **Purpose**: Unknown (needs investigation)
+- **Dimensions**: 768
+- **Created**: October 30, 2025
+- **Status**: ⚠️ NOT USED BY THIS PROJECT
+
+### Commands
+
+```bash
+# List all Vectorize indexes
+npx wrangler vectorize list
+
+# Delete an unused index (if confirmed not needed)
+npx wrangler vectorize delete <index-name>
+
+# Get details about an index
+npx wrangler vectorize get <index-name>
+```
+
+---
+
+# Reddit API Client Cheat Sheet
 
 ## Setup
 

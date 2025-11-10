@@ -15,6 +15,7 @@
  * - Process up to 50 businesses per run
  * - Generate AI quality scores and descriptions
  * - Update business data with AI-generated content
+ * - Generate vector embeddings for semantic search
  */
 
 import { CloudflareAIService } from '../../src/lib/ai/cloudflare-ai-service';
@@ -22,6 +23,7 @@ import { CloudflareAIService } from '../../src/lib/ai/cloudflare-ai-service';
 interface Env {
   DB: D1Database;
   AI: any;
+  VECTORIZE: any;
 }
 
 export const onRequest: PagesFunction<Env> = async (context) => {
@@ -63,7 +65,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       );
     }
 
-    const aiService = new CloudflareAIService(env.AI);
+    const aiService = new CloudflareAIService(env.AI, db);
 
     // Get businesses that need AI processing
     // Limit to 50 per run for performance
@@ -96,6 +98,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const results = {
       total: businesses.length,
       aiProcessed: 0,
+      embeddingsGenerated: 0,
       failed: 0,
       errors: [] as string[],
     };
@@ -148,6 +151,38 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
         results.aiProcessed++;
         console.log(`✓ AI processed: ${business.name} (Score: ${qualityScore})`);
+
+        // Generate vector embedding for semantic search and insert into Vectorize
+        try {
+          // Get updated business data for embedding
+          const updatedBusiness = await db
+            .prepare('SELECT * FROM business_directory WHERE id = ? LIMIT 1')
+            .bind(business.id)
+            .first();
+
+          if (updatedBusiness) {
+            const embedding = await aiService.generateBusinessEmbedding(updatedBusiness);
+
+            // Insert into Vectorize (upsert replaces existing)
+            await env.VECTORIZE.upsert([
+              {
+                id: updatedBusiness.id.toString(),
+                values: embedding,
+                metadata: {
+                  name: updatedBusiness.business_name,
+                  category: updatedBusiness.business_category,
+                  city: updatedBusiness.city,
+                },
+              },
+            ]);
+
+            results.embeddingsGenerated++;
+            console.log(`✓ Embedding generated and inserted into Vectorize: ${business.name}`);
+          }
+        } catch (embeddingError) {
+          console.error(`Failed to generate embedding for ${business.name}:`, embeddingError);
+          // Don't fail the whole process if embedding generation fails
+        }
 
         // Small delay between AI calls
         await new Promise(resolve => setTimeout(resolve, 100));
