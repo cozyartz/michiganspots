@@ -59,6 +59,9 @@ index_name = "michiganspots-embeddings"
 SITE_URL = "http://localhost:4321"
 STRIPE_PUBLISHABLE_KEY = "pk_live_51SQcd8RBOZWADDgwfw120F4UUrSDpd38EgHiNPWvqxHqO8Znzdspi8Dn2NlCpwzk8nxquS6WtIhmfPPgsO4rIedi00qksEHPEe"
 
+# Sentry Client-Side Error Tracking (Public - exposed in browser)
+PUBLIC_SENTRY_CLIENT_DSN = "https://704cddde6de4294b5a84f73c1b5029c0@o4510339428777984.ingest.us.sentry.io/4510339484680192"
+
 # Partnership Tier Price IDs - Updated November 6, 2025 (MichiganSpots Stripe Account)
 # Spot Partner
 STRIPE_PRICE_SPOT_MONTHLY = "price_1SQcyRRBOZWADDgwLZZr5RZZ"
@@ -124,6 +127,9 @@ STRIPE_PRICE_DIRECTORY_PRO_MONTHLY = "price_1SR0SXRBOZWADDgwCJpEDnQl"
 [env.production.vars]
 SITE_URL = "https://michiganspots.com"
 STRIPE_PUBLISHABLE_KEY = "pk_live_51SQcd8RBOZWADDgwfw120F4UUrSDpd38EgHiNPWvqxHqO8Znzdspi8Dn2NlCpwzk8nxquS6WtIhmfPPgsO4rIedi00qksEHPEe"
+
+# Sentry Client-Side Error Tracking (Public - exposed in browser)
+PUBLIC_SENTRY_CLIENT_DSN = "https://704cddde6de4294b5a84f73c1b5029c0@o4510339428777984.ingest.us.sentry.io/4510339484680192"
 
 # Production Stripe Price IDs (Live Mode) - Updated November 6, 2025 (MichiganSpots Stripe Account)
 # Spot Partner

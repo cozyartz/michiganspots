@@ -61,6 +61,11 @@ const {
       type={type}
       keywords={keywords}
     />
+
+    <!-- Sentry Client-Side Error Tracking -->
+    <script>
+      import '../lib/sentry-client';
+    </script>
   </head>
   <body>
     <Header client:load />
