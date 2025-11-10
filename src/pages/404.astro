@@ -3,436 +3,640 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout
-  title="404 - WHOOPS! Page Not Found 🤷‍♂️ | Michigan Spots"
-  description="Well this is awkward... the page took a wrong turn at Kalamazoo!"
+  title="404 - Incomplete Pass! | Michigan Spots"
+  description="This page went offsides! But don't worry - kick some field goals while you're here. Go Blue!"
 >
-  <div class="min-h-screen overflow-hidden relative" id="errorPage">
-    <!-- Animated gradient background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 animate-gradient"></div>
-
-    <!-- Floating particles -->
-    <div class="particles"></div>
+  <div class="min-h-screen overflow-hidden relative bg-michigan-blue" id="errorPage">
+    <!-- Football field background pattern -->
+    <div class="field-pattern"></div>
 
     <!-- Main content -->
-    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12 text-center">
-      <!-- Glitchy 404 -->
-      <div class="mb-8 relative">
-        <h1 class="glitch text-[150px] md:text-[250px] font-black leading-none mb-4" data-text="404">
-          404
-        </h1>
-        <div class="text-white text-2xl md:text-4xl font-bold mb-2 animate-pulse">
-          OOPS! THIS PAGE WENT MISSING
-        </div>
-        <div class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto">
-          Probably got distracted by some bomb-dot-com fudge on Mackinac Island 🍫
-        </div>
+    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
+      <!-- Block M watermark -->
+      <div class="block-m-watermark">M</div>
+
+      <!-- Score display -->
+      <div class="scoreboard">
+        <div class="score-label">FIELD GOALS</div>
+        <div class="score-value" id="scoreDisplay">0</div>
       </div>
 
-      <!-- Fun interactive element -->
-      <div class="my-8">
-        <button
-          id="partyBtn"
-          class="party-btn px-8 py-4 bg-white text-purple-600 rounded-full font-bold text-xl shadow-2xl hover:scale-110 transition-transform duration-300 cursor-pointer"
-        >
-          🎉 MAKE IT RAIN MICHIGAN STUFF! 🎉
-        </button>
+      <!-- 404 Yard Marker -->
+      <div class="yard-marker mb-8">
+        <div class="yard-number">404</div>
+        <div class="yard-line"></div>
       </div>
 
-      <!-- Rotating messages -->
-      <div class="max-w-3xl mx-auto mb-12">
-        <div class="message-box bg-white/20 backdrop-blur-lg rounded-3xl p-6 md:p-8 border-4 border-white/50 shadow-2xl">
-          <p class="text-white text-xl md:text-2xl font-bold" id="rotatingMessage">
-            This page is more lost than a tourist trying to find parking in downtown Detroit! 🚗
-          </p>
-        </div>
+      <!-- Error Message -->
+      <div class="text-center mb-6">
+        <h1 class="error-headline">INCOMPLETE PASS!</h1>
+        <p class="error-subtext" id="rotatingMessage">
+          This page took a delay of game penalty
+        </p>
       </div>
 
-      <!-- Action buttons with pizzazz -->
-      <div class="flex flex-wrap gap-4 justify-center mb-8">
-        <a
-          href="/"
-          class="action-btn bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600"
-        >
-          🏠 TAKE ME HOME
+      <!-- Field Goal Game -->
+      <div class="game-container">
+        <h2 class="game-title">FIELD GOAL CHALLENGE</h2>
+        <p class="game-instructions">Click and drag the football to kick!</p>
+
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+
+        <div class="achievement" id="achievement"></div>
+      </div>
+
+      <!-- Michigan Football Facts -->
+      <div class="trivia-box">
+        <div class="trivia-label">WOLVERINE FACT</div>
+        <p class="trivia-text" id="triviaText">
+          Michigan has won 11 national championships - more than any other FBS program
+        </p>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="nav-buttons">
+        <a href="/" class="nav-btn nav-btn-primary">
+          <span class="btn-text">RETURN TO HOME FIELD</span>
         </a>
-        <a
-          href="/directory"
-          class="action-btn bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600"
-        >
-          🗺️ FIND COOL SPOTS
+        <a href="/directory" class="nav-btn nav-btn-secondary">
+          <span class="btn-text">BROWSE THE PLAYBOOK</span>
         </a>
-        <a
-          href="/blog"
-          class="action-btn bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600"
-        >
-          📰 READ THE BLOG
+        <a href="/blog" class="nav-btn nav-btn-secondary">
+          <span class="btn-text">SCOUTING REPORT</span>
         </a>
       </div>
 
-      <!-- Michigan Easter Egg Counter -->
-      <div class="mt-8">
-        <div class="inline-block bg-black/30 backdrop-blur-sm px-6 py-3 rounded-full border-2 border-white/30">
-          <span class="text-white font-bold text-sm">
-            🏆 Michigan Easter Eggs Found: <span id="easterEggCounter" class="text-yellow-300">0</span>
-          </span>
-        </div>
-      </div>
-
-      <!-- Hidden clickable Michigan items -->
-      <div class="hidden-items">
-        <div class="michigan-item" data-emoji="🏔️" style="top: 10%; left: 15%;" title="Click me!"></div>
-        <div class="michigan-item" data-emoji="🌊" style="top: 25%; right: 20%;" title="Click me!"></div>
-        <div class="michigan-item" data-emoji="🍒" style="bottom: 30%; left: 10%;" title="Click me!"></div>
-        <div class="michigan-item" data-emoji="🦌" style="bottom: 15%; right: 15%;" title="Click me!"></div>
-        <div class="michigan-item" data-emoji="🏈" style="top: 50%; left: 5%;" title="Click me!"></div>
-      </div>
+      <!-- Go Blue footer -->
+      <div class="go-blue">GO BLUE!</div>
     </div>
   </div>
 </Layout>
 
 <script>
-  // Rotating messages - more fun and playful
-  const messages = [
-    "This page is more lost than a tourist trying to find parking in downtown Detroit! 🚗",
-    "Even Google Maps can't find this one... and it found your ex's house! 👀",
-    "Plot twist: This page ran away to become a Yooper. It's living its best life now! 🌲",
-    "404 Error: Page went to grab a Better Made chip and never came back 🥔",
-    "This page ghosted us harder than a Tinder match from Grand Rapids 👻",
-    "Ope! Looks like this page took a Michigan Left and got confused 🔄",
-    "Sorry fam, this page is currently at a coney dog eating contest 🌭",
-    "This page said 'on my way' 3 hours ago from Lansing... still waiting ⏰",
-    "Breaking: Local page goes missing. Last seen heading towards Traverse City 🍒",
-    "This page is hiding from Ohio. Can you blame it? 🙈",
+  // Michigan Football Trivia
+  const trivia = [
+    "Michigan has won 11 national championships - more than any other FBS program",
+    "The Big House seats 107,601 fans - the largest stadium in the USA",
+    "Michigan's winged helmet design was introduced by Fritz Crisler in 1938",
+    "The Wolverines have won 45 Big Ten championships",
+    "Michigan Stadium is nicknamed 'The Big House' and opened in 1927",
+    "Tom Brady was drafted 199th overall after playing at Michigan",
+    "Michigan's fight song 'The Victors' was written in 1898",
+    "The Michigan-Ohio State rivalry began in 1897",
+    "Charles Woodson won the Heisman Trophy in 1997",
+    "Michigan has the most all-time wins in college football history"
   ];
 
+  // Error messages
+  const errorMessages = [
+    "This page took a delay of game penalty",
+    "Looks like this URL is still in the transfer portal",
+    "This page got sacked behind the line of scrimmage",
+    "404 yards - we're out of field goal range!",
+    "This page fumbled at the goal line",
+    "Incomplete pass! The page was overthrown",
+    "This URL is on the injury report - questionable to return",
+    "The refs called this page back for holding"
+  ];
+
+  let triviaIndex = 0;
   let messageIndex = 0;
-  const messageEl = document.getElementById('rotatingMessage');
 
-  function rotateMessage() {
-    if (messageEl) {
-      messageEl.style.opacity = '0';
-      messageEl.style.transform = 'scale(0.9)';
-
+  // Rotate trivia every 8 seconds
+  setInterval(() => {
+    triviaIndex = (triviaIndex + 1) % trivia.length;
+    const triviaEl = document.getElementById('triviaText');
+    if (triviaEl) {
+      triviaEl.style.opacity = '0';
       setTimeout(() => {
-        messageIndex = (messageIndex + 1) % messages.length;
-        messageEl.textContent = messages[messageIndex];
-        messageEl.style.opacity = '1';
-        messageEl.style.transform = 'scale(1)';
+        triviaEl.textContent = trivia[triviaIndex];
+        triviaEl.style.opacity = '1';
       }, 300);
     }
+  }, 8000);
+
+  // Rotate error messages every 6 seconds
+  setInterval(() => {
+    messageIndex = (messageIndex + 1) % errorMessages.length;
+    const msgEl = document.getElementById('rotatingMessage');
+    if (msgEl) {
+      msgEl.style.opacity = '0';
+      setTimeout(() => {
+        msgEl.textContent = errorMessages[messageIndex];
+        msgEl.style.opacity = '1';
+      }, 300);
+    }
+  }, 6000);
+
+  // Field Goal Game
+  const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  const scoreDisplay = document.getElementById('scoreDisplay')!;
+  const achievementEl = document.getElementById('achievement')!;
+
+  let score = 0;
+  let isDragging = false;
+  let dragStart = { x: 0, y: 0 };
+  let ball = { x: 200, y: 420, vx: 0, vy: 0, radius: 12 };
+  let isKicking = false;
+
+  // Goal posts
+  const leftPost = { x: 150, y: 50, width: 8, height: 100 };
+  const rightPost = { x: 242, y: 50, width: 8, height: 100 };
+  const crossbar = { x: 150, y: 50, width: 100, height: 8 };
+
+  function drawField() {
+    // Field
+    ctx.fillStyle = '#2E7D32';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Yard lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    for (let y = 100; y < canvas.height; y += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+
+    // Goal posts
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(leftPost.x, leftPost.y, leftPost.width, leftPost.height);
+    ctx.fillRect(rightPost.x, rightPost.y, rightPost.width, rightPost.height);
+    ctx.fillRect(crossbar.x, crossbar.y, crossbar.width, crossbar.height);
   }
 
-  setInterval(rotateMessage, 4000);
+  function drawBall() {
+    ctx.fillStyle = '#8B4513';
+    ctx.beginPath();
+    ctx.ellipse(ball.x, ball.y, ball.radius, ball.radius * 0.7, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-  // Party button confetti
-  const partyBtn = document.getElementById('partyBtn');
-  let partyMode = false;
+    // Laces
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 1;
+    for (let i = -4; i <= 4; i += 2) {
+      ctx.beginPath();
+      ctx.moveTo(ball.x + i, ball.y - 3);
+      ctx.lineTo(ball.x + i, ball.y + 3);
+      ctx.stroke();
+    }
+  }
 
-  partyBtn?.addEventListener('click', () => {
-    partyMode = !partyMode;
+  function drawPowerIndicator() {
+    if (isDragging) {
+      const dx = dragStart.x - ball.x;
+      const dy = dragStart.y - ball.y;
+      const power = Math.min(Math.sqrt(dx * dx + dy * dy) / 100, 1);
 
-    if (partyMode) {
-      partyBtn.textContent = '🎊 STOP THE PARTY! 🎊';
-      startConfetti();
-      document.body.style.animation = 'rainbow 2s linear infinite';
-    } else {
-      partyBtn.textContent = '🎉 MAKE IT RAIN MICHIGAN STUFF! 🎉';
-      stopConfetti();
-      document.body.style.animation = '';
+      ctx.strokeStyle = '#FFCB05';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(ball.x, ball.y);
+      ctx.lineTo(dragStart.x, dragStart.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Power meter
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(10, 10, 120, 30);
+      ctx.fillStyle = '#FFCB05';
+      ctx.fillRect(15, 15, power * 110, 20);
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 12px Arial';
+      ctx.fillText('POWER', 45, 30);
+    }
+  }
+
+  function updatePhysics() {
+    if (isKicking) {
+      ball.vy += 0.3; // gravity
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      // Check if ball went through goal posts
+      if (ball.y < crossbar.y && ball.y > crossbar.y - 20) {
+        if (ball.x > leftPost.x + leftPost.width && ball.x < rightPost.x) {
+          // GOAL!
+          score++;
+          scoreDisplay.textContent = score.toString();
+          showAchievement();
+          sessionStorage.setItem('michigan404Score', score.toString());
+          resetBall();
+        }
+      }
+
+      // Ball out of bounds
+      if (ball.y < -50 || ball.x < -50 || ball.x > canvas.width + 50) {
+        resetBall();
+      }
+
+      // Ball hit ground
+      if (ball.y > 420) {
+        resetBall();
+      }
+    }
+  }
+
+  function resetBall() {
+    ball.x = 200;
+    ball.y = 420;
+    ball.vx = 0;
+    ball.vy = 0;
+    isKicking = false;
+  }
+
+  function showAchievement() {
+    let message = 'GO BLUE!';
+    if (score === 5) message = 'WOLVERINE KICKER!';
+    if (score === 10) message = 'ALL-AMERICAN!';
+    if (score === 15) message = 'HEISMAN CANDIDATE!';
+    if (score === 20) message = 'HALL OF FAME!';
+
+    achievementEl.textContent = message;
+    achievementEl.style.display = 'block';
+    achievementEl.style.animation = 'celebrate 1s ease-out';
+
+    setTimeout(() => {
+      achievementEl.style.display = 'none';
+    }, 2000);
+  }
+
+  function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawField();
+    updatePhysics();
+    drawBall();
+    drawPowerIndicator();
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Mouse/Touch events
+  canvas.addEventListener('mousedown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
+    if (dist < ball.radius + 10 && !isKicking) {
+      isDragging = true;
+      dragStart = { x, y };
     }
   });
 
-  let confettiInterval: number;
-
-  function startConfetti() {
-    const michiganStuff = ['🍒', '🏔️', '🌊', '🦌', '🏈', '🏒', '🍺', '🌭', '🍔', '🥔', '🌲', '⛵', '🏖️'];
-
-    confettiInterval = setInterval(() => {
-      for (let i = 0; i < 3; i++) {
-        createConfetti(michiganStuff[Math.floor(Math.random() * michiganStuff.length)]);
-      }
-    }, 200);
-  }
-
-  function stopConfetti() {
-    clearInterval(confettiInterval);
-  }
-
-  function createConfetti(emoji: string) {
-    const confetti = document.createElement('div');
-    confetti.textContent = emoji;
-    confetti.className = 'confetti-piece';
-    confetti.style.left = Math.random() * 100 + '%';
-    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-    confetti.style.fontSize = (Math.random() * 20 + 20) + 'px';
-    document.body.appendChild(confetti);
-
-    setTimeout(() => confetti.remove(), 4000);
-  }
-
-  // Easter egg hunt
-  let easterEggsFound = 0;
-  const items = document.querySelectorAll('.michigan-item');
-  const counter = document.getElementById('easterEggCounter');
-
-  items.forEach(item => {
-    item.addEventListener('click', function() {
-      if (!this.classList.contains('found')) {
-        this.classList.add('found');
-        easterEggsFound++;
-        if (counter) counter.textContent = easterEggsFound.toString();
-
-        // Celebration effect
-        const emoji = this.getAttribute('data-emoji') || '⭐';
-        for (let i = 0; i < 5; i++) {
-          createConfetti(emoji);
-        }
-
-        if (easterEggsFound === items.length) {
-          setTimeout(() => {
-            alert('🎉 YOOPER CHAMPION! You found all the Michigan Easter eggs! You deserve a Vernors! 🥤');
-          }, 500);
-        }
-      }
-    });
-  });
-
-  // Make particles move with mouse
-  document.addEventListener('mousemove', (e) => {
-    const particles = document.querySelector('.particles');
-    if (particles instanceof HTMLElement) {
-      const x = (e.clientX / window.innerWidth) * 20;
-      const y = (e.clientY / window.innerHeight) * 20;
-      particles.style.transform = `translate(${x}px, ${y}px)`;
+  canvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      const rect = canvas.getBoundingClientRect();
+      dragStart.x = e.clientX - rect.left;
+      dragStart.y = e.clientY - rect.top;
     }
   });
+
+  canvas.addEventListener('mouseup', () => {
+    if (isDragging) {
+      const dx = (dragStart.x - ball.x) * -0.15;
+      const dy = (dragStart.y - ball.y) * -0.15;
+      ball.vx = dx;
+      ball.vy = dy;
+      isKicking = true;
+      isDragging = false;
+    }
+  });
+
+  // Touch support
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
+    if (dist < ball.radius + 10 && !isKicking) {
+      isDragging = true;
+      dragStart = { x, y };
+    }
+  });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (isDragging) {
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      dragStart.x = touch.clientX - rect.left;
+      dragStart.y = touch.clientY - rect.top;
+    }
+  });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    if (isDragging) {
+      const dx = (dragStart.x - ball.x) * -0.15;
+      const dy = (dragStart.y - ball.y) * -0.15;
+      ball.vx = dx;
+      ball.vy = dy;
+      isKicking = true;
+      isDragging = false;
+    }
+  });
+
+  // Load saved score
+  const savedScore = sessionStorage.getItem('michigan404Score');
+  if (savedScore) {
+    score = parseInt(savedScore);
+    scoreDisplay.textContent = score.toString();
+  }
+
+  // Start game loop
+  gameLoop();
 </script>
 
 <style>
-  /* Animated gradient background */
-  @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap');
+
+  /* Michigan Colors */
+  :root {
+    --maize: #FFCB05;
+    --blue: #00274C;
   }
 
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 8s ease infinite;
+  .bg-michigan-blue {
+    background-color: var(--blue);
   }
 
-  /* Glitch effect for 404 */
-  .glitch {
-    color: white;
-    position: relative;
-    text-shadow:
-      0.05em 0 0 #00fffc,
-      -0.03em -0.04em 0 #fc00ff,
-      0.025em 0.04em 0 #fffc00;
-    animation: glitch 725ms infinite;
-  }
-
-  .glitch::before,
-  .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .glitch::before {
-    animation: glitch-1 500ms infinite;
-    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
-    transform: translate(-0.04em, -0.03em);
-    opacity: 0.75;
-  }
-
-  .glitch::after {
-    animation: glitch-2 375ms infinite;
-    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
-    transform: translate(0.04em, 0.03em);
-    opacity: 0.75;
-  }
-
-  @keyframes glitch {
-    0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
-    15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
-    16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-    49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-    50% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
-    99% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
-    100% { text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff, -0.04em -0.025em 0 #fffc00; }
-  }
-
-  @keyframes glitch-1 {
-    0% { clip-path: polygon(0 0%, 100% 0%, 100% 5%, 0 5%); }
-    10% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); }
-    20% { clip-path: polygon(0 10%, 100% 10%, 100% 20%, 0 20%); }
-    30% { clip-path: polygon(0 1%, 100% 1%, 100% 2%, 0 2%); }
-    40% { clip-path: polygon(0 35%, 100% 35%, 100% 35%, 0 35%); }
-    50% { clip-path: polygon(0 45%, 100% 45%, 100% 46%, 0 46%); }
-    60% { clip-path: polygon(0 50%, 100% 50%, 100% 70%, 0 70%); }
-    70% { clip-path: polygon(0 70%, 100% 70%, 100% 70%, 0 70%); }
-    80% { clip-path: polygon(0 80%, 100% 80%, 100% 80%, 0 80%); }
-    90% { clip-path: polygon(0 50%, 100% 50%, 100% 55%, 0 55%); }
-    100% { clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%); }
-  }
-
-  @keyframes glitch-2 {
-    0% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
-    10% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
-    20% { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); }
-    30% { clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
-    40% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
-    50% { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); }
-    60% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
-    70% { clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%); }
-    80% { clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%); }
-    90% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
-    100% { clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%); }
-  }
-
-  /* Floating particles */
-  .particles {
+  /* Football field pattern */
+  .field-pattern {
     position: absolute;
     inset: 0;
     background-image:
-      radial-gradient(2px 2px at 20% 30%, white, transparent),
-      radial-gradient(2px 2px at 60% 70%, white, transparent),
-      radial-gradient(1px 1px at 50% 50%, white, transparent),
-      radial-gradient(1px 1px at 80% 10%, white, transparent),
-      radial-gradient(2px 2px at 90% 60%, white, transparent),
-      radial-gradient(1px 1px at 33% 80%, white, transparent),
-      radial-gradient(1px 1px at 15% 90%, white, transparent);
-    background-size: 200% 200%;
-    animation: float 20s ease-in-out infinite;
-    opacity: 0.6;
-    transition: transform 0.3s ease;
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 48px,
+        rgba(255, 255, 255, 0.05) 48px,
+        rgba(255, 255, 255, 0.05) 50px
+      );
+    opacity: 0.3;
   }
 
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    25% { transform: translate(5%, -5%); }
-    50% { transform: translate(-3%, 3%); }
-    75% { transform: translate(3%, -3%); }
-  }
-
-  /* Action buttons */
-  .action-btn {
-    padding: 1rem 2rem;
-    border-radius: 9999px;
-    font-weight: bold;
-    font-size: 1.125rem;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    display: inline-block;
-  }
-
-  .action-btn:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Party button */
-  .party-btn {
-    animation: pulse-rainbow 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-rainbow {
-    0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.8); }
-    50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.8); }
-  }
-
-  /* Confetti */
-  .confetti-piece {
+  /* Block M watermark */
+  .block-m-watermark {
     position: fixed;
-    top: -50px;
-    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60vw;
+    font-weight: bold;
+    color: rgba(255, 203, 5, 0.03);
+    z-index: 0;
     pointer-events: none;
-    animation: fall-confetti linear forwards;
+    user-select: none;
   }
 
-  @keyframes fall-confetti {
-    to {
-      transform: translateY(100vh) rotate(720deg);
-      opacity: 0;
-    }
-  }
-
-  /* Message box animation */
-  .message-box {
-    transition: all 0.3s ease;
-  }
-
-  .message-box p {
-    transition: all 0.3s ease;
-  }
-
-  /* Rainbow background for party mode */
-  @keyframes rainbow {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-  }
-
-  /* Hidden Easter egg items */
-  .hidden-items {
+  /* Scoreboard */
+  .scoreboard {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--maize), #FFD700);
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
   }
 
-  .michigan-item {
-    position: absolute;
-    font-size: 3rem;
+  .score-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    color: var(--blue);
+    letter-spacing: 2px;
+  }
+
+  .score-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--blue);
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  /* Yard Marker */
+  .yard-marker {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .yard-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(100px, 20vw, 180px);
+    color: var(--maize);
+    font-weight: bold;
+    line-height: 1;
+    text-shadow:
+      4px 4px 0 rgba(0, 0, 0, 0.2),
+      8px 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .yard-line {
+    width: 200px;
+    height: 6px;
+    background: white;
+    margin: 10px auto;
+    border-radius: 3px;
+  }
+
+  /* Error Messages */
+  .error-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 6vw, 56px);
+    color: white;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .error-subtext {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(16px, 3vw, 20px);
+    color: rgba(255, 255, 255, 0.9);
+    transition: opacity 0.3s ease;
+  }
+
+  /* Game Container */
+  .game-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--maize);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .game-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--maize);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .game-instructions {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+
+  #gameCanvas {
+    border: 2px solid white;
+    border-radius: 10px;
+    background: #1a472a;
     cursor: pointer;
-    pointer-events: all;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .achievement {
+    display: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--maize);
+    margin-top: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  /* Trivia Box */
+  .trivia-box {
+    background: linear-gradient(135deg, rgba(255, 203, 5, 0.2), rgba(255, 203, 5, 0.1));
+    border: 2px solid var(--maize);
+    border-radius: 15px;
+    padding: 20px 30px;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+
+  .trivia-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--maize);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .trivia-text {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    font-size: 16px;
+    line-height: 1.6;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Navigation Buttons */
+  .nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .nav-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    letter-spacing: 1px;
     transition: all 0.3s ease;
-    animation: float-item 3s ease-in-out infinite;
-    opacity: 0.7;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   }
 
-  .michigan-item::before {
-    content: attr(data-emoji);
+  .nav-btn-primary {
+    background: var(--maize);
+    color: var(--blue);
+    border: 3px solid var(--maize);
   }
 
-  .michigan-item:hover {
-    transform: scale(1.3);
-    opacity: 1;
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  .nav-btn-primary:hover {
+    background: transparent;
+    color: var(--maize);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 203, 5, 0.4);
   }
 
-  .michigan-item.found {
-    animation: found-item 0.5s ease-out forwards;
+  .nav-btn-secondary {
+    background: transparent;
+    color: white;
+    border: 3px solid white;
   }
 
-  @keyframes float-item {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+  .nav-btn-secondary:hover {
+    background: white;
+    color: var(--blue);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.3);
   }
 
-  @keyframes found-item {
-    0% { transform: scale(1); }
-    50% { transform: scale(2) rotate(360deg); }
-    100% { transform: scale(0); opacity: 0; }
+  /* Go Blue footer */
+  .go-blue {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 8vw, 80px);
+    color: var(--maize);
+    margin-top: 40px;
+    letter-spacing: 8px;
+    text-shadow:
+      3px 3px 0 rgba(0, 0, 0, 0.2),
+      6px 6px 20px rgba(0, 0, 0, 0.3);
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 
-  /* Responsive adjustments */
+  @keyframes pulse-glow {
+    0%, 100% {
+      text-shadow:
+        3px 3px 0 rgba(0, 0, 0, 0.2),
+        6px 6px 20px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 203, 5, 0.3);
+    }
+    50% {
+      text-shadow:
+        3px 3px 0 rgba(0, 0, 0, 0.2),
+        6px 6px 20px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(255, 203, 5, 0.6);
+    }
+  }
+
+  /* Responsive */
   @media (max-width: 768px) {
-    .glitch {
-      font-size: 100px;
+    .scoreboard {
+      top: 10px;
+      right: 10px;
+      padding: 10px 15px;
     }
 
-    .michigan-item {
-      font-size: 2rem;
+    .score-value {
+      font-size: 36px;
     }
 
-    .action-btn {
-      font-size: 1rem;
-      padding: 0.75rem 1.5rem;
+    .game-container {
+      padding: 20px 15px;
+    }
+
+    #gameCanvas {
+      width: 100%;
+    }
+
+    .nav-btn {
+      width: 100%;
+      text-align: center;
     }
   }
 </style>
