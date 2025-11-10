@@ -1,3 +1,5 @@
+import type { APIRoute } from 'astro';
+
 /**
  * Cloudflare Worker-Powered Business Auto-Seeding API
  *
@@ -37,11 +39,6 @@
  *   matchedOn?: string
  * }
  */
-
-interface Env {
-  DB: D1Database;
-  SEED_API_SECRET?: string;
-}
 
 interface BusinessInput {
   business_name: string;
@@ -353,27 +350,18 @@ async function insertBusiness(db: D1Database, business: BusinessInput): Promise<
   return result;
 }
 
-export const onRequest: PagesFunction<Env> = async (context) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const { request, env } = context;
-
-    // Only allow POST requests
-    if (request.method !== 'POST') {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Method not allowed',
-        }),
-        {
-          status: 405,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
+    const runtime = locals.runtime as {
+      env: {
+        DB: D1Database;
+        SEED_API_SECRET?: string;
+      };
+    };
 
     // Optional: Verify API secret for security
     const apiSecret = request.headers.get('x-seed-api-secret');
-    const expectedSecret = env.SEED_API_SECRET || 'michigan-spots-seed-2025';
+    const expectedSecret = runtime.env.SEED_API_SECRET || 'michigan-spots-seed-2025';
 
     if (apiSecret !== expectedSecret) {
       console.log('Unauthorized seed request - invalid API secret');
@@ -389,7 +377,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       );
     }
 
-    const db = env.DB;
+    const db = runtime.env.DB;
     if (!db) {
       return new Response(
         JSON.stringify({
