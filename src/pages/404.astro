@@ -1,290 +1,439 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Trees, Compass, MapPin, Home, Search, Trophy, Coffee } from 'lucide-react';
 ---
 
 <Layout
-  title="404 - Lost in the Michigan Woods! | Michigan Spots"
-  description="Looks like you've wandered off the trail! Don't worry, we'll help you find your way back to civilization."
+  title="404 - WHOOPS! Page Not Found 🤷‍♂️ | Michigan Spots"
+  description="Well this is awkward... the page took a wrong turn at Kalamazoo!"
 >
-  <div class="min-h-screen bg-gradient-to-b from-forest-green/20 via-parchment-light to-lakes-blue/10 flex items-center justify-center px-4 py-12 overflow-hidden relative">
-    <!-- Floating leaves animation -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <div class="leaf leaf-1">🍂</div>
-      <div class="leaf leaf-2">🍁</div>
-      <div class="leaf leaf-3">🍂</div>
-      <div class="leaf leaf-4">🍁</div>
-      <div class="leaf leaf-5">🍂</div>
-    </div>
+  <div class="min-h-screen overflow-hidden relative" id="errorPage">
+    <!-- Animated gradient background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 animate-gradient"></div>
 
-    <!-- Deer occasionally running across -->
-    <div class="deer">🦌</div>
+    <!-- Floating particles -->
+    <div class="particles"></div>
 
-    <div class="container mx-auto max-w-4xl relative z-10">
-      <div class="text-center">
-        <!-- Big animated 404 -->
-        <div class="mb-8 relative">
-          <div class="text-9xl font-bold text-ink-primary opacity-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 select-none wiggle">
-            404
-          </div>
-          <div class="relative z-10 py-8">
-            <div class="inline-block animate-bounce-slow">
-              <Trees class="w-32 h-32 text-forest-green mx-auto mb-4" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Main message -->
-        <h1 class="font-display text-5xl md:text-7xl font-bold text-ink-primary mb-4 animate-fade-in">
-          Oops! You're Lost!
+    <!-- Main content -->
+    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12 text-center">
+      <!-- Glitchy 404 -->
+      <div class="mb-8 relative">
+        <h1 class="glitch text-[150px] md:text-[250px] font-black leading-none mb-4" data-text="404">
+          404
         </h1>
-
-        <div class="space-y-4 mb-8 text-xl text-ink-secondary animate-fade-in-delay">
-          <p class="flex items-center justify-center gap-2">
-            <Compass class="text-copper-orange animate-spin-slow" />
-            <span>Looks like you wandered off the trail...</span>
-          </p>
-
-          <!-- Random funny messages -->
-          <div class="parchment-card p-6 max-w-2xl mx-auto">
-            <p class="font-heading text-2xl text-ink-primary mb-3">
-              🧭 Did you know?
-            </p>
-            <p class="text-ink-secondary" id="funFact">
-              Even experienced Yoopers get lost sometimes. At least you're not in the UP in winter!
-            </p>
-          </div>
+        <div class="text-white text-2xl md:text-4xl font-bold mb-2 animate-pulse">
+          OOPS! THIS PAGE WENT MISSING
         </div>
-
-        <!-- Action buttons -->
-        <div class="flex flex-wrap gap-4 justify-center mb-12 animate-fade-in-delay-2">
-          <a
-            href="/"
-            class="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all"
-          >
-            <Home class="group-hover:animate-bounce" />
-            <span>Take Me Home</span>
-          </a>
-
-          <a
-            href="/directory"
-            class="group flex items-center gap-2 px-8 py-4 bg-white border-2 border-lakes-blue text-lakes-blue rounded-xl font-bold text-lg hover:bg-lakes-blue hover:text-white transition-all"
-          >
-            <Search class="group-hover:rotate-12 transition-transform" />
-            <span>Find a Spot</span>
-          </a>
-
-          <a
-            href="/blog"
-            class="group flex items-center gap-2 px-8 py-4 bg-white border-2 border-copper-orange text-copper-orange rounded-xl font-bold text-lg hover:bg-copper-orange hover:text-white transition-all"
-          >
-            <Trophy class="group-hover:animate-pulse" />
-            <span>Read Blog</span>
-          </a>
+        <div class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto">
+          Probably got distracted by some bomb-dot-com fudge on Mackinac Island 🍫
         </div>
+      </div>
 
-        <!-- Helpful links -->
-        <div class="parchment-card p-8 max-w-2xl mx-auto">
-          <p class="font-heading text-xl text-ink-primary mb-4">
-            🗺️ Popular Destinations:
-          </p>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-left">
-            <a href="/directory" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
-              <MapPin size={16} />
-              <span>Business Directory</span>
-            </a>
-            <a href="/partnerships" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
-              <MapPin size={16} />
-              <span>Partnerships</span>
-            </a>
-            <a href="/about" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
-              <MapPin size={16} />
-              <span>About Us</span>
-            </a>
-            <a href="/blog" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
-              <MapPin size={16} />
-              <span>Blog</span>
-            </a>
-            <a href="/directory/claim" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
-              <MapPin size={16} />
-              <span>Claim Business</span>
-            </a>
-            <a href="/" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
-              <MapPin size={16} />
-              <span>Home</span>
-            </a>
-          </div>
-        </div>
+      <!-- Fun interactive element -->
+      <div class="my-8">
+        <button
+          id="partyBtn"
+          class="party-btn px-8 py-4 bg-white text-purple-600 rounded-full font-bold text-xl shadow-2xl hover:scale-110 transition-transform duration-300 cursor-pointer"
+        >
+          🎉 MAKE IT RAIN MICHIGAN STUFF! 🎉
+        </button>
+      </div>
 
-        <!-- Fun Michigan fact at bottom -->
-        <div class="mt-12 text-center animate-fade-in-delay-3">
-          <p class="text-sm text-ink-secondary italic">
-            💡 Michigan Fun Fact: Michigan has more lighthouses than any other state - <br class="hidden md:inline" />
-            maybe you should've brought one with you!
+      <!-- Rotating messages -->
+      <div class="max-w-3xl mx-auto mb-12">
+        <div class="message-box bg-white/20 backdrop-blur-lg rounded-3xl p-6 md:p-8 border-4 border-white/50 shadow-2xl">
+          <p class="text-white text-xl md:text-2xl font-bold" id="rotatingMessage">
+            This page is more lost than a tourist trying to find parking in downtown Detroit! 🚗
           </p>
         </div>
+      </div>
+
+      <!-- Action buttons with pizzazz -->
+      <div class="flex flex-wrap gap-4 justify-center mb-8">
+        <a
+          href="/"
+          class="action-btn bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600"
+        >
+          🏠 TAKE ME HOME
+        </a>
+        <a
+          href="/directory"
+          class="action-btn bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600"
+        >
+          🗺️ FIND COOL SPOTS
+        </a>
+        <a
+          href="/blog"
+          class="action-btn bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600"
+        >
+          📰 READ THE BLOG
+        </a>
+      </div>
+
+      <!-- Michigan Easter Egg Counter -->
+      <div class="mt-8">
+        <div class="inline-block bg-black/30 backdrop-blur-sm px-6 py-3 rounded-full border-2 border-white/30">
+          <span class="text-white font-bold text-sm">
+            🏆 Michigan Easter Eggs Found: <span id="easterEggCounter" class="text-yellow-300">0</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Hidden clickable Michigan items -->
+      <div class="hidden-items">
+        <div class="michigan-item" data-emoji="🏔️" style="top: 10%; left: 15%;" title="Click me!"></div>
+        <div class="michigan-item" data-emoji="🌊" style="top: 25%; right: 20%;" title="Click me!"></div>
+        <div class="michigan-item" data-emoji="🍒" style="bottom: 30%; left: 10%;" title="Click me!"></div>
+        <div class="michigan-item" data-emoji="🦌" style="bottom: 15%; right: 15%;" title="Click me!"></div>
+        <div class="michigan-item" data-emoji="🏈" style="top: 50%; left: 5%;" title="Click me!"></div>
       </div>
     </div>
   </div>
 </Layout>
 
 <script>
-  // Random fun facts that rotate
-  const funFacts = [
-    "Even experienced Yoopers get lost sometimes. At least you're not in the UP in winter!",
-    "This page is more lost than a tourist looking for a Vernors in California.",
-    "You've ventured further off-map than a Mackinac Island fudge tourist without GPS.",
-    "This is more confusing than trying to explain what a 'Michigan Left' is to out-of-staters.",
-    "You're as lost as someone looking for a Culver's in Canada. (Hint: They don't exist there.)",
-    "Fun fact: You just discovered Michigan's 84,350th lake! Wait, no... that's still just Lake Michigan.",
-    "At least you didn't end up in Ohio. That would be a real emergency.",
-    "This page is harder to find than a pasty shop south of the bridge.",
-    "You've wandered further than someone trying to find their car at Michigan's Adventure.",
-    "This is what happens when you trust a GPS that thinks 'Pure Michigan' is just a slogan.",
+  // Rotating messages - more fun and playful
+  const messages = [
+    "This page is more lost than a tourist trying to find parking in downtown Detroit! 🚗",
+    "Even Google Maps can't find this one... and it found your ex's house! 👀",
+    "Plot twist: This page ran away to become a Yooper. It's living its best life now! 🌲",
+    "404 Error: Page went to grab a Better Made chip and never came back 🥔",
+    "This page ghosted us harder than a Tinder match from Grand Rapids 👻",
+    "Ope! Looks like this page took a Michigan Left and got confused 🔄",
+    "Sorry fam, this page is currently at a coney dog eating contest 🌭",
+    "This page said 'on my way' 3 hours ago from Lansing... still waiting ⏰",
+    "Breaking: Local page goes missing. Last seen heading towards Traverse City 🍒",
+    "This page is hiding from Ohio. Can you blame it? 🙈",
   ];
 
-  // Rotate fun fact every 5 seconds
-  let factIndex = 0;
-  const factElement = document.getElementById('funFact');
+  let messageIndex = 0;
+  const messageEl = document.getElementById('rotatingMessage');
 
-  if (factElement) {
-    setInterval(() => {
-      factIndex = (factIndex + 1) % funFacts.length;
-      factElement.style.opacity = '0';
+  function rotateMessage() {
+    if (messageEl) {
+      messageEl.style.opacity = '0';
+      messageEl.style.transform = 'scale(0.9)';
 
       setTimeout(() => {
-        factElement.textContent = funFacts[factIndex];
-        factElement.style.opacity = '1';
+        messageIndex = (messageIndex + 1) % messages.length;
+        messageEl.textContent = messages[messageIndex];
+        messageEl.style.opacity = '1';
+        messageEl.style.transform = 'scale(1)';
       }, 300);
-    }, 5000);
+    }
   }
+
+  setInterval(rotateMessage, 4000);
+
+  // Party button confetti
+  const partyBtn = document.getElementById('partyBtn');
+  let partyMode = false;
+
+  partyBtn?.addEventListener('click', () => {
+    partyMode = !partyMode;
+
+    if (partyMode) {
+      partyBtn.textContent = '🎊 STOP THE PARTY! 🎊';
+      startConfetti();
+      document.body.style.animation = 'rainbow 2s linear infinite';
+    } else {
+      partyBtn.textContent = '🎉 MAKE IT RAIN MICHIGAN STUFF! 🎉';
+      stopConfetti();
+      document.body.style.animation = '';
+    }
+  });
+
+  let confettiInterval: number;
+
+  function startConfetti() {
+    const michiganStuff = ['🍒', '🏔️', '🌊', '🦌', '🏈', '🏒', '🍺', '🌭', '🍔', '🥔', '🌲', '⛵', '🏖️'];
+
+    confettiInterval = setInterval(() => {
+      for (let i = 0; i < 3; i++) {
+        createConfetti(michiganStuff[Math.floor(Math.random() * michiganStuff.length)]);
+      }
+    }, 200);
+  }
+
+  function stopConfetti() {
+    clearInterval(confettiInterval);
+  }
+
+  function createConfetti(emoji: string) {
+    const confetti = document.createElement('div');
+    confetti.textContent = emoji;
+    confetti.className = 'confetti-piece';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    confetti.style.fontSize = (Math.random() * 20 + 20) + 'px';
+    document.body.appendChild(confetti);
+
+    setTimeout(() => confetti.remove(), 4000);
+  }
+
+  // Easter egg hunt
+  let easterEggsFound = 0;
+  const items = document.querySelectorAll('.michigan-item');
+  const counter = document.getElementById('easterEggCounter');
+
+  items.forEach(item => {
+    item.addEventListener('click', function() {
+      if (!this.classList.contains('found')) {
+        this.classList.add('found');
+        easterEggsFound++;
+        if (counter) counter.textContent = easterEggsFound.toString();
+
+        // Celebration effect
+        const emoji = this.getAttribute('data-emoji') || '⭐';
+        for (let i = 0; i < 5; i++) {
+          createConfetti(emoji);
+        }
+
+        if (easterEggsFound === items.length) {
+          setTimeout(() => {
+            alert('🎉 YOOPER CHAMPION! You found all the Michigan Easter eggs! You deserve a Vernors! 🥤');
+          }, 500);
+        }
+      }
+    });
+  });
+
+  // Make particles move with mouse
+  document.addEventListener('mousemove', (e) => {
+    const particles = document.querySelector('.particles');
+    if (particles instanceof HTMLElement) {
+      const x = (e.clientX / window.innerWidth) * 20;
+      const y = (e.clientY / window.innerHeight) * 20;
+      particles.style.transform = `translate(${x}px, ${y}px)`;
+    }
+  });
 </script>
 
 <style>
-  .parchment-card {
-    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
-    border: 2px solid #D4C4A8;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Animated gradient background */
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  /* Wiggling 404 background */
-  @keyframes wiggle {
-    0%, 100% { transform: translate(-50%, -50%) rotate(-2deg); }
-    50% { transform: translate(-50%, -50%) rotate(2deg); }
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
   }
 
-  .wiggle {
-    animation: wiggle 3s ease-in-out infinite;
+  /* Glitch effect for 404 */
+  .glitch {
+    color: white;
+    position: relative;
+    text-shadow:
+      0.05em 0 0 #00fffc,
+      -0.03em -0.04em 0 #fc00ff,
+      0.025em 0.04em 0 #fffc00;
+    animation: glitch 725ms infinite;
   }
 
-  /* Slow bounce for tree icon */
-  @keyframes bounce-slow {
-    0%, 100% { transform: translateY(0); }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch::before {
+    animation: glitch-1 500ms infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    transform: translate(-0.04em, -0.03em);
+    opacity: 0.75;
+  }
+
+  .glitch::after {
+    animation: glitch-2 375ms infinite;
+    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    transform: translate(0.04em, 0.03em);
+    opacity: 0.75;
+  }
+
+  @keyframes glitch {
+    0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+    15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+    16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+    49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+    50% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
+    99% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
+    100% { text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff, -0.04em -0.025em 0 #fffc00; }
+  }
+
+  @keyframes glitch-1 {
+    0% { clip-path: polygon(0 0%, 100% 0%, 100% 5%, 0 5%); }
+    10% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); }
+    20% { clip-path: polygon(0 10%, 100% 10%, 100% 20%, 0 20%); }
+    30% { clip-path: polygon(0 1%, 100% 1%, 100% 2%, 0 2%); }
+    40% { clip-path: polygon(0 35%, 100% 35%, 100% 35%, 0 35%); }
+    50% { clip-path: polygon(0 45%, 100% 45%, 100% 46%, 0 46%); }
+    60% { clip-path: polygon(0 50%, 100% 50%, 100% 70%, 0 70%); }
+    70% { clip-path: polygon(0 70%, 100% 70%, 100% 70%, 0 70%); }
+    80% { clip-path: polygon(0 80%, 100% 80%, 100% 80%, 0 80%); }
+    90% { clip-path: polygon(0 50%, 100% 50%, 100% 55%, 0 55%); }
+    100% { clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%); }
+  }
+
+  @keyframes glitch-2 {
+    0% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
+    10% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+    20% { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); }
+    30% { clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
+    40% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+    50% { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); }
+    60% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
+    70% { clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%); }
+    80% { clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%); }
+    90% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+    100% { clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%); }
+  }
+
+  /* Floating particles */
+  .particles {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, white, transparent),
+      radial-gradient(2px 2px at 60% 70%, white, transparent),
+      radial-gradient(1px 1px at 50% 50%, white, transparent),
+      radial-gradient(1px 1px at 80% 10%, white, transparent),
+      radial-gradient(2px 2px at 90% 60%, white, transparent),
+      radial-gradient(1px 1px at 33% 80%, white, transparent),
+      radial-gradient(1px 1px at 15% 90%, white, transparent);
+    background-size: 200% 200%;
+    animation: float 20s ease-in-out infinite;
+    opacity: 0.6;
+    transition: transform 0.3s ease;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(5%, -5%); }
+    50% { transform: translate(-3%, 3%); }
+    75% { transform: translate(3%, -3%); }
+  }
+
+  /* Action buttons */
+  .action-btn {
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-weight: bold;
+    font-size: 1.125rem;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Party button */
+  .party-btn {
+    animation: pulse-rainbow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-rainbow {
+    0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.8); }
+    50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.8); }
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    top: -50px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: fall-confetti linear forwards;
+  }
+
+  @keyframes fall-confetti {
+    to {
+      transform: translateY(100vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  /* Message box animation */
+  .message-box {
+    transition: all 0.3s ease;
+  }
+
+  .message-box p {
+    transition: all 0.3s ease;
+  }
+
+  /* Rainbow background for party mode */
+  @keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+
+  /* Hidden Easter egg items */
+  .hidden-items {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .michigan-item {
+    position: absolute;
+    font-size: 3rem;
+    cursor: pointer;
+    pointer-events: all;
+    transition: all 0.3s ease;
+    animation: float-item 3s ease-in-out infinite;
+    opacity: 0.7;
+  }
+
+  .michigan-item::before {
+    content: attr(data-emoji);
+  }
+
+  .michigan-item:hover {
+    transform: scale(1.3);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+
+  .michigan-item.found {
+    animation: found-item 0.5s ease-out forwards;
+  }
+
+  @keyframes float-item {
+    0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-20px); }
   }
 
-  .animate-bounce-slow {
-    animation: bounce-slow 2s ease-in-out infinite;
+  @keyframes found-item {
+    0% { transform: scale(1); }
+    50% { transform: scale(2) rotate(360deg); }
+    100% { transform: scale(0); opacity: 0; }
   }
 
-  /* Slow spin for compass */
-  @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .animate-spin-slow {
-    animation: spin-slow 8s linear infinite;
-  }
-
-  /* Fade in animations */
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .glitch {
+      font-size: 100px;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    .michigan-item {
+      font-size: 2rem;
     }
-  }
 
-  .animate-fade-in {
-    animation: fade-in 0.8s ease-out;
-  }
-
-  .animate-fade-in-delay {
-    animation: fade-in 0.8s ease-out 0.2s both;
-  }
-
-  .animate-fade-in-delay-2 {
-    animation: fade-in 0.8s ease-out 0.4s both;
-  }
-
-  .animate-fade-in-delay-3 {
-    animation: fade-in 0.8s ease-out 0.6s both;
-  }
-
-  /* Falling leaves */
-  .leaf {
-    position: absolute;
-    font-size: 2rem;
-    animation: fall linear infinite;
-    opacity: 0.6;
-  }
-
-  @keyframes fall {
-    0% {
-      transform: translateY(-10vh) rotate(0deg);
+    .action-btn {
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
     }
-    100% {
-      transform: translateY(110vh) rotate(360deg);
-    }
-  }
-
-  .leaf-1 { left: 10%; animation-duration: 15s; animation-delay: 0s; }
-  .leaf-2 { left: 30%; animation-duration: 12s; animation-delay: 2s; }
-  .leaf-3 { left: 50%; animation-duration: 18s; animation-delay: 4s; }
-  .leaf-4 { left: 70%; animation-duration: 14s; animation-delay: 1s; }
-  .leaf-5 { left: 90%; animation-duration: 16s; animation-delay: 3s; }
-
-  /* Deer running across */
-  .deer {
-    position: absolute;
-    font-size: 3rem;
-    bottom: 20%;
-    animation: run-deer 15s linear infinite;
-  }
-
-  @keyframes run-deer {
-    0% {
-      left: -10%;
-      transform: scaleX(1);
-    }
-    45% {
-      left: 110%;
-      transform: scaleX(1);
-    }
-    45.1% {
-      transform: scaleX(-1);
-    }
-    50% {
-      left: 110%;
-      transform: scaleX(-1);
-    }
-    95% {
-      left: -10%;
-      transform: scaleX(-1);
-    }
-    100% {
-      left: -10%;
-      transform: scaleX(-1);
-    }
-  }
-
-  /* Fun fact fade transition */
-  #funFact {
-    transition: opacity 0.3s ease-in-out;
   }
 </style>
 </Layout>
