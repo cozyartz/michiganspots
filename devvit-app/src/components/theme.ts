@@ -3,29 +3,29 @@
 
 export const lightTheme = {
   colors: {
-    copper: '#D2691E',
-    copperLight: '#E88A3F',
-    copperDark: '#A0521A',
+    copper: '#9B7B7B',      // Rose pewter (muted metallic)
+    copperLight: '#B89898', // Light rose pewter
+    copperDark: '#7D6262',  // Dark rose pewter
     cyan: {
-      primary: '#06B6D4',
-      dark: '#0891B2',
-      light: '#67E8F9',
-      glow: '#22D3EE',
+      primary: '#4A9B94',   // Steel teal (refined lakes)
+      dark: '#367873',      // Dark steel teal
+      light: '#6BB5AD',     // Light steel teal
+      glow: '#5DADA5',      // Steel teal glow
     },
     amber: {
-      primary: '#F59E0B',
-      light: '#FCD34D',
-      dark: '#D97706',
+      primary: '#B89898',   // Rose pewter light
+      light: '#CDB1B1',     // Very light rose pewter
+      dark: '#9B7B7B',      // Rose pewter
     },
     coral: {
-      primary: '#FB7185',
-      light: '#FDA4AF',
-      dark: '#E11D48',
+      primary: '#9B8B8B',   // Neutral warm gray
+      light: '#B5A8A8',     // Light warm gray
+      dark: '#7D6F6F',      // Dark warm gray
     },
     forest: {
-      primary: '#10B981',
-      dark: '#059669',
-      light: '#34D399',
+      primary: '#36766A',   // Slate green (refined)
+      dark: '#2B5E54',      // Dark slate green
+      light: '#4A8E80',     // Light slate green
     },
     ink: {
       primary: '#2C1810',
@@ -48,29 +48,29 @@ export const lightTheme = {
 
 export const darkTheme = {
   colors: {
-    copper: '#969696',
-    copperLight: '#B0B0B0',
-    copperDark: '#7A7A7A',
+    copper: '#B89898',      // Light rose pewter (brighter for dark mode)
+    copperLight: '#CDB1B1', // Very light rose pewter
+    copperDark: '#9B7B7B',  // Rose pewter
     cyan: {
-      primary: '#22D3EE',
-      dark: '#06B6D4',
-      light: '#67E8F9',
-      glow: '#67E8F9',
+      primary: '#6BB5AD',   // Light steel teal (brighter for dark mode)
+      dark: '#4A9B94',      // Steel teal
+      light: '#8CCBC4',     // Very light steel teal
+      glow: '#7DC2BA',      // Steel teal bright glow
     },
     amber: {
-      primary: '#FCD34D',
-      light: '#FDE68A',
-      dark: '#F59E0B',
+      primary: '#CDB1B1',   // Very light rose pewter
+      light: '#DCC5C5',     // Ultra light rose pewter
+      dark: '#B89898',      // Light rose pewter
     },
     coral: {
-      primary: '#FDA4AF',
-      light: '#FECDD3',
-      dark: '#FB7185',
+      primary: '#B5A8A8',   // Light warm gray (brighter for dark mode)
+      light: '#C9BFBF',     // Very light warm gray
+      dark: '#9B8B8B',      // Neutral warm gray
     },
     forest: {
-      primary: '#34D399',
-      dark: '#10B981',
-      light: '#6EE7B7',
+      primary: '#4A8E80',   // Light slate green (brighter for dark mode)
+      dark: '#36766A',      // Slate green
+      light: '#5FA59A',     // Very light slate green
     },
     ink: {
       primary: '#F5F5F4',

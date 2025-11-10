@@ -47,7 +47,7 @@ export async function sendMagicLinkEmail(
               padding: 20px;
             }
             .header {
-              background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
+              background: linear-gradient(135deg, #9B7B7B 0%, #7D6262 100%);
               color: white;
               padding: 30px 20px;
               border-radius: 8px 8px 0 0;

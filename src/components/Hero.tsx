@@ -82,16 +82,17 @@ export function Hero() {
             </motion.div>
 
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-ink-primary mb-6 leading-tight">
-              Discover
-              <span className="text-cyan-primary text-shadow-treasure"> 60+ Hidden Gems</span>
+              Discover Hidden Treasures
+              <br />
+              <span className="text-cyan-primary text-shadow-treasure">Win Real Prizes</span>
               <br />Across Michigan
             </h1>
 
             <p className="text-lg md:text-xl text-ink-secondary mb-8 leading-relaxed">
-              Join thousands of Michiganders exploring our beautiful state together. Visit real locations, capture memories, and share the adventure with fellow explorers across the Great Lakes State.
+              Join the ultimate Michigan treasure hunt! Explore 60+ locations across the Great Lakes State, find hidden treasures, and win exciting prizes. Every adventure brings you closer to rewards while discovering Michigan's beauty.
             </p>
 
-            <div className="flex items-center space-x-6 mb-8">
+            <div className="grid grid-cols-2 gap-4 mb-8 sm:flex sm:items-center sm:space-x-6">
               <div className="flex items-center space-x-2">
                 <span className="font-display text-3xl font-bold text-lakes-blue">10</span>
                 <span className="text-sm text-ink-secondary">Adventures</span>
@@ -99,6 +100,10 @@ export function Hero() {
               <div className="flex items-center space-x-2">
                 <span className="font-display text-3xl font-bold text-amber-primary">60+</span>
                 <span className="text-sm text-ink-secondary">Locations</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="font-display text-3xl font-bold text-coral-primary">🏆</span>
+                <span className="text-sm text-ink-secondary">Real Prizes</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="font-display text-3xl font-bold text-forest-green">FREE</span>

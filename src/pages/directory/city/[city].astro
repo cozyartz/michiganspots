@@ -91,8 +91,14 @@ const facts = cityFacts[displayCity] || { population: 'N/A', region: 'Michigan',
   keywords={`${displayCity} businesses, ${displayCity} Michigan, businesses in ${displayCity}, ${displayCity} directory, local ${displayCity}`}
 >
   <!-- City Hero -->
-  <section class="py-16 md:py-24 px-4 bg-gradient-to-br from-lakes-blue/10 via-copper-orange/10 to-forest-green/10">
-    <div class="container mx-auto max-w-6xl">
+  <section class="relative py-16 md:py-24 px-4 bg-gradient-to-b from-parchment-light to-parchment-mid overflow-hidden">
+    <!-- Subtle Corner Gradient Accent -->
+    <div class="absolute inset-0 opacity-25 pointer-events-none">
+      <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-lakes-blue/15 via-transparent to-transparent rounded-full blur-3xl" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-forest-green/10 via-transparent to-transparent rounded-full blur-3xl" />
+    </div>
+
+    <div class="container mx-auto max-w-6xl relative z-10">
       <div class="flex items-center gap-4 mb-4">
         <a
           href="/directory"

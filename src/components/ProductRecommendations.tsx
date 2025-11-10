@@ -48,6 +48,7 @@ export const ProductRecommendations: React.FC<ProductRecommendationsProps> = ({
             description={product.description}
             category={product.category}
             imageUrl={product.imageUrl}
+            affiliateUrl={product.affiliateUrl}
           />
         ))}
       </div>

@@ -41,6 +41,7 @@ interface ProductCardProps {
   imageUrl?: string;
   price?: string;
   category?: string;
+  affiliateUrl?: string; // Custom affiliate URL (overrides ASIN-based generation)
 }
 
 export const AmazonProductCard: React.FC<ProductCardProps> = ({
@@ -50,8 +51,9 @@ export const AmazonProductCard: React.FC<ProductCardProps> = ({
   imageUrl,
   price,
   category,
+  affiliateUrl: customAffiliateUrl,
 }) => {
-  const affiliateUrl = `https://www.amazon.com/dp/${asin}?tag=${AMAZON_ASSOCIATE_ID}`;
+  const affiliateUrl = customAffiliateUrl || `https://www.amazon.com/dp/${asin}?tag=${AMAZON_ASSOCIATE_ID}`;
 
   return (
     <div className="border-2 border-ink-primary/20 rounded-lg p-4 hover:border-lakes-blue transition-all hover:shadow-md">

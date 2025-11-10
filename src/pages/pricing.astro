@@ -169,15 +169,22 @@ const gameTiers = [
   keywords="Michigan business advertising, local business marketing, game partnerships Michigan, business directory pricing"
 >
   <!-- Hero Section -->
-  <section class="py-16 md:py-24 px-4 bg-gradient-to-br from-lakes-blue via-copper-orange to-forest-green text-white">
-    <div class="container mx-auto max-w-5xl text-center">
-      <h1 class="font-display text-4xl md:text-6xl font-bold mb-6">
+  <section class="relative py-16 md:py-24 px-4 bg-gradient-to-b from-parchment-light to-parchment-mid overflow-hidden">
+    <!-- Subtle Corner Gradient Accent -->
+    <div class="absolute inset-0 opacity-30 pointer-events-none">
+      <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-lakes-blue/20 via-transparent to-transparent rounded-full blur-3xl" />
+      <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-forest-green/15 via-transparent to-transparent rounded-full blur-3xl" />
+      <div class="absolute top-1/2 right-1/4 w-[300px] h-[300px] bg-gradient-to-bl from-copper-orange/10 to-transparent rounded-full blur-2xl" />
+    </div>
+
+    <div class="container mx-auto max-w-5xl text-center relative z-10">
+      <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 text-ink-primary">
         Find the Perfect Plan for Your Business
       </h1>
-      <p class="text-xl md:text-2xl mb-4 opacity-95 max-w-3xl mx-auto">
+      <p class="text-xl md:text-2xl mb-4 max-w-3xl mx-auto text-ink-secondary">
         Start FREE with directory advertising, or drive verified foot traffic with game partnerships
       </p>
-      <p class="text-lg opacity-90">
+      <p class="text-lg text-ink-faded">
         Two ways to grow • Combine both for maximum impact
       </p>
     </div>

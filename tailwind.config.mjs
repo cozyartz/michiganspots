@@ -17,51 +17,51 @@ export default {
           secondary: '#3D2963',  // Medium purple
           faded: '#6B5B8C',      // Light purple for subtle text
         },
-        // Cyan/Turquoise - Your logo's signature color
+        // Steel Teal - Refined lakes blue (Michigan Great Lakes, sophisticated)
         cyan: {
-          primary: '#41C6BB',    // Main cyan (your preferred color)
-          light: '#9CEDE1',      // Light cyan (your other preferred color)
-          dark: '#2BA89E',       // Darker cyan for hover states
-          glow: '#5FD9D1',       // Mid-tone for glows/shadows
+          primary: '#4A9B94',    // Steel teal (desaturated, professional)
+          light: '#6BB5AD',      // Light steel teal
+          dark: '#367873',       // Dark steel teal for hover states
+          glow: '#5DADA5',       // Mid-tone for glows/shadows
         },
-        // Legacy "lakes" mapped to cyan for compatibility
+        // Legacy "lakes" mapped to steel teal for compatibility
         lakes: {
-          blue: '#41C6BB',       // Now cyan
-          light: '#9CEDE1',      // Light cyan
+          blue: '#4A9B94',       // Steel teal
+          light: '#6BB5AD',      // Light steel teal
         },
-        // Golden amber - warm accent from logo
+        // Rose Pewter - Muted metallic (replaces amber/gold for sophistication)
         amber: {
-          primary: '#FFB800',    // Rich amber
-          light: '#FFC933',      // Light amber
-          dark: '#E6A600',       // Deep amber
+          primary: '#B89898',    // Rose pewter light (warm metallic)
+          light: '#CDB1B1',      // Very light rose pewter
+          dark: '#9B7B7B',       // Rose pewter (main accent)
         },
-        // Keep gold mapped to amber for compatibility
+        // Keep gold mapped to rose pewter for compatibility
         gold: {
-          treasure: '#FFB800',
+          treasure: '#B89898',   // Rose pewter light
         },
-        // Coral/Pink - vibrant accent from logo outline
+        // Neutral warm gray - Muted accent (replaces bright coral)
         coral: {
-          primary: '#FF6B9D',    // Bright coral-pink
-          light: '#FFB3D1',      // Soft pink
-          dark: '#E5527D',       // Deep coral
+          primary: '#9B8B8B',    // Neutral warm gray
+          light: '#B5A8A8',      // Light warm gray
+          dark: '#7D6F6F',       // Dark warm gray
         },
-        // Orange accent - warm pop from logo
+        // Rose Pewter - Primary warm accent (replaces loud orange)
         orange: {
-          primary: '#FF8C42',    // Vibrant orange
-          light: '#FFB380',      // Soft orange
-          dark: '#E67A35',       // Deep orange
+          primary: '#9B7B7B',    // Rose pewter (muted rose-gold)
+          light: '#B89898',      // Light rose pewter
+          dark: '#7D6262',       // Dark rose pewter
         },
-        // Legacy copper mapped to new orange
+        // Legacy copper mapped to rose pewter
         copper: {
-          orange: '#FF8C42',
+          orange: '#9B7B7B',     // Rose pewter
         },
-        // Legacy sunset - now mapped to coral
+        // Legacy sunset - now mapped to neutral warm gray
         sunset: {
-          red: '#FF6B9D',
+          red: '#9B8B8B',        // Neutral warm gray
         },
-        // Forest green - keep for Michigan nature references
+        // Slate green - Refined forest (Michigan forests, sophisticated)
         forest: {
-          green: '#2D7A5F',      // Slightly more vibrant green
+          green: '#36766A',      // Slate green (cooler, more refined)
         },
       },
       fontFamily: {

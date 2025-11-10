@@ -5,6 +5,7 @@ export interface AffiliateProduct {
   category: string;
   tags: string[];
   imageUrl?: string;
+  affiliateUrl?: string; // Custom affiliate URL (overrides ASIN-based URL generation)
 }
 
 // Michigan-themed product recommendations
@@ -16,6 +17,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'The ultimate guide to exploring Michigan, from Mackinac Island to Sleeping Bear Dunes.',
     category: 'Travel Guide',
     tags: ['travel', 'guide', 'planning'],
+    affiliateUrl: 'https://amzn.to/3Lv2sz3',
   },
   {
     asin: '1634043340',
@@ -23,6 +25,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'Discover the must-see attractions and hidden gems across the Great Lakes State.',
     category: 'Travel Guide',
     tags: ['travel', 'bucket-list'],
+    affiliateUrl: 'https://amzn.to/3LCPNKi',
   },
   {
     asin: '0762779543',
@@ -46,6 +49,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'Stay hydrated during your Michigan adventures with hands-free water storage.',
     category: 'Outdoor Gear',
     tags: ['hiking', 'outdoor', 'hydration'],
+    affiliateUrl: 'https://amzn.to/4oHWEAT',
   },
   {
     asin: 'B00H192IPE',
@@ -53,6 +57,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'Weather-resistant jacket perfect for Michigan\'s unpredictable weather.',
     category: 'Outdoor Gear',
     tags: ['hiking', 'outdoor', 'weather'],
+    affiliateUrl: 'https://amzn.to/3JUigLa',
   },
 
   // Photography
@@ -62,6 +67,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'Capture stunning photos of Michigan spots with professional-quality lenses.',
     category: 'Photography',
     tags: ['photography', 'camera', 'mobile'],
+    affiliateUrl: 'https://amzn.to/3Lv37jX',
   },
   {
     asin: 'B075DHSG77',
@@ -69,6 +75,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'Stable shots for your Michigan Spots photo submissions.',
     category: 'Photography',
     tags: ['photography', 'tripod', 'mobile'],
+    affiliateUrl: 'https://amzn.to/4qXntmk',
   },
 
   // Camping & Recreation
@@ -78,6 +85,7 @@ export const michiganProducts: AffiliateProduct[] = [
     description: 'Relax at Michigan beaches and parks with this portable hammock.',
     category: 'Camping',
     tags: ['camping', 'outdoor', 'beach', 'park'],
+    affiliateUrl: 'https://amzn.to/47KOnor',
   },
   {
     asin: 'B01LSUQH5C',

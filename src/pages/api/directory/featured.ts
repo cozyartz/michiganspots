@@ -3,39 +3,48 @@ import type { APIRoute} from 'astro';
 export const GET: APIRoute = async ({ locals }) => {
   try {
     const runtime = locals.runtime;
+
+    if (!runtime?.env?.DB) {
+      return new Response(
+        JSON.stringify({
+          error: 'Database not available',
+          businesses: []
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
     const db = runtime.env.DB;
 
-    // Get featured businesses (AI-verified, high quality score, premium tiers)
+    // Get featured businesses (prioritize AI-verified, high quality score, premium tiers)
     const featuredBusinesses = await db
       .prepare(
         `SELECT
-          bd.id,
-          bd.business_name as name,
-          bd.business_category as category,
-          bd.city,
-          bd.short_description,
-          bd.ai_quality_score as aiQualityScore,
-          bd.ai_highlights as aiHighlights,
-          bd.is_ai_verified as isAIVerified,
-          bd.phone,
-          bd.website,
-          bd.directory_tier,
-          s.image_url as imageUrl,
-          s.rating_average as rating,
-          s.rating_count as reviewCount
-         FROM business_directory bd
-         LEFT JOIN spots s ON bd.spot_id = s.id
-         WHERE bd.is_ai_verified = 1
-           AND bd.ai_quality_score >= 85
+          id,
+          business_name as name,
+          business_category as category,
+          city,
+          short_description,
+          quality_score as aiQualityScore,
+          ai_highlights as aiHighlights,
+          is_ai_verified as isAIVerified,
+          phone,
+          website,
+          directory_tier
+         FROM business_directory
          ORDER BY
            CASE
-             WHEN bd.directory_tier = 'pro' THEN 4
-             WHEN bd.directory_tier = 'growth' THEN 3
-             WHEN bd.directory_tier = 'starter' THEN 2
+             WHEN directory_tier = 'pro' THEN 4
+             WHEN directory_tier = 'growth' THEN 3
+             WHEN directory_tier = 'starter' THEN 2
              ELSE 1
            END DESC,
-           bd.ai_quality_score DESC,
-           bd.total_views DESC
+           is_ai_verified DESC,
+           quality_score DESC,
+           total_views DESC
          LIMIT 12`
       )
       .all();
@@ -55,15 +64,17 @@ export const GET: APIRoute = async ({ locals }) => {
       website: biz.website,
     }));
 
+    // Return empty array if no businesses found (this is normal when starting out)
     return new Response(
       JSON.stringify({ businesses }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Featured businesses error:', error);
+    // Return empty array instead of error to allow frontend fallback
     return new Response(
-      JSON.stringify({ error: 'Failed to fetch featured businesses', businesses: [] }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ businesses: [] }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   }
 };
