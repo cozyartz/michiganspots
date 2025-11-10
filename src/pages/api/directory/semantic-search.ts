@@ -1,5 +1,8 @@
 import type { APIRoute } from 'astro';
 import { CloudflareAIService } from '../../../lib/ai/cloudflare-ai-service';
+import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
+import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
+import { z } from 'zod';
 
 /**
  * MichiganGPT Semantic Search API (Vectorize-powered)
@@ -11,10 +14,19 @@ import { CloudflareAIService } from '../../../lib/ai/cloudflare-ai-service';
  * - Sub-100ms query times via edge computing
  * - Scalable to millions of vectors
  * - Hybrid scoring with keyword boosting
+ * - Rate limiting and bot protection
  *
  * Usage:
  * GET /api/directory/semantic-search?q=romantic+dinner+with+lake+view&limit=20
  */
+
+// Validation schema
+const semanticSearchSchema = z.object({
+  q: z.string().min(1).max(500),
+  limit: z.number().int().min(1).max(50).optional(),
+  category: z.string().max(100).optional(),
+  city: z.string().max(100).optional(),
+});
 
 interface SearchResult {
   id: number;
@@ -77,11 +89,77 @@ function calculateQualityBoost(business: any): number {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
+    // Get client info
+    const clientIP = getClientIP(request);
+    const userAgent = request.headers.get('User-Agent') || '';
+
+    // Bot detection
+    const botCheck = detectBot(userAgent, clientIP);
+    if (botCheck.isBot) {
+      console.warn(`[Security] Bot detected on semantic search: ${botCheck.reason} - IP: ${clientIP}`);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Access denied',
+          businesses: [],
+        }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Rate limiting - strict for semantic search (AI-powered, expensive)
+    const rateLimit = await checkRateLimit(clientIP, RATE_LIMITS.SEARCH);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Rate limit exceeded. Please try again later.',
+          businesses: [],
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Validate search parameters
     const url = new URL(request.url);
-    const query = url.searchParams.get('q') || '';
-    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
-    const category = url.searchParams.get('category') || '';
-    const city = url.searchParams.get('city') || '';
+    const paramsObj = {
+      q: url.searchParams.get('q') || '',
+      limit: parseInt(url.searchParams.get('limit') || '20', 10),
+      category: url.searchParams.get('category') || undefined,
+      city: url.searchParams.get('city') || undefined,
+    };
+
+    const validation = semanticSearchSchema.safeParse(paramsObj);
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Invalid search parameters',
+          businesses: [],
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
+      );
+    }
+
+    const { q: query, limit = 20, category = '', city = '' } = validation.data;
 
     const runtime = locals.runtime as {
       env: {
@@ -100,7 +178,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
         }
       );
     }
@@ -108,21 +186,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
     const db = runtime.env.DB;
     const ai = runtime.env.AI;
     const vectorize = runtime.env.VECTORIZE;
-
-    // Validate query
-    if (!query || query.trim().length === 0) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Query parameter "q" is required',
-          businesses: [],
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
 
     // Generate query embedding
     const aiService = new CloudflareAIService(ai, db);
@@ -148,7 +211,10 @@ export const GET: APIRoute = async ({ request, locals }) => {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=60',
+            'Cache-Control': 'private, max-age=30', // Short cache, private only
+            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            ...getSecurityHeaders(),
           },
         }
       );
@@ -194,7 +260,10 @@ export const GET: APIRoute = async ({ request, locals }) => {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=60',
+            'Cache-Control': 'private, max-age=30', // Short cache, private only
+            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            ...getSecurityHeaders(),
           },
         }
       );
@@ -290,21 +359,24 @@ export const GET: APIRoute = async ({ request, locals }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=60',
+          'Cache-Control': 'private, max-age=30', // Short cache, private only
+          'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+          'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+          ...getSecurityHeaders(),
         },
       }
     );
   } catch (error) {
-    console.error('Semantic search error:', error);
+    console.error('[Error] Semantic search error:', error);
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : 'An error occurred',
+        error: 'An error occurred while searching',
         businesses: [],
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
       }
     );
   }

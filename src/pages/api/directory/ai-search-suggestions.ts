@@ -1,22 +1,103 @@
 import type { APIRoute } from 'astro';
+import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
+import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
+import { z } from 'zod';
+
+// Validation schema
+const searchSuggestionSchema = z.object({
+  query: z.string().min(1).max(200),
+});
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const { query } = await request.json();
+    // Get client info
+    const clientIP = getClientIP(request);
+    const userAgent = request.headers.get('User-Agent') || '';
 
-    if (!query || query.length < 3) {
+    // Bot detection
+    const botCheck = detectBot(userAgent, clientIP);
+    if (botCheck.isBot) {
+      console.warn(`[Security] Bot detected on AI suggestions: ${botCheck.reason} - IP: ${clientIP}`);
+      return new Response(
+        JSON.stringify({ suggestions: [], insight: null }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Rate limiting - strict for AI suggestions (expensive)
+    const rateLimit = await checkRateLimit(clientIP, RATE_LIMITS.SEARCH);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          suggestions: [],
+          insight: null,
+          error: 'Rate limit exceeded',
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Parse and validate request body
+    const body = await request.json();
+    const validation = searchSuggestionSchema.safeParse(body);
+
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ suggestions: [], insight: null }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
+      );
+    }
+
+    const { query } = validation.data;
+
+    if (query.length < 3) {
       return new Response(
         JSON.stringify({
           suggestions: [],
           insight: null,
         }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
+        {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'private, max-age=60',
+            ...getSecurityHeaders(),
+          },
+        }
       );
     }
 
     const runtime = locals.runtime;
     const db = runtime.env.DB;
     const ai = runtime.env.AI;
+
+    if (!db || !ai) {
+      return new Response(
+        JSON.stringify({ suggestions: [], insight: null }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
+      );
+    }
 
     // Get AI analysis of the query
     const aiIntent = await analyzeSearchIntent(ai, query);
@@ -29,13 +110,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
         suggestions,
         insight: aiIntent,
       }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'private, max-age=60',
+          ...getSecurityHeaders(),
+        },
+      }
     );
   } catch (error) {
-    console.error('AI search suggestions error:', error);
+    console.error('[Error] AI search suggestions error:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to generate suggestions' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: 'Failed to generate suggestions', suggestions: [], insight: null }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+      }
     );
   }
 };

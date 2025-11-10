@@ -1,26 +1,104 @@
 import type { APIRoute } from 'astro';
+import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
+import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
+import { z } from 'zod';
+
+// Validation schema for chat messages
+const messageSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string().min(1).max(1000), // Limit message length
+});
+
+const chatRequestSchema = z.object({
+  sessionId: z.string().min(1).max(100),
+  messages: z.array(messageSchema).min(1).max(20), // Limit conversation history
+});
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const { sessionId, messages } = await request.json();
+    // Get client info
+    const clientIP = getClientIP(request);
+    const userAgent = request.headers.get('User-Agent') || '';
 
-    if (!messages || messages.length === 0) {
+    // Bot detection
+    const botCheck = detectBot(userAgent, clientIP);
+    if (botCheck.isBot) {
+      console.warn(`[Security] Bot detected on AI chat: ${botCheck.reason} - IP: ${clientIP}`);
       return new Response(
-        JSON.stringify({ error: 'No messages provided' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Access denied' }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getSecurityHeaders(),
+          },
+        }
       );
     }
+
+    // Rate limiting - VERY strict for AI chat (expensive operation)
+    const rateLimit = await checkRateLimit(clientIP, RATE_LIMITS.STRICT);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: 'Rate limit exceeded. Please try again later.',
+          message: "I'm currently at capacity. Please try again in a minute.",
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Parse and validate request body
+    const body = await request.json();
+    const validation = chatRequestSchema.safeParse(body);
+
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid request',
+          details: validation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', '),
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
+      );
+    }
+
+    const { sessionId, messages } = validation.data;
 
     const runtime = locals.runtime;
     const db = runtime.env.DB;
     const ai = runtime.env.AI;
+
+    if (!db || !ai) {
+      return new Response(
+        JSON.stringify({ error: 'Service temporarily unavailable' }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
+      );
+    }
 
     // Get the last user message
     const lastMessage = messages[messages.length - 1];
     if (lastMessage.role !== 'user') {
       return new Response(
         JSON.stringify({ error: 'Last message must be from user' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
       );
     }
 
@@ -38,15 +116,28 @@ export const POST: APIRoute = async ({ request, locals }) => {
         message: aiResponse.message,
         businessIds: aiResponse.businessIds || [],
       }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+          ...getSecurityHeaders(),
+        },
+      }
     );
   } catch (error) {
-    console.error('AI chat error:', error);
+    console.error('[Error] AI chat error:', error);
     return new Response(
       JSON.stringify({
         message: "I'm sorry, I'm having trouble right now. Please try again in a moment.",
       }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          ...getSecurityHeaders(),
+        },
+      }
     );
   }
 };

@@ -142,13 +142,20 @@ Allow: /
 # Block admin/internal paths
 User-agent: *
 Disallow: /api/internal/
+Disallow: /api/admin/
+Disallow: /api/dashboard/
 Disallow: /.wrangler/
 Disallow: /.astro/
 Disallow: /admin/
 Disallow: /partner/
 Disallow: /partnership-acceptance
 
-# Block known bad bots
+# Rate-limit API endpoints (rely on server-side protection)
+User-agent: *
+Disallow: /api/directory/search*
+Disallow: /api/directory/semantic-search*
+
+# Block known bad bots (SEO/scraping tools)
 User-agent: SemrushBot
 Disallow: /
 
@@ -159,6 +166,83 @@ User-agent: DotBot
 Disallow: /
 
 User-agent: MJ12bot
+Disallow: /
+
+User-agent: Screaming Frog SEO Spider
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: Petal
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# Block aggressive scrapers
+User-agent: wget
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: scrapy
+Disallow: /
+
+User-agent: python-requests
+Disallow: /
+
+User-agent: go-http-client
+Disallow: /
+
+User-agent: axios
+Disallow: /
+
+User-agent: node-fetch
+Disallow: /
+
+User-agent: HTTPClient
+Disallow: /
+
+User-agent: Java
+Disallow: /
+
+User-agent: Apache-HttpClient
+Disallow: /
+
+# Block data harvesting bots
+User-agent: EmailCollector
+Disallow: /
+
+User-agent: EmailSiphon
+Disallow: /
+
+User-agent: EmailWolf
+Disallow: /
+
+User-agent: ExtractorPro
+Disallow: /
+
+User-agent: CopyRightCheck
+Disallow: /
+
+User-agent: SiteSnagger
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: WebReaper
+Disallow: /
+
+User-agent: WebStripper
+Disallow: /
+
+User-agent: WebZIP
 Disallow: /
 
 # Host

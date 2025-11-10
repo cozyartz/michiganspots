@@ -1,4 +1,7 @@
 import type { APIRoute } from 'astro';
+import { checkRateLimit, RATE_LIMITS } from '../../../lib/security/rate-limiter';
+import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
+import { businessSchema } from '../../../lib/security/validation-schemas';
 
 /**
  * Cloudflare Worker-Powered Business Auto-Seeding API
@@ -352,6 +355,30 @@ async function insertBusiness(db: D1Database, business: BusinessInput): Promise<
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
+    // Get client info
+    const clientIP = getClientIP(request);
+
+    // Rate limiting - strict for business submissions
+    const rateLimit = await checkRateLimit(clientIP, RATE_LIMITS.STRICT);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Rate limit exceeded. Please try again later.',
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
     const runtime = locals.runtime as {
       env: {
         DB: D1Database;
@@ -359,12 +386,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
       };
     };
 
-    // Optional: Verify API secret for security
+    // REQUIRED: Verify API secret for security
     const apiSecret = request.headers.get('x-seed-api-secret');
     const expectedSecret = runtime.env.SEED_API_SECRET || 'michigan-spots-seed-2025';
 
     if (apiSecret !== expectedSecret) {
-      console.log('Unauthorized seed request - invalid API secret');
+      console.warn(`[Security] Unauthorized seed request from IP: ${clientIP}`);
       return new Response(
         JSON.stringify({
           success: false,
@@ -372,7 +399,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }),
         {
           status: 401,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
         }
       );
     }

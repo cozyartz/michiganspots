@@ -1,12 +1,89 @@
 import type { APIRoute } from 'astro';
+import { checkRateLimit, detectBot, RATE_LIMITS } from '../../../lib/security/rate-limiter';
+import { getSecurityHeaders, getClientIP } from '../../../lib/security/headers';
+import { z } from 'zod';
+
+// Validation schema
+const searchParamsSchema = z.object({
+  q: z.string().max(200).optional(),
+  category: z.string().max(100).optional(),
+  city: z.string().max(100).optional(),
+  sort: z.enum(['ai_score', 'name', 'newest']).optional(),
+});
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
+    // Get client info
+    const clientIP = getClientIP(request);
+    const userAgent = request.headers.get('User-Agent') || '';
+
+    // Bot detection
+    const botCheck = detectBot(userAgent, clientIP);
+    if (botCheck.isBot) {
+      console.warn(`[Security] Bot detected: ${botCheck.reason} - IP: ${clientIP}`);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Access denied',
+          businesses: [],
+        }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Rate limiting - strict for search to prevent scraping
+    const rateLimit = await checkRateLimit(clientIP, RATE_LIMITS.SEARCH);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Rate limit exceeded. Please try again later.',
+          businesses: [],
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+            'Retry-After': Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            ...getSecurityHeaders(),
+          },
+        }
+      );
+    }
+
+    // Validate search parameters
     const url = new URL(request.url);
-    const query = url.searchParams.get('q') || '';
-    const category = url.searchParams.get('category') || '';
-    const city = url.searchParams.get('city') || '';
-    const sort = url.searchParams.get('sort') || 'ai_score';
+    const paramsObj = {
+      q: url.searchParams.get('q') || undefined,
+      category: url.searchParams.get('category') || undefined,
+      city: url.searchParams.get('city') || undefined,
+      sort: url.searchParams.get('sort') || undefined,
+    };
+
+    const validation = searchParamsSchema.safeParse(paramsObj);
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Invalid search parameters',
+          businesses: [],
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
+        }
+      );
+    }
+
+    const { q: query = '', category = '', city = '', sort = 'ai_score' } = validation.data;
 
     const runtime = locals.runtime as {
       env: {
@@ -23,7 +100,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
         }
       );
     }
@@ -113,21 +190,24 @@ export const GET: APIRoute = async ({ request, locals }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=60', // Cache for 1 minute
+          'Cache-Control': 'private, max-age=30', // Short cache, private only
+          'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+          'X-RateLimit-Reset': new Date(rateLimit.resetTime).toISOString(),
+          ...getSecurityHeaders(),
         },
       }
     );
   } catch (error) {
-    console.error('Directory search error:', error);
+    console.error('[Error] Directory search error:', error);
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : 'An error occurred',
+        error: 'An error occurred while searching',
         businesses: [],
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getSecurityHeaders() },
       }
     );
   }
