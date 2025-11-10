@@ -20,7 +20,7 @@
  * 4. Set environment: production or development
  */
 
-import Toucan from 'toucan-js';
+import { Toucan } from 'toucan-js';
 
 export interface ErrorTrackingEnv {
   SENTRY_DSN?: string;
