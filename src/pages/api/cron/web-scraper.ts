@@ -10,6 +10,7 @@
 import type { APIRoute } from 'astro';
 import { getTodaysTarget, getEnabledTargets, type ScraperTarget } from '../../../../functions/api/cron/scraper-targets';
 import { parse } from 'node-html-parser';
+import { initErrorTracking, captureError, addBreadcrumb } from '../../../lib/error-tracking';
 
 interface ScrapedBusiness {
   business_name: string;
@@ -22,6 +23,9 @@ interface ScrapedBusiness {
 }
 
 export const GET: APIRoute = async ({ locals, request }) => {
+  // Initialize error tracking
+  const sentry = initErrorTracking(request, locals.runtime?.env || {}, locals.runtime?.ctx);
+
   const runtime = locals.runtime as {
     env: {
       DB: D1Database;
@@ -31,6 +35,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
 
   try {
     console.log('[WebScraper] Starting web scraper...');
+    addBreadcrumb(sentry, 'Web scraper started');
 
     // Check if a specific target index was requested (for bulk import)
     const url = new URL(request.url);
@@ -151,6 +156,11 @@ export const GET: APIRoute = async ({ locals, request }) => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
         results.errors++;
+        captureError(sentry, error, {
+          context: 'business_import',
+          business_name: business.business_name,
+          target: target.name,
+        });
         console.error('[WebScraper] Import error:', error);
       }
     }
@@ -193,6 +203,13 @@ export const GET: APIRoute = async ({ locals, request }) => {
       }
     );
   } catch (error) {
+    // Capture error in Sentry
+    captureError(sentry, error, {
+      endpoint: '/api/cron/web-scraper',
+      method: 'GET',
+      url: request.url,
+    });
+
     console.error('[WebScraper] Fatal error:', error);
     return new Response(
       JSON.stringify({
