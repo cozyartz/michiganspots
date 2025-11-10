@@ -1,0 +1,290 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Trees, Compass, MapPin, Home, Search, Trophy, Coffee } from 'lucide-react';
+---
+
+<Layout
+  title="404 - Lost in the Michigan Woods! | Michigan Spots"
+  description="Looks like you've wandered off the trail! Don't worry, we'll help you find your way back to civilization."
+>
+  <div class="min-h-screen bg-gradient-to-b from-forest-green/20 via-parchment-light to-lakes-blue/10 flex items-center justify-center px-4 py-12 overflow-hidden relative">
+    <!-- Floating leaves animation -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="leaf leaf-1">🍂</div>
+      <div class="leaf leaf-2">🍁</div>
+      <div class="leaf leaf-3">🍂</div>
+      <div class="leaf leaf-4">🍁</div>
+      <div class="leaf leaf-5">🍂</div>
+    </div>
+
+    <!-- Deer occasionally running across -->
+    <div class="deer">🦌</div>
+
+    <div class="container mx-auto max-w-4xl relative z-10">
+      <div class="text-center">
+        <!-- Big animated 404 -->
+        <div class="mb-8 relative">
+          <div class="text-9xl font-bold text-ink-primary opacity-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 select-none wiggle">
+            404
+          </div>
+          <div class="relative z-10 py-8">
+            <div class="inline-block animate-bounce-slow">
+              <Trees class="w-32 h-32 text-forest-green mx-auto mb-4" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Main message -->
+        <h1 class="font-display text-5xl md:text-7xl font-bold text-ink-primary mb-4 animate-fade-in">
+          Oops! You're Lost!
+        </h1>
+
+        <div class="space-y-4 mb-8 text-xl text-ink-secondary animate-fade-in-delay">
+          <p class="flex items-center justify-center gap-2">
+            <Compass class="text-copper-orange animate-spin-slow" />
+            <span>Looks like you wandered off the trail...</span>
+          </p>
+
+          <!-- Random funny messages -->
+          <div class="parchment-card p-6 max-w-2xl mx-auto">
+            <p class="font-heading text-2xl text-ink-primary mb-3">
+              🧭 Did you know?
+            </p>
+            <p class="text-ink-secondary" id="funFact">
+              Even experienced Yoopers get lost sometimes. At least you're not in the UP in winter!
+            </p>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex flex-wrap gap-4 justify-center mb-12 animate-fade-in-delay-2">
+          <a
+            href="/"
+            class="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-lakes-blue to-copper-orange text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all"
+          >
+            <Home class="group-hover:animate-bounce" />
+            <span>Take Me Home</span>
+          </a>
+
+          <a
+            href="/directory"
+            class="group flex items-center gap-2 px-8 py-4 bg-white border-2 border-lakes-blue text-lakes-blue rounded-xl font-bold text-lg hover:bg-lakes-blue hover:text-white transition-all"
+          >
+            <Search class="group-hover:rotate-12 transition-transform" />
+            <span>Find a Spot</span>
+          </a>
+
+          <a
+            href="/blog"
+            class="group flex items-center gap-2 px-8 py-4 bg-white border-2 border-copper-orange text-copper-orange rounded-xl font-bold text-lg hover:bg-copper-orange hover:text-white transition-all"
+          >
+            <Trophy class="group-hover:animate-pulse" />
+            <span>Read Blog</span>
+          </a>
+        </div>
+
+        <!-- Helpful links -->
+        <div class="parchment-card p-8 max-w-2xl mx-auto">
+          <p class="font-heading text-xl text-ink-primary mb-4">
+            🗺️ Popular Destinations:
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-left">
+            <a href="/directory" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
+              <MapPin size={16} />
+              <span>Business Directory</span>
+            </a>
+            <a href="/partnerships" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
+              <MapPin size={16} />
+              <span>Partnerships</span>
+            </a>
+            <a href="/about" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
+              <MapPin size={16} />
+              <span>About Us</span>
+            </a>
+            <a href="/blog" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
+              <MapPin size={16} />
+              <span>Blog</span>
+            </a>
+            <a href="/directory/claim" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
+              <MapPin size={16} />
+              <span>Claim Business</span>
+            </a>
+            <a href="/" class="flex items-center gap-2 text-lakes-blue hover:text-copper-orange transition-colors">
+              <MapPin size={16} />
+              <span>Home</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Fun Michigan fact at bottom -->
+        <div class="mt-12 text-center animate-fade-in-delay-3">
+          <p class="text-sm text-ink-secondary italic">
+            💡 Michigan Fun Fact: Michigan has more lighthouses than any other state - <br class="hidden md:inline" />
+            maybe you should've brought one with you!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Random fun facts that rotate
+  const funFacts = [
+    "Even experienced Yoopers get lost sometimes. At least you're not in the UP in winter!",
+    "This page is more lost than a tourist looking for a Vernors in California.",
+    "You've ventured further off-map than a Mackinac Island fudge tourist without GPS.",
+    "This is more confusing than trying to explain what a 'Michigan Left' is to out-of-staters.",
+    "You're as lost as someone looking for a Culver's in Canada. (Hint: They don't exist there.)",
+    "Fun fact: You just discovered Michigan's 84,350th lake! Wait, no... that's still just Lake Michigan.",
+    "At least you didn't end up in Ohio. That would be a real emergency.",
+    "This page is harder to find than a pasty shop south of the bridge.",
+    "You've wandered further than someone trying to find their car at Michigan's Adventure.",
+    "This is what happens when you trust a GPS that thinks 'Pure Michigan' is just a slogan.",
+  ];
+
+  // Rotate fun fact every 5 seconds
+  let factIndex = 0;
+  const factElement = document.getElementById('funFact');
+
+  if (factElement) {
+    setInterval(() => {
+      factIndex = (factIndex + 1) % funFacts.length;
+      factElement.style.opacity = '0';
+
+      setTimeout(() => {
+        factElement.textContent = funFacts[factIndex];
+        factElement.style.opacity = '1';
+      }, 300);
+    }, 5000);
+  }
+</script>
+
+<style>
+  .parchment-card {
+    background: linear-gradient(135deg, #F4EFE5 0%, #E8DCC8 100%);
+    border: 2px solid #D4C4A8;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Wiggling 404 background */
+  @keyframes wiggle {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-2deg); }
+    50% { transform: translate(-50%, -50%) rotate(2deg); }
+  }
+
+  .wiggle {
+    animation: wiggle 3s ease-in-out infinite;
+  }
+
+  /* Slow bounce for tree icon */
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 2s ease-in-out infinite;
+  }
+
+  /* Slow spin for compass */
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+
+  /* Fade in animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.8s ease-out;
+  }
+
+  .animate-fade-in-delay {
+    animation: fade-in 0.8s ease-out 0.2s both;
+  }
+
+  .animate-fade-in-delay-2 {
+    animation: fade-in 0.8s ease-out 0.4s both;
+  }
+
+  .animate-fade-in-delay-3 {
+    animation: fade-in 0.8s ease-out 0.6s both;
+  }
+
+  /* Falling leaves */
+  .leaf {
+    position: absolute;
+    font-size: 2rem;
+    animation: fall linear infinite;
+    opacity: 0.6;
+  }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(-10vh) rotate(0deg);
+    }
+    100% {
+      transform: translateY(110vh) rotate(360deg);
+    }
+  }
+
+  .leaf-1 { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+  .leaf-2 { left: 30%; animation-duration: 12s; animation-delay: 2s; }
+  .leaf-3 { left: 50%; animation-duration: 18s; animation-delay: 4s; }
+  .leaf-4 { left: 70%; animation-duration: 14s; animation-delay: 1s; }
+  .leaf-5 { left: 90%; animation-duration: 16s; animation-delay: 3s; }
+
+  /* Deer running across */
+  .deer {
+    position: absolute;
+    font-size: 3rem;
+    bottom: 20%;
+    animation: run-deer 15s linear infinite;
+  }
+
+  @keyframes run-deer {
+    0% {
+      left: -10%;
+      transform: scaleX(1);
+    }
+    45% {
+      left: 110%;
+      transform: scaleX(1);
+    }
+    45.1% {
+      transform: scaleX(-1);
+    }
+    50% {
+      left: 110%;
+      transform: scaleX(-1);
+    }
+    95% {
+      left: -10%;
+      transform: scaleX(-1);
+    }
+    100% {
+      left: -10%;
+      transform: scaleX(-1);
+    }
+  }
+
+  /* Fun fact fade transition */
+  #funFact {
+    transition: opacity 0.3s ease-in-out;
+  }
+</style>
+</Layout>
