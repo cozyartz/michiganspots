@@ -37,13 +37,13 @@ export const GET: APIRoute = async ({ locals, request }) => {
     console.log('[WebScraper] Starting web scraper...');
     addBreadcrumb(sentry, 'Web scraper started');
 
-    // Check if a specific target index was requested (for bulk import)
+    // Check if a specific target index was requested (for manual testing)
     const url = new URL(request.url);
     const targetIndexParam = url.searchParams.get('target');
 
     let target;
     if (targetIndexParam !== null) {
-      // Manual target selection by index (for bulk import)
+      // Manual target selection by index
       const targetIndex = parseInt(targetIndexParam, 10);
       const enabledTargets = getEnabledTargets();
       if (targetIndex >= 0 && targetIndex < enabledTargets.length) {
