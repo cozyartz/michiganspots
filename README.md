@@ -167,6 +167,63 @@ This tri-platform architecture (Reddit + Cloudflare + AI) enables a **massively 
 
 ---
 
+## 🛠️ Development
+
+### Local Development Setup
+
+Michigan Spots has two development modes depending on what you're working on:
+
+#### 🎨 **Frontend Development Mode** (Local Database)
+```bash
+npm run dev
+```
+**Use this when:**
+- Working on UI/UX and design changes
+- Developing new page layouts or components
+- Testing static content and navigation
+- Making styling adjustments
+
+**Database:** Uses local `.wrangler/state/v3/d1/` SQLite files (26 sample businesses)
+
+---
+
+#### 🗄️ **Remote Database Mode** (Production Database)
+```bash
+npm run dev:remote
+```
+**Use this when:**
+- Testing business claim/signup forms
+- Testing directory advertising upgrades
+- Testing Stripe payment flows
+- Verifying business directory features
+- Any feature that writes to `business_directory` table
+
+**Database:** Uses remote Cloudflare D1 production database (304 live businesses)
+
+⚠️ **WARNING**: This mode writes to the PRODUCTION database. Be careful when testing forms that create or modify data.
+
+---
+
+### Database Information
+
+**Production Database:**
+- Database ID: `3e7a780d-0058-43af-9e17-96d7925843b3`
+- Database Name: `michiganspot-db`
+- Total Businesses: 304
+- Categories: 12 standard categories (Restaurants, Coffee Shops, Shopping, etc.)
+
+**Execute remote queries:**
+```bash
+npx wrangler d1 execute michiganspot-db --remote --command "SELECT COUNT(*) FROM business_directory"
+```
+
+**Backup database:**
+```bash
+npx wrangler d1 execute michiganspot-db --remote --command "SELECT * FROM business_directory" --json > database/backups/backup_$(date +%Y%m%d_%H%M%S).json
+```
+
+---
+
 ## 📚 Documentation
 
 <div align="center">

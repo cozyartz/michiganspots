@@ -159,6 +159,13 @@ async function handleCheckoutCompleted(session: any, db: D1Database, env?: Env) 
   const customerId = session.customer;
   const subscriptionId = session.subscription;
   const paymentIntentId = session.payment_intent;
+  const productType = session.metadata?.product_type;
+
+  // Handle directory advertising subscriptions separately
+  if (productType === 'directory_advertising') {
+    await handleDirectorySubscription(session, db, env);
+    return;
+  }
 
   // Update payment record
   await db
@@ -336,8 +343,45 @@ async function handlePaymentFailed(paymentIntent: any, db: D1Database) {
 
 async function handleSubscriptionUpdated(subscription: any, db: D1Database) {
   const customerId = subscription.customer;
+  const subscriptionId = subscription.id;
   const endsAt = new Date(subscription.current_period_end * 1000);
+  const status = subscription.status; // active, past_due, canceled, etc.
 
+  // Check if this is a directory subscription
+  const business = await db
+    .prepare('SELECT id FROM business_directory WHERE stripe_subscription_id = ?')
+    .bind(subscriptionId)
+    .first();
+
+  if (business) {
+    // Handle directory subscription update
+    const paymentStatus = status === 'active' ? 'active' : status === 'past_due' ? 'past_due' : 'inactive';
+
+    await db
+      .prepare(
+        `UPDATE business_directory
+         SET payment_status = ?,
+             subscription_end_date = ?,
+             next_billing_date = ?,
+             tier_end_date = ?,
+             updated_at = ?
+         WHERE id = ?`
+      )
+      .bind(
+        paymentStatus,
+        endsAt.toISOString(),
+        endsAt.toISOString(),
+        endsAt.toISOString(),
+        new Date().toISOString(),
+        business.id
+      )
+      .run();
+
+    console.log(`✅ Directory subscription updated: Business #${business.id}, Status: ${paymentStatus}`);
+    return;
+  }
+
+  // Handle partnership subscriptions
   await db
     .prepare('UPDATE stripe_customers SET has_active_subscription = 1, subscription_ends_at = ?, updated_at = ? WHERE stripe_customer_id = ?')
     .bind(endsAt.toISOString(), new Date().toISOString(), customerId)
@@ -352,7 +396,40 @@ async function handleSubscriptionUpdated(subscription: any, db: D1Database) {
 
 async function handleSubscriptionDeleted(subscription: any, db: D1Database) {
   const customerId = subscription.customer;
+  const subscriptionId = subscription.id;
 
+  // Check if this is a directory subscription
+  const business = await db
+    .prepare('SELECT id, directory_tier FROM business_directory WHERE stripe_subscription_id = ?')
+    .bind(subscriptionId)
+    .first();
+
+  if (business) {
+    // Downgrade directory business to FREE tier
+    await db
+      .prepare(
+        `UPDATE business_directory
+         SET payment_status = 'canceled',
+             directory_tier = 'free',
+             stripe_subscription_id = NULL,
+             tier_end_date = ?,
+             subscription_end_date = ?,
+             updated_at = ?
+         WHERE id = ?`
+      )
+      .bind(
+        new Date().toISOString(),
+        new Date().toISOString(),
+        new Date().toISOString(),
+        business.id
+      )
+      .run();
+
+    console.log(`⚠️ Directory subscription canceled: Business #${business.id} downgraded to FREE tier`);
+    return;
+  }
+
+  // Handle partnership cancellation
   await db
     .prepare('UPDATE stripe_customers SET has_active_subscription = 0, updated_at = ? WHERE stripe_customer_id = ?')
     .bind(new Date().toISOString(), customerId)
@@ -369,7 +446,14 @@ async function handleInvoicePaymentSucceeded(invoice: any, db: D1Database) {
   const customerId = invoice.customer;
   const subscriptionId = invoice.subscription;
 
-  // Log recurring payment
+  // Check if this is a directory subscription renewal
+  const subscription = await getStripeSubscription(subscriptionId, db);
+  if (subscription?.metadata?.product_type === 'directory_advertising') {
+    await handleDirectorySubscriptionRenewal(invoice, db);
+    return;
+  }
+
+  // Log recurring payment for partnerships
   if (subscriptionId) {
     const customer = await db
       .prepare('SELECT * FROM stripe_customers WHERE stripe_customer_id = ?')
@@ -398,4 +482,129 @@ async function handleInvoicePaymentSucceeded(invoice: any, db: D1Database) {
         .run();
     }
   }
+}
+
+/**
+ * Handle directory advertising subscription checkout
+ */
+async function handleDirectorySubscription(session: any, db: D1Database, env?: Env) {
+  const businessId = session.metadata?.business_id;
+  const directoryTier = session.metadata?.directory_tier;
+  const subscriptionId = session.subscription;
+  const email = session.customer_details?.email || session.metadata?.email;
+
+  if (!businessId || !directoryTier) {
+    console.error('Missing business_id or directory_tier in session metadata');
+    return;
+  }
+
+  // Calculate subscription dates (monthly recurring)
+  const now = new Date();
+  const tierStartDate = now.toISOString();
+  const subscriptionEndDate = new Date(now);
+  subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1); // Monthly subscription
+  const nextBillingDate = subscriptionEndDate.toISOString();
+
+  // Update business_directory with subscription details
+  await db
+    .prepare(
+      `UPDATE business_directory
+       SET stripe_subscription_id = ?,
+           payment_status = 'active',
+           directory_tier = ?,
+           tier_start_date = ?,
+           tier_end_date = ?,
+           subscription_start_date = ?,
+           subscription_end_date = ?,
+           next_billing_date = ?,
+           last_payment_date = ?,
+           owner_email = ?,
+           is_claimed = 1,
+           ai_processing_status = 'pending',
+           updated_at = ?
+       WHERE id = ?`
+    )
+    .bind(
+      subscriptionId,
+      directoryTier,
+      tierStartDate,
+      nextBillingDate, // tier_end_date matches next billing
+      tierStartDate,
+      nextBillingDate,
+      nextBillingDate,
+      now.toISOString(),
+      email,
+      now.toISOString(),
+      businessId
+    )
+    .run();
+
+  console.log(`✅ Directory subscription activated: Business #${businessId}, Tier: ${directoryTier}, Subscription: ${subscriptionId}`);
+
+  // TODO: Trigger AI processing for the business
+  // TODO: Send confirmation email to business owner
+}
+
+/**
+ * Handle directory subscription renewal payments
+ */
+async function handleDirectorySubscriptionRenewal(invoice: any, db: D1Database) {
+  const subscriptionId = invoice.subscription;
+
+  // Find the business associated with this subscription
+  const business = await db
+    .prepare('SELECT id, directory_tier FROM business_directory WHERE stripe_subscription_id = ?')
+    .bind(subscriptionId)
+    .first();
+
+  if (!business) {
+    console.error(`No business found for subscription: ${subscriptionId}`);
+    return;
+  }
+
+  // Update billing dates for next month
+  const now = new Date();
+  const nextBillingDate = new Date(now);
+  nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+
+  await db
+    .prepare(
+      `UPDATE business_directory
+       SET payment_status = 'active',
+           last_payment_date = ?,
+           next_billing_date = ?,
+           tier_end_date = ?,
+           subscription_end_date = ?,
+           updated_at = ?
+       WHERE id = ?`
+    )
+    .bind(
+      now.toISOString(),
+      nextBillingDate.toISOString(),
+      nextBillingDate.toISOString(),
+      nextBillingDate.toISOString(),
+      now.toISOString(),
+      business.id
+    )
+    .run();
+
+  console.log(`✅ Directory subscription renewed: Business #${business.id}, Amount: $${invoice.amount_paid / 100}`);
+}
+
+/**
+ * Helper to get Stripe subscription details (stub for now)
+ */
+async function getStripeSubscription(subscriptionId: string, db: D1Database) {
+  // In a real implementation, we'd fetch from Stripe API or cache in DB
+  // For now, check business_directory table
+  const business = await db
+    .prepare('SELECT id FROM business_directory WHERE stripe_subscription_id = ?')
+    .bind(subscriptionId)
+    .first();
+
+  if (business) {
+    return { metadata: { product_type: 'directory_advertising' } };
+  }
+
+  return null;
 }

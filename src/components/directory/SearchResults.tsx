@@ -43,26 +43,11 @@ const CATEGORIES = [
   'Real Estate',
 ];
 
-const CITIES = [
-  'All Cities',
-  'Detroit',
-  'Grand Rapids',
-  'Ann Arbor',
-  'Lansing',
-  'Battle Creek',
-  'Kalamazoo',
-  'Traverse City',
-  'Marquette',
-  'Saginaw',
-  'Flint',
-  'Holland',
-  'Muskegon',
-];
-
 export function SearchResults({ initialQuery = '', initialCategory = '', initialCity = '' }: SearchResultsProps) {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cities, setCities] = useState<string[]>(['All Cities']);
 
   const [query, setQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || 'All Categories');
@@ -70,9 +55,28 @@ export function SearchResults({ initialQuery = '', initialCategory = '', initial
   const [sortBy, setSortBy] = useState<'ai_score' | 'name' | 'newest'>('ai_score');
   const [showFilters, setShowFilters] = useState(false);
 
+  // Load cities from database
+  useEffect(() => {
+    fetchCities();
+  }, []);
+
   useEffect(() => {
     fetchBusinesses();
   }, [query, selectedCategory, selectedCity, sortBy]);
+
+  const fetchCities = async () => {
+    try {
+      const response = await fetch('/api/directory/cities');
+      if (response.ok) {
+        const data = await response.json();
+        const cityList = ['All Cities', ...data.cities.map((c: any) => c.city)];
+        setCities(cityList);
+      }
+    } catch (err) {
+      console.error('Error fetching cities:', err);
+      // Keep default cities list if fetch fails
+    }
+  };
 
   const fetchBusinesses = async () => {
     setLoading(true);
@@ -152,7 +156,7 @@ export function SearchResults({ initialQuery = '', initialCategory = '', initial
                 onChange={(e) => setSelectedCity(e.target.value)}
                 className="px-4 py-2 border-2 border-parchment-mid rounded-lg focus:border-lakes-blue focus:outline-none"
               >
-                {CITIES.map(city => (
+                {cities.map(city => (
                   <option key={city} value={city}>{city}</option>
                 ))}
               </select>

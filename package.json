@@ -4,6 +4,7 @@
   "description": "Michigan Spots - Discover Michigan's Hidden Gems",
   "scripts": {
     "dev": "astro dev",
+    "dev:remote": "npx wrangler pages dev --live-reload -- npx astro dev",
     "build": "astro build && node scripts/fix-routes.js",
     "preview": "astro preview",
     "deploy": "npm run build && npx wrangler pages deploy ./dist"

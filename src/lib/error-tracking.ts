@@ -134,10 +134,21 @@ export function startTransaction(
     return null;
   }
 
-  return sentry.startTransaction({
-    op: operation,
-    name,
-  });
+  // Check if startTransaction method exists
+  if (typeof (sentry as any).startTransaction !== 'function') {
+    console.warn('[Sentry] startTransaction not available in current Toucan version');
+    return null;
+  }
+
+  try {
+    return (sentry as any).startTransaction({
+      op: operation,
+      name,
+    });
+  } catch (error) {
+    console.warn('[Sentry] Failed to start transaction:', error);
+    return null;
+  }
 }
 
 /**
