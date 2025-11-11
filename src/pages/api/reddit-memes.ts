@@ -7,7 +7,7 @@ const cache = {
   CACHE_DURATION: 12 * 60 * 60 * 1000 // 12 hours (2 calls per day)
 };
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async () => {
   try {
     // Check if we have valid cached data
     const now = Date.now();
@@ -47,7 +47,7 @@ export const GET: APIRoute = async ({ request }) => {
 
         if (!response.ok) continue;
 
-        const data = await response.json();
+        const data = await response.json() as any;
         const posts = data.data.children
           .map((child: any) => child.data)
           .filter((post: any) => {
