@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 const cache = {
   data: null as any,
   timestamp: 0,
-  CACHE_DURATION: 5 * 60 * 1000 // 5 minutes
+  CACHE_DURATION: 12 * 60 * 60 * 1000 // 12 hours (2 calls per day)
 };
 
 export const GET: APIRoute = async ({ request }) => {
@@ -16,7 +16,7 @@ export const GET: APIRoute = async ({ request }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=300', // 5 minutes browser cache
+          'Cache-Control': 'public, max-age=43200', // 12 hours browser cache
         }
       });
     }
@@ -101,7 +101,7 @@ export const GET: APIRoute = async ({ request }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=300',
+        'Cache-Control': 'public, max-age=43200',
       }
     });
 
