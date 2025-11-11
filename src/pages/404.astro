@@ -1,642 +1,497 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Fetch random featured businesses for the 404 page
+const runtime = Astro.locals.runtime as {
+  env: {
+    DB: D1Database;
+  };
+};
+
+let featuredBusinesses = [];
+if (runtime?.env?.DB) {
+  try {
+    const result = await runtime.env.DB
+      .prepare(
+        `SELECT id, business_name, business_category, city, short_description
+         FROM business_directory
+         WHERE ai_processing_status = 'completed'
+         ORDER BY RANDOM()
+         LIMIT 4`
+      )
+      .all();
+    featuredBusinesses = result.results || [];
+  } catch (error) {
+    console.error('Error fetching featured businesses:', error);
+  }
+}
 ---
 
 <Layout
-  title="404 - Incomplete Pass! | Michigan Spots"
-  description="This page went offsides! But don't worry - kick some field goals while you're here. Go Blue!"
+  title="404 - This Spot Doesn't Exist Yet | Michigan Spots"
+  description="We couldn't find that page, but we can help you discover amazing Michigan businesses instead."
 >
-  <div class="min-h-screen overflow-hidden relative bg-michigan-blue" id="errorPage">
-    <!-- Football field background pattern -->
-    <div class="field-pattern"></div>
+  <div class="min-h-screen relative bg-gradient-to-b from-parchment-light to-white" id="errorPage">
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
 
-    <!-- Main content -->
-    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-      <!-- Block M watermark -->
-      <div class="block-m-watermark">M</div>
+      <!-- Great Lakes Compass -->
+      <div class="compass-container">
+        <svg class="compass" viewBox="0 0 200 200" width="200" height="200">
+          <!-- Outer circle -->
+          <circle cx="100" cy="100" r="95" fill="none" stroke="#00274C" stroke-width="2" opacity="0.2"/>
 
-      <!-- Score display -->
-      <div class="scoreboard">
-        <div class="score-label">FIELD GOALS</div>
-        <div class="score-value" id="scoreDisplay">0</div>
+          <!-- Cardinal directions with Great Lakes -->
+          <g class="compass-labels">
+            <text x="100" y="25" text-anchor="middle" class="compass-text" fill="#00274C">Superior</text>
+            <text x="175" y="105" text-anchor="middle" class="compass-text" fill="#00274C">Huron</text>
+            <text x="100" y="185" text-anchor="middle" class="compass-text" fill="#00274C">Erie</text>
+            <text x="25" y="105" text-anchor="middle" class="compass-text" fill="#00274C">Michigan</text>
+          </g>
+
+          <!-- Rotating compass needle -->
+          <g class="compass-needle" transform-origin="100 100">
+            <polygon points="100,40 105,100 100,110 95,100" fill="#CC6600" stroke="#00274C" stroke-width="1"/>
+            <polygon points="100,110 105,100 100,160 95,100" fill="#00274C" stroke="#00274C" stroke-width="1"/>
+            <circle cx="100" cy="100" r="8" fill="#FFCB05" stroke="#00274C" stroke-width="2"/>
+          </g>
+
+          <!-- Tick marks -->
+          <g class="tick-marks" opacity="0.3">
+            {Array.from({length: 12}).map((_, i) => {
+              const angle = (i * 30) - 90;
+              const rad = (angle * Math.PI) / 180;
+              const x1 = 100 + 85 * Math.cos(rad);
+              const y1 = 100 + 85 * Math.sin(rad);
+              const x2 = 100 + 95 * Math.cos(rad);
+              const y2 = 100 + 95 * Math.sin(rad);
+              return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#00274C" stroke-width="2"/>`;
+            }).join('')}
+          </g>
+        </svg>
       </div>
 
-      <!-- 404 Yard Marker -->
-      <div class="yard-marker mb-8">
-        <div class="yard-number">404</div>
-        <div class="yard-line"></div>
-      </div>
-
-      <!-- Error Message -->
-      <div class="text-center mb-6">
-        <h1 class="error-headline">INCOMPLETE PASS!</h1>
-        <p class="error-subtext" id="rotatingMessage">
-          This page took a delay of game penalty
+      <!-- Main Error Message -->
+      <div class="text-center mb-8">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">This Michigan Spot Doesn't Exist Yet</h2>
+        <p class="error-description">
+          Looks like you've drifted off course. Let's help you discover the right spot.
         </p>
       </div>
 
-      <!-- Field Goal Game -->
-      <div class="game-container">
-        <h2 class="game-title">FIELD GOAL CHALLENGE</h2>
-        <p class="game-instructions">Click and drag the football to kick!</p>
+      <!-- Search Bar -->
+      <div class="search-section">
+        <form action="/directory" method="get" class="search-form">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input
+              type="text"
+              name="search"
+              placeholder="Search for Michigan businesses, restaurants, coffee shops..."
+              class="search-input"
+              autocomplete="off"
+            />
+          </div>
+          <button type="submit" class="search-button">
+            Search Spots
+          </button>
+        </form>
 
-        <canvas id="gameCanvas" width="400" height="500"></canvas>
-
-        <div class="achievement" id="achievement"></div>
+        <!-- Quick Category Filters -->
+        <div class="category-chips">
+          <a href="/directory?category=Restaurants" class="category-chip">Restaurants</a>
+          <a href="/directory?category=Coffee Shops" class="category-chip">Coffee Shops</a>
+          <a href="/directory?category=Shopping" class="category-chip">Shopping</a>
+          <a href="/directory?category=Services" class="category-chip">Services</a>
+        </div>
       </div>
 
-      <!-- Michigan Football Facts -->
-      <div class="trivia-box">
-        <div class="trivia-label">WOLVERINE FACT</div>
-        <p class="trivia-text" id="triviaText">
-          Michigan has won 11 national championships - more than any other FBS program
-        </p>
+      <!-- Featured Businesses -->
+      {featuredBusinesses.length > 0 && (
+        <div class="featured-section">
+          <h3 class="featured-title">While You're Here, Discover These Spots:</h3>
+          <div class="featured-grid">
+            {featuredBusinesses.map((business: any) => (
+              <a href={`/directory/${business.id}`} class="business-card">
+                <div class="business-category">{business.business_category}</div>
+                <h4 class="business-name">{business.business_name}</h4>
+                <div class="business-location">{business.city}, MI</div>
+                {business.short_description && (
+                  <p class="business-description">{business.short_description}</p>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Navigation Options -->
+      <div class="nav-section">
+        <a href="/" class="nav-link nav-link-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Return Home
+        </a>
+        <a href="/directory" class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Browse All Spots
+        </a>
+        <a href="/blog" class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          Read Our Blog
+        </a>
       </div>
 
-      <!-- Navigation Buttons -->
-      <div class="nav-buttons">
-        <a href="/" class="nav-btn nav-btn-primary">
-          <span class="btn-text">RETURN TO HOME FIELD</span>
-        </a>
-        <a href="/directory" class="nav-btn nav-btn-secondary">
-          <span class="btn-text">BROWSE THE PLAYBOOK</span>
-        </a>
-        <a href="/blog" class="nav-btn nav-btn-secondary">
-          <span class="btn-text">SCOUTING REPORT</span>
-        </a>
-      </div>
-
-      <!-- Go Blue footer -->
-      <div class="go-blue">GO BLUE!</div>
     </div>
   </div>
 </Layout>
 
 <script>
-  // Michigan Football Trivia
-  const trivia = [
-    "Michigan has won 11 national championships - more than any other FBS program",
-    "The Big House seats 107,601 fans - the largest stadium in the USA",
-    "Michigan's winged helmet design was introduced by Fritz Crisler in 1938",
-    "The Wolverines have won 45 Big Ten championships",
-    "Michigan Stadium is nicknamed 'The Big House' and opened in 1927",
-    "Tom Brady was drafted 199th overall after playing at Michigan",
-    "Michigan's fight song 'The Victors' was written in 1898",
-    "The Michigan-Ohio State rivalry began in 1897",
-    "Charles Woodson won the Heisman Trophy in 1997",
-    "Michigan has the most all-time wins in college football history"
-  ];
+  // Animate compass needle rotation
+  const needle = document.querySelector('.compass-needle');
+  if (needle) {
+    let rotation = 0;
 
-  // Error messages
-  const errorMessages = [
-    "This page took a delay of game penalty",
-    "Looks like this URL is still in the transfer portal",
-    "This page got sacked behind the line of scrimmage",
-    "404 yards - we're out of field goal range!",
-    "This page fumbled at the goal line",
-    "Incomplete pass! The page was overthrown",
-    "This URL is on the injury report - questionable to return",
-    "The refs called this page back for holding"
-  ];
-
-  let triviaIndex = 0;
-  let messageIndex = 0;
-
-  // Rotate trivia every 8 seconds
-  setInterval(() => {
-    triviaIndex = (triviaIndex + 1) % trivia.length;
-    const triviaEl = document.getElementById('triviaText');
-    if (triviaEl) {
-      triviaEl.style.opacity = '0';
-      setTimeout(() => {
-        triviaEl.textContent = trivia[triviaIndex];
-        triviaEl.style.opacity = '1';
-      }, 300);
-    }
-  }, 8000);
-
-  // Rotate error messages every 6 seconds
-  setInterval(() => {
-    messageIndex = (messageIndex + 1) % errorMessages.length;
-    const msgEl = document.getElementById('rotatingMessage');
-    if (msgEl) {
-      msgEl.style.opacity = '0';
-      setTimeout(() => {
-        msgEl.textContent = errorMessages[messageIndex];
-        msgEl.style.opacity = '1';
-      }, 300);
-    }
-  }, 6000);
-
-  // Field Goal Game
-  const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d')!;
-  const scoreDisplay = document.getElementById('scoreDisplay')!;
-  const achievementEl = document.getElementById('achievement')!;
-
-  let score = 0;
-  let isDragging = false;
-  let dragStart = { x: 0, y: 0 };
-  let ball = { x: 200, y: 420, vx: 0, vy: 0, radius: 12 };
-  let isKicking = false;
-
-  // Goal posts
-  const leftPost = { x: 150, y: 50, width: 8, height: 100 };
-  const rightPost = { x: 242, y: 50, width: 8, height: 100 };
-  const crossbar = { x: 150, y: 50, width: 100, height: 8 };
-
-  function drawField() {
-    // Field
-    ctx.fillStyle = '#2E7D32';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Yard lines
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.lineWidth = 2;
-    for (let y = 100; y < canvas.height; y += 50) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
+    function rotateNeedle() {
+      rotation += 0.5;
+      needle.setAttribute('transform', `rotate(${rotation} 100 100)`);
+      requestAnimationFrame(rotateNeedle);
     }
 
-    // Goal posts
-    ctx.fillStyle = '#FFD700';
-    ctx.fillRect(leftPost.x, leftPost.y, leftPost.width, leftPost.height);
-    ctx.fillRect(rightPost.x, rightPost.y, rightPost.width, rightPost.height);
-    ctx.fillRect(crossbar.x, crossbar.y, crossbar.width, crossbar.height);
+    rotateNeedle();
   }
 
-  function drawBall() {
-    ctx.fillStyle = '#8B4513';
-    ctx.beginPath();
-    ctx.ellipse(ball.x, ball.y, ball.radius, ball.radius * 0.7, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Laces
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 1;
-    for (let i = -4; i <= 4; i += 2) {
-      ctx.beginPath();
-      ctx.moveTo(ball.x + i, ball.y - 3);
-      ctx.lineTo(ball.x + i, ball.y + 3);
-      ctx.stroke();
+  // Focus search input on load (desktop only)
+  if (window.innerWidth > 768) {
+    const searchInput = document.querySelector('.search-input') as HTMLInputElement;
+    if (searchInput) {
+      setTimeout(() => searchInput.focus(), 100);
     }
   }
-
-  function drawPowerIndicator() {
-    if (isDragging) {
-      const dx = dragStart.x - ball.x;
-      const dy = dragStart.y - ball.y;
-      const power = Math.min(Math.sqrt(dx * dx + dy * dy) / 100, 1);
-
-      ctx.strokeStyle = '#FFCB05';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(ball.x, ball.y);
-      ctx.lineTo(dragStart.x, dragStart.y);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Power meter
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.fillRect(10, 10, 120, 30);
-      ctx.fillStyle = '#FFCB05';
-      ctx.fillRect(15, 15, power * 110, 20);
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 12px Arial';
-      ctx.fillText('POWER', 45, 30);
-    }
-  }
-
-  function updatePhysics() {
-    if (isKicking) {
-      ball.vy += 0.3; // gravity
-      ball.x += ball.vx;
-      ball.y += ball.vy;
-
-      // Check if ball went through goal posts
-      if (ball.y < crossbar.y && ball.y > crossbar.y - 20) {
-        if (ball.x > leftPost.x + leftPost.width && ball.x < rightPost.x) {
-          // GOAL!
-          score++;
-          scoreDisplay.textContent = score.toString();
-          showAchievement();
-          sessionStorage.setItem('michigan404Score', score.toString());
-          resetBall();
-        }
-      }
-
-      // Ball out of bounds
-      if (ball.y < -50 || ball.x < -50 || ball.x > canvas.width + 50) {
-        resetBall();
-      }
-
-      // Ball hit ground
-      if (ball.y > 420) {
-        resetBall();
-      }
-    }
-  }
-
-  function resetBall() {
-    ball.x = 200;
-    ball.y = 420;
-    ball.vx = 0;
-    ball.vy = 0;
-    isKicking = false;
-  }
-
-  function showAchievement() {
-    let message = 'GO BLUE!';
-    if (score === 5) message = 'WOLVERINE KICKER!';
-    if (score === 10) message = 'ALL-AMERICAN!';
-    if (score === 15) message = 'HEISMAN CANDIDATE!';
-    if (score === 20) message = 'HALL OF FAME!';
-
-    achievementEl.textContent = message;
-    achievementEl.style.display = 'block';
-    achievementEl.style.animation = 'celebrate 1s ease-out';
-
-    setTimeout(() => {
-      achievementEl.style.display = 'none';
-    }, 2000);
-  }
-
-  function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawField();
-    updatePhysics();
-    drawBall();
-    drawPowerIndicator();
-    requestAnimationFrame(gameLoop);
-  }
-
-  // Mouse/Touch events
-  canvas.addEventListener('mousedown', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
-    if (dist < ball.radius + 10 && !isKicking) {
-      isDragging = true;
-      dragStart = { x, y };
-    }
-  });
-
-  canvas.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      const rect = canvas.getBoundingClientRect();
-      dragStart.x = e.clientX - rect.left;
-      dragStart.y = e.clientY - rect.top;
-    }
-  });
-
-  canvas.addEventListener('mouseup', () => {
-    if (isDragging) {
-      const dx = (dragStart.x - ball.x) * -0.15;
-      const dy = (dragStart.y - ball.y) * -0.15;
-      ball.vx = dx;
-      ball.vy = dy;
-      isKicking = true;
-      isDragging = false;
-    }
-  });
-
-  // Touch support
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    const touch = e.touches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-
-    const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
-    if (dist < ball.radius + 10 && !isKicking) {
-      isDragging = true;
-      dragStart = { x, y };
-    }
-  });
-
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    if (isDragging) {
-      const rect = canvas.getBoundingClientRect();
-      const touch = e.touches[0];
-      dragStart.x = touch.clientX - rect.left;
-      dragStart.y = touch.clientY - rect.top;
-    }
-  });
-
-  canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    if (isDragging) {
-      const dx = (dragStart.x - ball.x) * -0.15;
-      const dy = (dragStart.y - ball.y) * -0.15;
-      ball.vx = dx;
-      ball.vy = dy;
-      isKicking = true;
-      isDragging = false;
-    }
-  });
-
-  // Load saved score
-  const savedScore = sessionStorage.getItem('michigan404Score');
-  if (savedScore) {
-    score = parseInt(savedScore);
-    scoreDisplay.textContent = score.toString();
-  }
-
-  // Start game loop
-  gameLoop();
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap');
-
-  /* Michigan Colors */
-  :root {
-    --maize: #FFCB05;
-    --blue: #00274C;
+  /* Compass Container */
+  .compass-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto 60px;
   }
 
-  .bg-michigan-blue {
-    background-color: var(--blue);
+  .compass {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   }
 
-  /* Football field pattern */
-  .field-pattern {
-    position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 48px,
-        rgba(255, 255, 255, 0.05) 48px,
-        rgba(255, 255, 255, 0.05) 50px
-      );
-    opacity: 0.3;
-  }
-
-  /* Block M watermark */
-  .block-m-watermark {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 60vw;
-    font-weight: bold;
-    color: rgba(255, 203, 5, 0.03);
-    z-index: 0;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  /* Scoreboard */
-  .scoreboard {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, var(--maize), #FFD700);
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    text-align: center;
-  }
-
-  .score-label {
-    font-family: 'Bebas Neue', sans-serif;
+  .compass-text {
+    font-family: 'Georgia', serif;
     font-size: 14px;
-    color: var(--blue);
-    letter-spacing: 2px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
   }
 
-  .score-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    color: var(--blue);
+  /* Error Code & Title */
+  .error-code {
+    font-family: 'Georgia', serif;
+    font-size: clamp(80px, 15vw, 140px);
     font-weight: bold;
+    color: #2D5016;
     line-height: 1;
-  }
-
-  /* Yard Marker */
-  .yard-marker {
-    text-align: center;
-    margin-top: 40px;
-  }
-
-  .yard-number {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(100px, 20vw, 180px);
-    color: var(--maize);
-    font-weight: bold;
-    line-height: 1;
-    text-shadow:
-      4px 4px 0 rgba(0, 0, 0, 0.2),
-      8px 8px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .yard-line {
-    width: 200px;
-    height: 6px;
-    background: white;
-    margin: 10px auto;
-    border-radius: 3px;
-  }
-
-  /* Error Messages */
-  .error-headline {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(32px, 6vw, 56px);
-    color: white;
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-  }
-
-  .error-subtext {
-    font-family: 'Roboto', sans-serif;
-    font-size: clamp(16px, 3vw, 20px);
-    color: rgba(255, 255, 255, 0.9);
-    transition: opacity 0.3s ease;
-  }
-
-  /* Game Container */
-  .game-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 3px solid var(--maize);
-    border-radius: 20px;
-    padding: 30px;
-    margin: 30px 0;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  }
-
-  .game-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    color: var(--maize);
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-  }
-
-  .game-instructions {
-    font-family: 'Roboto', sans-serif;
-    color: white;
     margin-bottom: 20px;
-    font-size: 16px;
   }
 
-  #gameCanvas {
-    border: 2px solid white;
-    border-radius: 10px;
-    background: #1a472a;
-    cursor: pointer;
-    max-width: 100%;
-    height: auto;
+  .error-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 600;
+    color: #2D5016;
+    margin-bottom: 16px;
   }
 
-  .achievement {
-    display: none;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    color: var(--maize);
-    margin-top: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  @keyframes celebrate {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-  }
-
-  /* Trivia Box */
-  .trivia-box {
-    background: linear-gradient(135deg, rgba(255, 203, 5, 0.2), rgba(255, 203, 5, 0.1));
-    border: 2px solid var(--maize);
-    border-radius: 15px;
-    padding: 20px 30px;
+  .error-description {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: #5A5A5A;
     max-width: 600px;
-    margin: 20px auto;
+    margin: 0 auto;
   }
 
-  .trivia-label {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    color: var(--maize);
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+  /* Search Section */
+  .search-section {
+    max-width: 700px;
+    margin: 60px auto;
   }
 
-  .trivia-text {
-    font-family: 'Roboto', sans-serif;
-    color: white;
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #5A5A5A;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 18px 20px 18px 56px;
     font-size: 16px;
-    line-height: 1.6;
-    transition: opacity 0.3s ease;
+    border: 2px solid #2D5016;
+    border-radius: 12px;
+    background: white;
+    transition: all 0.3s ease;
   }
 
-  /* Navigation Buttons */
-  .nav-buttons {
+  .search-input:focus {
+    outline: none;
+    border-color: #0066A1;
+    box-shadow: 0 0 0 3px rgba(0, 102, 161, 0.1);
+  }
+
+  .search-input::placeholder {
+    color: #999;
+  }
+
+  .search-button {
+    padding: 18px 32px;
+    background: #2D5016;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .search-button:hover {
+    background: #1F3810;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
+  }
+
+  /* Category Chips */
+  .category-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
     justify-content: center;
-    margin-top: 30px;
   }
 
-  .nav-btn {
-    font-family: 'Bebas Neue', sans-serif;
-    padding: 15px 30px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 18px;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .nav-btn-primary {
-    background: var(--maize);
-    color: var(--blue);
-    border: 3px solid var(--maize);
-  }
-
-  .nav-btn-primary:hover {
-    background: transparent;
-    color: var(--maize);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 203, 5, 0.4);
-  }
-
-  .nav-btn-secondary {
-    background: transparent;
-    color: white;
-    border: 3px solid white;
-  }
-
-  .nav-btn-secondary:hover {
+  .category-chip {
+    padding: 10px 20px;
     background: white;
-    color: var(--blue);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.3);
+    border: 2px solid #2D5016;
+    border-radius: 24px;
+    color: #2D5016;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
 
-  /* Go Blue footer */
-  .go-blue {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 8vw, 80px);
-    color: var(--maize);
-    margin-top: 40px;
-    letter-spacing: 8px;
-    text-shadow:
-      3px 3px 0 rgba(0, 0, 0, 0.2),
-      6px 6px 20px rgba(0, 0, 0, 0.3);
-    animation: pulse-glow 2s ease-in-out infinite;
+  .category-chip:hover {
+    background: #2D5016;
+    color: white;
+    transform: translateY(-2px);
   }
 
-  @keyframes pulse-glow {
-    0%, 100% {
-      text-shadow:
-        3px 3px 0 rgba(0, 0, 0, 0.2),
-        6px 6px 20px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(255, 203, 5, 0.3);
-    }
-    50% {
-      text-shadow:
-        3px 3px 0 rgba(0, 0, 0, 0.2),
-        6px 6px 20px rgba(0, 0, 0, 0.3),
-        0 0 40px rgba(255, 203, 5, 0.6);
-    }
+  /* Featured Section */
+  .featured-section {
+    max-width: 1200px;
+    margin: 80px auto 60px;
+  }
+
+  .featured-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 600;
+    color: #2D5016;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .business-card {
+    background: white;
+    border: 2px solid #E8DCC8;
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .business-card:hover {
+    border-color: #0066A1;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .business-category {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #CC6600;
+  }
+
+  .business-name {
+    font-family: 'Georgia', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2D5016;
+    margin: 0;
+  }
+
+  .business-location {
+    font-size: 14px;
+    color: #5A5A5A;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .business-description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 8px 0 0;
+  }
+
+  /* Navigation Section */
+  .nav-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    max-width: 800px;
+    margin: 60px auto 40px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    background: white;
+    border: 2px solid #2D5016;
+    border-radius: 12px;
+    color: #2D5016;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link:hover {
+    background: #2D5016;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 80, 22, 0.2);
+  }
+
+  .nav-link:hover svg {
+    stroke: white;
+  }
+
+  .nav-link-primary {
+    background: #2D5016;
+    color: white;
+  }
+
+  .nav-link-primary:hover {
+    background: #1F3810;
+  }
+
+  .nav-link-primary svg {
+    stroke: white;
+  }
+
+  .nav-link svg {
+    stroke: #2D5016;
+    transition: stroke 0.3s ease;
   }
 
   /* Responsive */
   @media (max-width: 768px) {
-    .scoreboard {
-      top: 10px;
-      right: 10px;
-      padding: 10px 15px;
+    .compass-container {
+      margin: 30px auto 40px;
     }
 
-    .score-value {
-      font-size: 36px;
+    .compass {
+      width: 160px;
+      height: 160px;
     }
 
-    .game-container {
-      padding: 20px 15px;
+    .search-form {
+      flex-direction: column;
     }
 
-    #gameCanvas {
+    .search-button {
       width: 100%;
     }
 
-    .nav-btn {
+    .category-chips {
+      justify-content: flex-start;
+    }
+
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-section {
+      flex-direction: column;
       width: 100%;
-      text-align: center;
+    }
+
+    .nav-link {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .search-form {
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+    }
+
+    .search-button {
+      width: auto;
+      white-space: nowrap;
     }
   }
 </style>
