@@ -1,4 +1,4 @@
-import { Compass, Menu, X, ChevronDown, LogIn, LogOut, User } from 'lucide-react';
+import { Menu, X, ChevronDown, LogIn, LogOut, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -37,14 +37,11 @@ export function Header() {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <a href="/" className="flex items-center space-x-3 group">
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="compass-shadow"
-            >
-              <Compass className="w-8 h-8 text-cyan-primary" />
-            </motion.div>
-            <span className="font-decorative text-2xl text-ink-primary">Michigan Spots</span>
+            <img
+              src="/MI Spots Scribble Logo.png"
+              alt="Michigan Spots Logo"
+              className="w-12 h-12 object-contain"
+            />
           </a>
 
           <div className="hidden md:flex items-center space-x-8">

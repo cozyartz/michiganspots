@@ -174,7 +174,7 @@ export function Hero() {
                         className="w-full h-full p-8"
                       >
                         <img
-                          src="/MiSpot_logo.png"
+                          src="/MI Spots Scribble Logo.png"
                           alt="Michigan Spots Logo"
                           className="w-full h-full object-contain"
                         />
