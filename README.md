@@ -1,13 +1,13 @@
 <div align="center">
 
-<img src="./public/MI Spots Scribble Logo.png" alt="Michigan Spots Logo" width="150" height="150"/>
+<img src="./public/MI Spots Scribble Logo.png" alt="State Spots Logo" width="150" height="150"/>
 
 <br/>
 <br/>
 
-# Michigan Spots
+# State Spots
 
-### *Transforming the Great Lakes State into a Living Treasure Map*
+### *Discover Hidden Gems Across America*
 
 <br/>
 
@@ -56,7 +56,7 @@ Subscriptions • Webhooks
 
 ![Status](https://img.shields.io/badge/STATUS-Launching_October_2025-4A7C59?style=for-the-badge&labelColor=2C1810)
 ![Partnerships](https://img.shields.io/badge/PARTNERSHIPS-Now_Available-2E5077?style=for-the-badge&labelColor=2C1810)
-![License](https://img.shields.io/badge/LICENSE-Proprietary-D97642?style=for-the-badge&labelColor=2C1810)
+![License](https://img.shields.io/badge/LICENSE-AGPL--3.0_or_Commercial-D97642?style=for-the-badge&labelColor=2C1810)
 
 <br/>
 
@@ -70,9 +70,9 @@ Built by **[Cozyartz Media Group](https://cozyartzmedia.com)** • Battle Creek,
 
 ---
 
-### Portfolio Showcase • Not for Reproduction
+### Open Source Platform • Dual Licensed
 
-**⚠️ This is proprietary software developed for commercial deployment. All code, designs, and systems are protected intellectual property.**
+**⚡ Licensed under AGPL-3.0 for open-source use. Commercial licenses available for proprietary deployments.**
 
 [📚 Documentation](#-documentation) • [💼 View Partnership Opportunities](#-partnership-opportunities) • [🏗️ Explore Tech Stack](#️-tech-stack) • [🏆 Competition Entry](#-reddit-community-games-2025)
 
@@ -82,7 +82,7 @@ Built by **[Cozyartz Media Group](https://cozyartzmedia.com)** • Battle Creek,
 
 ## 🎯 Executive Summary
 
-Michigan Spots is a **production-ready, revenue-generating geolocation gaming platform** that transforms local discovery into competitive community engagement. Built for the Reddit Community Games 2025 competition, this platform demonstrates enterprise-grade architecture, sophisticated monetization systems, and scalable edge computing infrastructure.
+State Spots is a **production-ready, revenue-generating geolocation gaming platform** that transforms local discovery into competitive community engagement. Built for the Reddit Community Games 2025 competition, this platform demonstrates enterprise-grade architecture, sophisticated monetization systems, and scalable edge computing infrastructure.
 
 ### Platform Overview
 
@@ -133,13 +133,13 @@ Zero cold starts
 
 ### Core User Experiences
 
-**Players**: Discover hidden Michigan locations, compete in weekly challenges, earn badges, climb leaderboards
+**Players**: Discover hidden locations across America, compete in weekly challenges, earn badges, climb leaderboards
 **Partners**: Sponsor challenges, drive foot traffic, access analytics, manage subscriptions
 **Community**: Track engagement, measure ROI, build local pride, support tourism
 
 ### Technical Innovation
 
-Michigan Spots represents a **groundbreaking integration of three cutting-edge platforms**:
+State Spots represents a **groundbreaking integration of three cutting-edge platforms**:
 
 **🎮 Reddit Native Integration (Devvit/Kiro)**
 - Built with Reddit's **Devvit framework** (powered by Kiro runtime) for native in-app experiences
@@ -171,7 +171,7 @@ This tri-platform architecture (Reddit + Cloudflare + AI) enables a **massively 
 
 ### Local Development Setup
 
-Michigan Spots has two development modes depending on what you're working on:
+State Spots has two development modes depending on what you're working on:
 
 #### 🎨 **Frontend Development Mode** (Local Database)
 ```bash
@@ -287,7 +287,7 @@ npx wrangler d1 execute michiganspot-db --remote --command "SELECT * FROM busine
 
 </div>
 
-Michigan Spots features a **comprehensive Reddit Devvit app** that transforms r/michiganspots into an interactive treasure hunt game with AI-powered features, GPS verification, and real-time analytics.
+State Spots features a **comprehensive Reddit Devvit app** that transforms r/michiganspots into an interactive treasure hunt game with AI-powered features, GPS verification, and real-time analytics.
 
 ### Devvit App Features
 
@@ -511,7 +511,7 @@ Reddit Event → Devvit App → Analytics API → Cloudflare D1 → Partner Dash
 
 ## 🎨 Design Philosophy
 
-Michigan Spots features a unique **treasure map aesthetic** that blends vintage nautical charm with modern UX:
+State Spots features a unique **treasure map aesthetic** that blends vintage nautical charm with modern UX:
 
 <table>
 <tr>
@@ -563,7 +563,7 @@ Michigan Spots features a unique **treasure map aesthetic** that blends vintage 
 
 ### Business Model & Monetization
 
-Michigan Spots demonstrates a **multi-sided marketplace approach** with three distinct revenue streams:
+State Spots demonstrates a **multi-sided marketplace approach** with three distinct revenue streams:
 
 <table>
 <tr>
@@ -641,7 +641,7 @@ Mission-driven pricing
 
 ## 💼 Partnership Opportunities
 
-Michigan Spots offers **flexible partnership tiers** designed to maximize ROI for businesses, chambers, and community organizations:
+State Spots offers **flexible partnership tiers** designed to maximize ROI for businesses, chambers, and community organizations:
 
 ### 🏪 Business Partnership Tiers
 
@@ -740,7 +740,7 @@ We work with your budget to create meaningful community engagement. Mission-driv
 
 </div>
 
-Michigan Spots is an official entry in Reddit's inaugural Community Games hackathon, competing for recognition in the **Community Play** category for massively multiplayer experiences that bring people together.
+State Spots is an official entry in Reddit's inaugural Community Games hackathon, competing for recognition in the **Community Play** category for massively multiplayer experiences that bring people together.
 
 ### Competitive Differentiation
 
@@ -769,7 +769,7 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 </tr>
 </table>
 
-### Why Michigan Spots Stands Out
+### Why State Spots Stands Out
 
 ✅ **Production-Ready Infrastructure** - Not a prototype; fully operational platform
 ✅ **Revenue-Generating Design** - Built-in monetization from day one
@@ -950,25 +950,36 @@ Michigan Spots is an official entry in Reddit's inaugural Community Games hackat
 
 <div align="center">
 
-### ⚠️ **PROPRIETARY SOFTWARE** ⚠️
+### ⚠️ **DUAL LICENSING** ⚠️
 
-**Copyright © 2025 Cozyartz Media Group. All Rights Reserved.**
+**Copyright © 2025 Cozyartz Media Group d/b/a State Spots**
 
 </div>
 
-This repository serves as a **portfolio showcase** of proprietary software development capabilities. All code, architecture, designs, database schemas, business logic, and visual assets are protected intellectual property.
+This project is licensed under dual licensing: **AGPL-3.0** (open-source) and **Commercial License** (proprietary use). See [LICENSE](LICENSE) and [LICENSE-COMMERCIAL.md](LICENSE-COMMERCIAL.md) for details.
 
-### Terms of Use
+For commercial licensing inquiries, contact: partnerships@statespots.com
 
-❌ **PROHIBITED**: Copying, forking, cloning, reproducing, modifying, or deploying this software
-❌ **PROHIBITED**: Using any code, designs, or concepts for commercial or personal projects
-❌ **PROHIBITED**: Reverse engineering or extracting business logic
-✅ **PERMITTED**: Viewing for portfolio evaluation and professional assessment purposes only
+### Open Source (AGPL-3.0)
 
-### Licensing Inquiries
+✅ **PERMITTED** for open-source use:
+- Use, study, modify, and distribute the code
+- Create derivative works under AGPL-3.0
+- Contribute via Pull Requests (requires [CLA](legal/CLA.md))
+- Deploy for personal, educational, or non-commercial purposes
 
-For licensing, partnership, or business inquiries:
-- **Email**: partnerships@michiganspots.com
+### Commercial License Required
+
+❌ **REQUIRES COMMERCIAL LICENSE**:
+- SaaS or hosted service offerings
+- Embedding in proprietary software
+- Commercial deployment without source disclosure
+- White-label or rebranding for clients
+
+### Partnership Inquiries
+
+For commercial licensing, partnerships, or business inquiries:
+- **Email**: partnerships@statespots.com
 - **Website**: [cozyartzmedia.com](https://cozyartzmedia.com)
 - **Platform**: [michiganspots.com](https://michiganspots.com)
 
