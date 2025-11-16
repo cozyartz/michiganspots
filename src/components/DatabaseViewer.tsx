@@ -126,8 +126,7 @@ export function DatabaseViewer() {
           return typeof val === 'string' && val.includes(',') ? `"${val}"` : val;
         }).join(',')
       )
-    ].join('
-');
+    ].join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
