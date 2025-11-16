@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { MapPin } from 'lucide-react';
@@ -237,7 +243,7 @@ export function MichiganMap() {
           const categoryCount = allLandmarks.filter(
             l => MICHIGAN_CHALLENGES.find(c => c.name === l.challenge)?.category === category
           ).length;
-          const categoryName = category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const categoryName = category.replace(/-/g, ' ').replace(/\w/g, l => l.toUpperCase());
           return (
             <button
               key={category}

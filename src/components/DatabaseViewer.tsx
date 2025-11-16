@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
 import { useState, useEffect } from 'react';
 import { Database, Table, Search, Play, RefreshCw, Download, AlertCircle, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -120,7 +126,8 @@ export function DatabaseViewer() {
           return typeof val === 'string' && val.includes(',') ? `"${val}"` : val;
         }).join(',')
       )
-    ].join('\n');
+    ].join('
+');
 
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
+/**
  * Legal Version Control API
  *
  * Manages versioned legal documents (partnership agreements, terms of service, etc.)

@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
 // Email service using PurelyMail SMTP
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';

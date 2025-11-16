@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
+/**
  * Directory Business Enrichment Cron Job
  *
  * This function should be triggered by Cloudflare Cron Triggers.

@@ -1,7 +1,7 @@
 {
-  "name": "michiganspot",
+  "name": "statespots",
   "version": "1.0.0",
-  "description": "Michigan Spots - Discover Michigan's Hidden Gems",
+  "description": "State Spots - Discover Hidden Gems Across America",
   "scripts": {
     "dev": "astro dev",
     "dev:remote": "npx wrangler pages dev --live-reload -- npx astro dev",
@@ -16,7 +16,7 @@
     "treasure-hunt"
   ],
   "author": "Cozyartz Media Group",
-  "license": "ISC",
+  "license": "(AGPL-3.0-or-later OR Commercial)",
   "type": "module",
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.10",

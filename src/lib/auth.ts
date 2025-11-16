@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
 // Authentication library using OAuth providers (GitHub, Google)
 import { GitHub, Google } from 'arctic';
 

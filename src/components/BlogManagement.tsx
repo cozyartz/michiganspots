@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
+/**
  * Blog Management Component
  * Admin interface for importing and managing blog posts from NeuronWriter
  */
@@ -109,7 +115,8 @@ export function BlogManagement({ userEmail, userName }: { userEmail: string; use
 
       const data = await response.json();
 
-      alert(`Successfully imported: ${data.title}\nSEO Score: ${data.score}/100`);
+      alert(`Successfully imported: ${data.title}
+SEO Score: ${data.score}/100`);
 
       // Reload queries and posts
       await loadQueries();

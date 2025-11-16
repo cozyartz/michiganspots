@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
 import { useState, useRef } from 'react';
 import { Mail, User, Building2, MapPin, Phone, CheckCircle, AlertCircle, FileText, Tag, Loader2, X, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -240,8 +246,16 @@ export function InPersonPartnerSignup({ partnershipType = 'business' }: InPerson
 
       if (response.ok) {
         setStatus('success');
-        const savingsText = discountAmount > 0 ? `\n\nDiscount Applied: -$${discountAmount}` : '';
-        setStatusMessage(`Agreement signed successfully! Confirmation ID: ${data.confirmationId || 'N/A'}\n\nOriginal Amount: $${subtotal}${savingsText}\n\nAmount to Collect: $${finalTotal}\n\nPlease process payment via PayPal reader.`);
+        const savingsText = discountAmount > 0 ? `
+
+Discount Applied: -$${discountAmount}` : '';
+        setStatusMessage(`Agreement signed successfully! Confirmation ID: ${data.confirmationId || 'N/A'}
+
+Original Amount: $${subtotal}${savingsText}
+
+Amount to Collect: $${finalTotal}
+
+Please process payment via PayPal reader.`);
 
         // Clear form after 30 seconds
         setTimeout(() => {

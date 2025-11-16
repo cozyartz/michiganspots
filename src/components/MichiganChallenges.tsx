@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Cozyartz Media Group d/b/a State Spots
+ * Licensed under AGPL-3.0-or-later OR Commercial
+ * See LICENSE and LICENSE-COMMERCIAL.md for details
+ */
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { ChevronDown, Trophy, MapPin } from 'lucide-react';
@@ -202,7 +208,7 @@ export function MichiganChallenges() {
         </button>
         {Array.from(new Set(MICHIGAN_CHALLENGES.map(c => c.category))).map(category => {
           const categoryCount = MICHIGAN_CHALLENGES.filter(c => c.category === category).length;
-          const categoryName = category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const categoryName = category.replace(/-/g, ' ').replace(/\w/g, l => l.toUpperCase());
           return (
             <button
               key={category}

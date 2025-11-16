@@ -1,16 +1,16 @@
 # Terms of Service
 
-**Effective Date:** October 15, 2025
-**Last Updated:** October 15, 2025
+**Effective Date:** October 31, 2025
+**Last Updated:** October 31, 2025
 
 ## 1. Agreement to Terms
 
-By accessing or using Michigan Spots ("the Platform," "our Service," or "the Game"), operated by Cozyartz Media Group ("we," "us," or "our"), a Michigan-based company located in Battle Creek, Michigan, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+By accessing or using State Spots ("the Platform," "our Service," or "the Game"), operated by Cozyartz Media Group ("we," "us," or "our"), a Michigan-based company located in Battle Creek, Michigan, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
 
 ## 2. Description of Service
 
-Michigan Spots is a community-powered, location-based discovery game that allows users to:
-- Discover and share locations ("Spots") throughout Michigan
+State Spots is a community-powered, location-based discovery game that allows users to:
+- Discover and share locations ("Spots") across the United States
 - Complete themed challenges and earn digital badges
 - Participate in team-based city competitions
 - Engage with a community through Reddit integration
@@ -19,18 +19,18 @@ Michigan Spots is a community-powered, location-based discovery game that allows
 ## 3. Eligibility
 
 ### 3.1 Age Requirements
-- You must be at least 13 years of age to use Michigan Spots
+- You must be at least 13 years of age to use State Spots
 - Users between 13-17 must have parental or guardian consent
 - We reserve the right to request proof of age at any time
 
 ### 3.2 Geographic Eligibility
-- The Platform is designed for residents of and visitors to Michigan
+- The Platform is designed for users across the United States
 - Some challenges and features may be location-restricted
 
 ## 4. User Accounts and Reddit Integration
 
 ### 4.1 Account Creation
-- Michigan Spots integrates with Reddit's Developer Platform
+- State Spots integrates with Reddit's Developer Platform
 - To participate, you must have or create a valid Reddit account
 - You are responsible for maintaining the confidentiality of your account credentials
 - You are responsible for all activities that occur under your account
@@ -62,7 +62,7 @@ When submitting spots, photos, comments, or other content, you agree NOT to:
 - Never trespass or engage in illegal activities to complete challenges
 
 ### 5.3 Content Ownership and License
-- You retain ownership of content you submit to Michigan Spots
+- You retain ownership of content you submit to State Spots
 - By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, adapt, publish, and display your content in connection with the Platform
 - This license continues even if you stop using the Platform
 - You represent that you have all necessary rights to grant this license
@@ -70,7 +70,7 @@ When submitting spots, photos, comments, or other content, you agree NOT to:
 ## 6. Intellectual Property Rights
 
 ### 6.1 Platform Ownership
-- Michigan Spots, including its design, features, and functionality, is owned by Cozyartz Media Group
+- State Spots, including its design, features, and functionality, is owned by Cozyartz Media Group
 - Our trademarks, logos, and service marks are protected by copyright and trademark law
 - You may not use our intellectual property without express written permission
 
@@ -94,7 +94,7 @@ When submitting spots, photos, comments, or other content, you agree NOT to:
 ## 8. Prize Structure and No Purchase Necessary
 
 ### 8.1 No Gambling or Lottery
-Michigan Spots is structured to comply with Michigan gaming laws:
+State Spots is structured to comply with applicable U.S. gaming laws:
 - Participation is FREE - no purchase or payment is required
 - Digital badges and leaderboard rankings have no monetary value
 - Any physical prizes or rewards offered by partners are subject to partner terms
@@ -119,7 +119,7 @@ You may NOT:
 
 ## 10. Privacy and Data Protection
 
-Your use of Michigan Spots is also governed by our Privacy Policy, which describes how we collect, use, and protect your information. By using the Platform, you consent to our data practices as described in the Privacy Policy.
+Your use of State Spots is also governed by our Privacy Policy, which describes how we collect, use, and protect your information. By using the Platform, you consent to our data practices as described in the Privacy Policy.
 
 ## 11. Disclaimers and Limitation of Liability
 
@@ -139,7 +139,7 @@ TO THE MAXIMUM EXTENT PERMITTED BY MICHIGAN LAW:
 
 ### 11.3 Location-Based Activity Risks
 YOU EXPRESSLY ASSUME ALL RISKS ASSOCIATED WITH:
-- Traveling to or visiting any location listed on Michigan Spots
+- Traveling to or visiting any location listed on State Spots
 - Weather conditions, terrain, and accessibility issues
 - Interaction with wildlife, private property, or other individuals
 - Use of the Platform while driving or operating vehicles
@@ -147,7 +147,7 @@ YOU EXPRESSLY ASSUME ALL RISKS ASSOCIATED WITH:
 ## 12. Indemnification
 
 You agree to defend, indemnify, and hold harmless Cozyartz Media Group, its affiliates, partners, officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:
-- Your use of Michigan Spots
+- Your use of State Spots
 - Your violation of these Terms
 - Your violation of any third-party rights
 - Content you submit to the Platform
@@ -156,7 +156,7 @@ You agree to defend, indemnify, and hold harmless Cozyartz Media Group, its affi
 ## 13. Reddit Integration and Third-Party Services
 
 ### 13.1 Reddit Platform
-- Michigan Spots is built on Reddit's Developer Platform
+- State Spots is built on Reddit's Developer Platform
 - Your use of Reddit features is subject to Reddit's User Agreement and Privacy Policy
 - We are not responsible for Reddit's services or any changes Reddit makes to its platform
 
@@ -169,7 +169,7 @@ You agree to defend, indemnify, and hold harmless Cozyartz Media Group, its affi
 
 ### 14.1 Service Changes
 We reserve the right to:
-- Modify, suspend, or discontinue any part of Michigan Spots at any time
+- Modify, suspend, or discontinue any part of State Spots at any time
 - Change game rules, challenge structures, or badge systems
 - Remove content that violates these Terms
 - Update features during beta testing and after launch
@@ -186,7 +186,7 @@ We reserve the right to:
 These Terms are governed by the laws of the State of Michigan, United States, without regard to conflict of law principles. Any disputes shall be resolved in the state or federal courts located in Calhoun County, Michigan.
 
 ### 15.2 Informal Resolution
-Before filing a legal claim, you agree to first contact us at legal@michiganspots.com to attempt informal resolution.
+Before filing a legal claim, you agree to first contact us at legal@statespots.com to attempt informal resolution.
 
 ### 15.3 Arbitration Agreement
 Any dispute not resolved informally shall be resolved through binding arbitration in accordance with the American Arbitration Association rules, conducted in Battle Creek, Michigan.
@@ -204,8 +204,8 @@ For questions about these Terms of Service, please contact:
 
 **Cozyartz Media Group**
 Battle Creek, Michigan
-Email: legal@michiganspots.com
-Website: https://michiganspots.com
+Email: legal@statespots.com
+Website: https://statespots.com
 
 ## 18. Acknowledgment
 
@@ -213,5 +213,5 @@ BY USING MICHIGAN SPOTS, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVI
 
 ---
 
-**Michigan Spots** is a participant in the Reddit Community Games 2025.
+**State Spots** is a participant in the open-source geolocation platform.
 © 2025 Cozyartz Media Group. All rights reserved.
