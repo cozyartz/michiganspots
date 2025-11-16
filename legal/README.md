@@ -31,12 +31,12 @@ This directory contains all legal agreements, templates, and policies for the St
 - **[PARTNER-AGREEMENT-TEMPLATE.md](./PARTNER-AGREEMENT-TEMPLATE.md)** - Partnership terms
   - 5-tier partnership model agreements
   - Payment terms, SLA, and liability
-  - **Status**: ⚠️ TO BE CREATED
+  - **Status**: ✅ Complete - Customize per partner
 
 - **[CLA.md](./CLA.md)** - Contributor License Agreement
   - For open-source contributors via GitHub
   - Grants copyright/patent license to Company
-  - **Status**: ⚠️ TO BE CREATED
+  - **Status**: ✅ Complete - Implement via CLA bot
 
 ### Licensing
 
@@ -55,32 +55,37 @@ See root directory for:
 | FOUNDERS-AGREEMENT | ⚠️ Draft | Complete Amy's sections, sign |
 | IP-ASSIGNMENT-AGREEMENT | ✅ Complete | Execute with all contributors |
 | NDA-TEMPLATE | ✅ Complete | Customize per partner |
-| Privacy Policy | 🔴 Critical | Create (legally required) |
-| Cookie Policy | 🔴 Critical | Create (legally required) |
-| PARTNER-AGREEMENT | 🔴 Needed | Create before first partnership |
-| CLA | 🟡 Recommended | Create before accepting contributions |
+| Privacy Policy | ✅ Complete | Publish to website |
+| Cookie Policy | ✅ Complete | Publish to website |
+| PARTNER-AGREEMENT | ✅ Complete | Customize per partner |
+| CLA | ✅ Complete | Implement CLA bot on GitHub |
 
 ---
 
 ## 🚨 Critical Next Steps
 
 ### Before Site Goes Live:
-1. ✅ Complete Privacy Policy (GDPR/CCPA compliant)
-2. ✅ Complete Cookie Policy
-3. ✅ Execute Founders Agreement (Andrea & Amy)
+1. ✅ ~~Complete Privacy Policy (GDPR/CCPA compliant)~~
+2. ✅ ~~Complete Cookie Policy~~
+3. ⚠️ Publish Privacy and Cookie policies to website
+4. ⚠️ Add cookie consent banner to site
+5. ⚠️ Execute Founders Agreement (Andrea & Amy)
 
 ### Before Accepting External Contributions:
-4. ⚠️ Create and implement CLA via GitHub
-5. ⚠️ Add CONTRIBUTING.md with IP assignment notice
+6. ✅ ~~Create CLA~~
+7. ✅ ~~Add CONTRIBUTING.md with IP assignment notice~~
+8. ⚠️ Implement CLA bot on GitHub repository
+9. ✅ ~~Add copyright headers to source files~~
 
 ### Before Onboarding Partners:
-6. ⚠️ Create Partner Agreement Template
-7. ⚠️ Have legal counsel review all agreements
+10. ✅ ~~Create Partner Agreement Template~~
+11. ⚠️ Have legal counsel review all agreements ($1,500-$3,000)
 
 ### Before Fundraising/Investors:
-8. ⚠️ Execute IP Assignment Agreements for all existing work
-9. ⚠️ Ensure Founders Agreement is signed
-10. ⚠️ Have NDA ready for investor discussions
+12. ⚠️ Execute IP Assignment Agreements for all existing work
+13. ⚠️ Ensure Founders Agreement is signed
+14. ✅ ~~Have NDA ready for investor discussions~~
+15. ⚠️ File trademark application for "State Spots" ($350-$750)
 
 ---
 
