@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS signups (
   email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   city TEXT NOT NULL,
+  user_type TEXT DEFAULT 'player',
   created_at TEXT NOT NULL,
   updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
@@ -14,6 +15,7 @@ CREATE TABLE IF NOT EXISTS signups (
 CREATE INDEX idx_signups_email ON signups(email);
 CREATE INDEX idx_signups_city ON signups(city);
 CREATE INDEX idx_signups_created_at ON signups(created_at);
+CREATE INDEX idx_signups_user_type ON signups(user_type);
 
 -- Users table (for full app later)
 CREATE TABLE IF NOT EXISTS users (
